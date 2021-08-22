@@ -6,9 +6,7 @@ I am a researcher at University of Valparaíso in Chile. I am interested in rand
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
 
-- *Diversity, fairness and sustainability in population protocols* with N. Kang and F. Mallmann-Trenn
-
-  &nbsp;&nbsp;&nbsp;<a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>
+- *Diversity, fairness and sustainability in population protocols* with N. Kang and F. Mallmann-Trenn. <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a> <a href="https://arxiv.org/abs/2105.09926"> arXiv (Full Version)</a> 
 - *Multiple random walks on graphs: Mixing few to cover many* with T. Sauerwald, J. Sylvester
 
 - 
