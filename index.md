@@ -9,7 +9,6 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 - *Diversity, fairness and sustainability in population protocols.* N. Kang, F. Mallmann-Trenn, and N.R. <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>, <a href="https://arxiv.org/abs/2105.09926"> arXiv (Full Version)</a> 
 - *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester. <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>, <a href="https://arxiv.org/abs/2011.07893"> arXiv (Full Version)</a> 
 - *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2020</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
--
 - *Kernelized Stein discrepancy tests of goodness-of-fit for time-to-event data.* T. Fernández, A. Gretton, N.R. and W. Xu, <a href="https://proceedings.mlr.press/v119/fernandez20a.html"> ICML2020</a>, <a href="https://arxiv.org/abs/2008.08397"> arXiv (Full Version) </a> 
 - *Kaplan-Meier U and V -statistics.* T.Fernández and N.R. <a href="https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-14/issue-1/Kaplan-Meier-V--and-U-statistics/10.1214/20-EJS1704.full"> EJS2020</a>, <a href="https://arxiv.org/abs/1810.04806"> arXiv </a> 
 - *The 2^k neighborhoods for grid path planning*. J. Baier, C. Hernández,  N. Hormazábal and N.R. <a href="https://jair.org/index.php/jair/article/view/11383"> JAIR2020</a>
