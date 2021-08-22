@@ -8,7 +8,7 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 
 - *Diversity, fairness and sustainability in population protocols* with N. Kang and F. Mallmann-Trenn
 
-      <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>
+  &nbsp;&nbsp;&nbsp;<a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>
 - *Multiple random walks on graphs: Mixing few to cover many* with T. Sauerwald, J. Sylvester
 
 - 
