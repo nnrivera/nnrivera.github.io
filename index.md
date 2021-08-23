@@ -30,7 +30,7 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 - *Fast consensus for voting on general expander graphs.* C. Cooper, R. Elsasser, T. Radzik, N.R., and T. Shiraga.<a href="https://link.springer.com/chapter/10.1007/978-3-662-48653-5_17"> DISC2015</a>, <a href="https://arxiv.org/abs/1605.08403"> arXiv </a> 
 - *Incorporating weights into real-time heuristic search.* J. Baier, C. Hernández, and N.R.<a href="https://www.sciencedirect.com/science/article/pii/S0004370215000545"> AIJ2014</a>
 - *Real-time pathfinding in unknown terrain via reconnection with an ideal tree.* J. Baier, L. Illanes, and N.R.<a href="https://link.springer.com/chapter/10.1007%2F978-3-319-12027-0_6"> IBERAMIA2014</a> 
-- *Reconnection with the ideal tree: a new approach to real-time search.* J. Baier,  L. Illanes, C. Hernández, and N.R.<a href="https://www.jair.org/index.php/jair/article/view/10884"> JAIR2014</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
+- *Reconnection with the ideal tree: a new approach to real-time search.* J. Baier,  L. Illanes, C. Hernández, and N.R.<a href="https://www.jair.org/index.php/jair/article/view/10884"> JAIR2014</a>
 - *Reconnecting with the Ideal Tree: an alternative to Heuristic Learning in Real-Time Search.* J. Baier, L. Illanes,
 C. Hernandez, and N.R.<a href="https://ojs.aaai.org/index.php/SOCS/article/view/18300"> SoCS2013</a>
 - *Weighted real-time heuristic search* J. Baier, C. Hernandez, and N.R.<a href="http://www.ifaamas.org/Proceedings/aamas2013/docs/p579.pdf"> AAMAS2013</a>
