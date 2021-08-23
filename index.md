@@ -27,7 +27,7 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 - *The linear voting model.* C. Cooper and N.R.<a href="https://drops.dagstuhl.de/opus/volltexte/2016/6288/"> ICALP2016</a> 
 - *Gaussian processes for survival analysis.* T. Fernández, N.R., and Y. W. Teh.<a href="https://dl.acm.org/doi/10.5555/3157382.3157658"> NeurIPS2016</a>, <a href="https://arxiv.org/abs/1611.00817"> arXiv </a> 
 - *Coalescing walks on rotor-router systems.* C. Cooper, T. Radzik, N.R., and T. Shiraga.<a href="https://dl.acm.org/doi/abs/10.1007/978-3-319-25258-2_31"> SIROCCO2015</a>
-- *Fast consensus for voting on general expander graphs.* C. Cooper, R. Elsasser, T. Radzik, N.R., and T. Shiraga.<a href="https://link.springer.com/chapter/10.1007/978-3-662-48653-5_17"> DISC2015</a>, <a href="https://arxiv.org/abs/1605.08403"> arXiv </a> 
+- *Fast consensus for voting on general expander graphs.* C. Cooper, R. Elsasser, T. Radzik, N.R., and T. Shiraga.<a href="https://link.springer.com/chapter/10.1007/978-3-662-48653-5_17"> DISC2015</a>
 - *Incorporating weights into real-time heuristic search.* J. Baier, C. Hernández, and N.R.<a href="https://www.sciencedirect.com/science/article/pii/S0004370215000545"> AIJ2014</a>
 - *Real-time pathfinding in unknown terrain via reconnection with an ideal tree.* J. Baier, L. Illanes, and N.R.<a href="https://link.springer.com/chapter/10.1007%2F978-3-319-12027-0_6"> IBERAMIA2014</a> 
 - *Reconnection with the ideal tree: a new approach to real-time search.* J. Baier,  L. Illanes, C. Hernández, and N.R.<a href="https://www.jair.org/index.php/jair/article/view/10884"> JAIR2014</a>
