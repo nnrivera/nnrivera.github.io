@@ -2,7 +2,7 @@
 
 
 <img align="left" src="mepicture.webp" />
-I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.
+<p>I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.</p>
 
 
 
