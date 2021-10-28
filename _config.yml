@@ -1,2 +1,6 @@
 name: something...
 title: null
+output:
+  html_document:
+    includes:
+       in_header: myheader.html
