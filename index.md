@@ -1,6 +1,7 @@
 <h1>Nicolas Rivera</h1>
 
 
+<img src="mepicture.webp" />
 I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
