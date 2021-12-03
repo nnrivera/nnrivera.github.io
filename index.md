@@ -20,7 +20,7 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
 
-- *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2105.09926"> arXiv </a>
+- *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv </a>
 - *Diversity, fairness and sustainability in population protocols.* N. Kang, F. Mallmann-Trenn, and N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv</a> 
 - *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester. <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>, <a href="https://arxiv.org/abs/2011.07893"> arXiv (Full Version)</a> 
 - *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2020</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
