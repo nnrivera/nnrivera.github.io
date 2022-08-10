@@ -20,6 +20,7 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
 
+- *A Multiple kernel testing procedure for non-proportional hazards in factorial designs.* M. Ditzhaus, T. Fernández, N.R. <a href="https://arxiv.org/abs/2206.07239"> arXiv </a>
 - *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv </a>
 - *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hernández. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. **(Distinguish Paper Award)**
 - *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2021</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
