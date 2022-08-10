@@ -21,9 +21,10 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
 
 - *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv </a>
+- *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hern\'andez. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. *(Distinguish Paper Award)*
+- *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2021</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
 - *Diversity, fairness and sustainability in population protocols.* N. Kang, F. Mallmann-Trenn, and N.R. <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>, <a href="https://arxiv.org/abs/2105.09926"> arXiv (Full Version)</a>
 - *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester. <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>, <a href="https://arxiv.org/abs/2011.07893"> arXiv (Full Version)</a> 
-- *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2020</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
 - *Kernelized Stein discrepancy tests of goodness-of-fit for time-to-event data.* T. Fernández, A. Gretton, N.R. and W. Xu, <a href="https://proceedings.mlr.press/v119/fernandez20a.html"> ICML2020</a>, <a href="https://arxiv.org/abs/2008.08397"> arXiv (Full Version) </a> 
 - *Kaplan-Meier U and V -statistics.* T. Fernández and N.R. <a href="https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-14/issue-1/Kaplan-Meier-V--and-U-statistics/10.1214/20-EJS1704.full"> EJS2020</a>, <a href="https://arxiv.org/abs/1810.04806"> arXiv </a> 
 - *The 2^k neighborhoods for grid path planning*. J. Baier, C. Hernández,  N. Hormazábal and N.R. <a href="https://jair.org/index.php/jair/article/view/11383"> JAIR2020</a>
@@ -47,7 +48,7 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 - *Real-time pathfinding in unknown terrain via reconnection with an ideal tree.* J. Baier, L. Illanes, and N.R.<a href="https://link.springer.com/chapter/10.1007%2F978-3-319-12027-0_6"> IBERAMIA2014</a> 
 - *Reconnection with the ideal tree: a new approach to real-time search.* J. Baier,  L. Illanes, C. Hernández, and N.R.<a href="https://www.jair.org/index.php/jair/article/view/10884"> JAIR2014</a>
 - *Reconnecting with the Ideal Tree: an alternative to Heuristic Learning in Real-Time Search.* J. Baier, L. Illanes,
-C. Hernandez, and N.R.<a href="https://ojs.aaai.org/index.php/SOCS/article/view/18300"> SoCS2013</a>
+C. Hernandez, and N.R.<a href="https://ojs.aaai.org/index.php/SOCS/article/view/18300"> SoCS2013</a>. *(Best Student Paper Award)*
 - *Weighted real-time heuristic search* J. Baier, C. Hernandez, and N.R.<a href="http://www.ifaamas.org/Proceedings/aamas2013/docs/p579.pdf"> AAMAS2013</a>
 
 
