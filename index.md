@@ -1,6 +1,6 @@
 
 
-<h1>Nicolas Rivera</h1>  
+<h1>Nicolás Rivera</h1>  
 
 
 <img align="left" src="mepicture.webp" />
