@@ -6,7 +6,6 @@
 <img align="left" src="mepicture.webp" />
 <p>I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.</p>
 
-
 Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thomas Sauerwald</a> at the University of Cambridge, and before that I did my phd supervised by <a href="https://nms.kcl.ac.uk/colin.cooper/">Colin Cooper</a>  at King's College London.
 
 
@@ -22,7 +21,7 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 
 - *A Multiple kernel testing procedure for non-proportional hazards in factorial designs.* M. Ditzhaus, T. Fernández, N.R. <a href="https://arxiv.org/abs/2206.07239"> arXiv </a>
 - *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv </a>
-- *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hernández. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. **(Distinguish Paper Award)**
+- *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hernández. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. **(Distinguished Paper Award)**
 - *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2021</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
 - *Diversity, fairness and sustainability in population protocols.* N. Kang, F. Mallmann-Trenn, and N.R. <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>, <a href="https://arxiv.org/abs/2105.09926"> arXiv (Full Version)</a>
 - *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester. <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>, <a href="https://arxiv.org/abs/2011.07893"> arXiv (Full Version)</a> 
