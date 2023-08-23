@@ -22,7 +22,7 @@ summary(eigenValues)
 
 
 ####Solution: Hard-threshold as proposed in 1.3.2
-#The idea works in any sparse covariance matrix, not only the identity
+#The idea works for any sparse covariance matrix, not only the identity
 
 newSigmahat = Sigmahat*(abs(Sigmahat)>sqrt(2*log(d)/n))
 new_eigenValues <- eigen(newSigmahat)$values
