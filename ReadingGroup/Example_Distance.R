@@ -4,7 +4,8 @@ rm(list = ls())
 #number of data points
 n = 1000
 
-#we use monte-carlo method to compute the expected distance of a random point in $[0,1]^d$ towards a set of n random points in $[0,1]^d$
+#we use monte-carlo method to compute the expected distance
+#of a random point in $[0,1]^d$ to a set of $n$ random points in $[0,1]^d$
 
 #We use different distances d, in the vector ds
 ds = floor(seq(1,floor(sqrt(n)), length=20))
