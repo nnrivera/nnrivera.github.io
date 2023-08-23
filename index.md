@@ -19,12 +19,14 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
 
+- *Mixing of the symmetric beta-binomial splitting process on arbitrary graphs* R. Pymar, N.R. <a href="https://arxiv.org/abs/2307.02406"> arXiv </a>
 - *A Multiple kernel testing procedure for non-proportional hazards in factorial designs.* M. Ditzhaus, T. Fernández, N.R. <a href="https://arxiv.org/abs/2206.07239"> arXiv </a>
 - *On the stationary distribution of the noisy voter model.* R. Pymar, N.R. <a href="https://arxiv.org/abs/2112.01478"> arXiv </a>
+- *Distributed Averaging in Opinion Dynamics*.  P. Berenbrink, C. Cooper, C. Gava, D. Marzagão, F. Mallmann-Trenn, T. Radzik, N. R. <a href = "https://doi.org/10.1145/3583668.3594593"> PODC2023 </a> <a href = "https://arxiv.org/abs/2211.17125"> arXiv </a>
+- *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester.< href = "https://doi.org/10.1017/S0963548322000372"> CPC2023 </> <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>,  <a href="https://arxiv.org/abs/2011.07893"> arXiv </a> 
 - *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hernández. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. **(Distinguished Paper Award)**
 - *A reproducing kernel Hilbert space log-rank test for the two-sample problem.*  T. Fernández and N.R. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/sjos.12496"> SJoS2021</a>, <a href="https://arxiv.org/abs/1904.05187"> arXiv </a> 
 - *Diversity, fairness and sustainability in population protocols.* N. Kang, F. Mallmann-Trenn, and N.R. <a href="https://dl.acm.org/doi/10.1145/3465084.3467940"> PODC2021</a>, <a href="https://arxiv.org/abs/2105.09926"> arXiv (Full Version)</a>
-- *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester. <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>, <a href="https://arxiv.org/abs/2011.07893"> arXiv (Full Version)</a> 
 - *Kernelized Stein discrepancy tests of goodness-of-fit for time-to-event data.* T. Fernández, A. Gretton, N.R. and W. Xu, <a href="https://proceedings.mlr.press/v119/fernandez20a.html"> ICML2020</a>, <a href="https://arxiv.org/abs/2008.08397"> arXiv (Full Version) </a> 
 - *Kaplan-Meier U and V -statistics.* T. Fernández and N.R. <a href="https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-14/issue-1/Kaplan-Meier-V--and-U-statistics/10.1214/20-EJS1704.full"> EJS2020</a>, <a href="https://arxiv.org/abs/1810.04806"> arXiv </a> 
 - *The 2^k neighborhoods for grid path planning*. J. Baier, C. Hernández,  N. Hormazábal and N.R. <a href="https://jair.org/index.php/jair/article/view/11383"> JAIR2020</a>
