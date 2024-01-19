@@ -15,8 +15,9 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 <br /><br />
 <br />
 
-<p>Reading Group 2023-2 (in spanish): <a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> High-Dimensional Statistics</a>/<p>
-<p>Escuela de Verano - BioEstocástica 2024 (in spanish): <a href="https://nnrivera.github.io/teaching/biostochastics2024"> Curso de Evolutionary Dynamics</a> </p>
+Reading Group 2023-2 (in spanish): <a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> High-Dimensional Statistics</a>
+<br>
+Escuela de Verano - BioEstocástica 2024 (in spanish): <a href="https://nnrivera.github.io/teaching/biostochastics2024"> Curso de Evolutionary Dynamics</a> 
 
 <br>
 
