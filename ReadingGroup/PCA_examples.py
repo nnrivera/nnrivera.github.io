@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from scipy.stats import multivariate_normal
 
-os.chdir("/home/nico/Git/nnrivera.github.io/ReadingGroup")
+os.chdir("/home/nico/git/nnrivera.github.io/ReadingGroup")
 
 
 ###########Ejemplo 8.3 Libro HDS
@@ -12,13 +12,13 @@ os.chdir("/home/nico/Git/nnrivera.github.io/ReadingGroup")
 nax = np.newaxis
 
 np.random.seed(2023)
-n=500
+n=10000
 dim = 6
 
 
 alpha = 0.3
 sigma = 1.5
-theta = np.arange(1,dim+1,1)
+theta = 0.01*np.arange(1,dim+1,1)
 
 Id = np.eye(dim)
 samples = np.random.multivariate_normal(np.zeros(dim), (sigma**2)*Id, size=n)
@@ -53,12 +53,12 @@ def Likelihoods(data, theta_iter, sigma2_iter):
 
 
 
-def EM_algorithm(data, theta_0,sigma_0,alpha_0):
+def EM_algorithm(data, theta_0,sigma_0,alpha_0, iteraciones = 100):
     theta_iter = theta_0
     sigma2_iter = sigma_0**2
     alpha_iter = alpha_0
     
-    for i in range(10000):
+    for i in range(iteraciones):
         
         #compute likelihoods
         L1, L0 = Likelihoods(data, theta_iter, sigma2_iter)
@@ -76,7 +76,7 @@ def EM_algorithm(data, theta_0,sigma_0,alpha_0):
         theta_iter = theta_new
         sigma2_iter = sigma2_new
         alpha_iter = alpha_new
-    print("mu=",theta_iter,"\nsigma=",np.sqrt(sigma2_iter),"\nalpha = ",alpha_iter)
+    print("mu_EM=",theta_iter,"\nsigma_EM=",np.sqrt(sigma2_iter),"\nalpha_EM = ",alpha_iter)
 
     return theta_iter, np.sqrt(sigma2_iter), alpha_iter
 
@@ -86,9 +86,13 @@ def EM_algorithm(data, theta_0,sigma_0,alpha_0):
 theta_0 = np.zeros(dim)
 sigma2_0 = 2
 alpha_0 = 0.8
-theta_em, sigma_em, alpha_em = EM_algorithm(data, theta_0, sigma2_0, alpha_0)
+theta_em, sigma_em, alpha_em = EM_algorithm(data, theta_0, sigma2_0, alpha_0, 100)
 
 ##Idea PAC
+
+
+sigma_teo = np.outer(theta,theta)+(sigma**2)*np.eye(dim)
+eigenvalues_teo, eigenvectors_teo = np.linalg.eig(sigma_teo)
 
 Correlation_estimated = (np.transpose(data)@data)/n
 
@@ -103,4 +107,4 @@ eigenvalues=np.sort(eigenvalues)[::-1]
 theta_est = np.sqrt(eigenvalues[0]-eigenvalues[1])*max_eigenvector
 sigma_est = np.sqrt(eigenvalues[1])
 
-print(theta_est, sigma_est)
+print("theta estimado:", theta_est,"\nsigma estimado:", sigma_est)
