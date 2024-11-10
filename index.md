@@ -3,7 +3,7 @@
 <h1>Nicolás Rivera</h1>  
 
 
-<img align="left" src="me2.jpg" width="100"  />
+<img align="left" src="me2.jpg" width="200"  />
 <p>I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.</p>
 
 Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thomas Sauerwald</a> at the University of Cambridge, and before that I did my phd supervised by <a href="https://nms.kcl.ac.uk/colin.cooper/">Colin Cooper</a>  at King's College London.
