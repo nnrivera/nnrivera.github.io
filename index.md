@@ -3,7 +3,7 @@
 <h1>Nicolás Rivera</h1>  
 
 
-<img align="left" src="mepicture.webp" />
+<img align="left" src="me2.jpg" />
 <p>I am a researcher at University of Valparaíso in Chile. I am interested in randomised algorithms, stochastic processes on graphs, and anything related to probability and computing.</p>
 
 Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thomas Sauerwald</a> at the University of Cambridge, and before that I did my phd supervised by <a href="https://nms.kcl.ac.uk/colin.cooper/">Colin Cooper</a>  at King's College London.
@@ -25,9 +25,9 @@ Here is a list of my publications (you can check my <a href="https://scholar.goo
 
 - *Mixing of the symmetric beta-binomial splitting process on arbitrary graphs* R. Pymar, N.R. <a href="https://arxiv.org/abs/2307.02406"> arXiv</a>
 - *A Multiple kernel testing procedure for non-proportional hazards in factorial designs.* M. Ditzhaus, T. Fernández, N.R. <a href="https://arxiv.org/abs/2206.07239"> arXiv</a>
-- *Asymptotic behaviour of the noisy voter model density process.* R. Pymar, N.R.  <a href = "https://projecteuclid.org/journals/annals-of-applied-probability/volume-34/issue-5/Asymptotic-behaviour-of-the-noisy-voter-model-density-process/10.1214/24-AAP2074.short"> AoAP2024</a> <a href="https://arxiv.org/abs/2112.01478"> arXiv</a>
+- *Asymptotic behaviour of the noisy voter model density process.* R. Pymar, N.R.  <a href = "https://projecteuclid.org/journals/annals-of-applied-probability/volume-34/issue-5/Asymptotic-behaviour-of-the-noisy-voter-model-density-process/10.1214/24-AAP2074.short"> AoAP2024</a>, <a href="https://arxiv.org/abs/2112.01478"> arXiv</a>
 - *A general framework for the analysis of kernel-based tests.* T.Fernández, N.R. <a href = "https://jmlr.org/papers/v25/23-0985.html"> JMLR2024 </a>
-- *Rumors with Changing Credibility*. C. Out, N.R., T. Sauerwald, J. Sylvester. <a href = "https://drops.dagstuhl.de/storage/00lipics/lipics-vol287-itcs2024/LIPIcs.ITCS.2024.86/LIPIcs.ITCS.2024.86.pdf">ITCS2024</a> <a href = "https://arxiv.org/abs/2311.17040"> arXiv</a>
+- *Rumors with Changing Credibility*. C. Out, N.R., T. Sauerwald, J. Sylvester. <a href = "https://drops.dagstuhl.de/storage/00lipics/lipics-vol287-itcs2024/LIPIcs.ITCS.2024.86/LIPIcs.ITCS.2024.86.pdf">ITCS2024</a>, <a href = "https://arxiv.org/abs/2311.17040"> arXiv</a>
 - *Distributed Averaging in Opinion Dynamics*.  P. Berenbrink, C. Cooper, C. Gava, D. Marzagão, F. Mallmann-Trenn, T. Radzik, N. R. <a href = "https://doi.org/10.1145/3583668.3594593"> PODC2023</a>, <a href = "https://arxiv.org/abs/2211.17125"> arXiv</a>
 - *Multiple random walks on graphs: Mixing few to cover many.* N.R, T. Sauerwald, J. Sylvester.<a href = "https://doi.org/10.1017/S0963548322000372"> CPC2023</a>, <a href="https://drops.dagstuhl.de/opus/volltexte/2021/14176/"> ICALP2021</a>,  <a href="https://arxiv.org/abs/2011.07893"> arXiv</a> 
 - *Subset Approximation of Pareto Regions with Bi-objective A\*.*  N.R, J. Baier, and C. Hernández. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/21276"> AAAI2022</a>. **(Distinguished Paper Award)**
