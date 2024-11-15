@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .speakers-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .speaker {
+            display: flex;
+            align-items: flex-start; /* Align image and text at the top */
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+        }
+
+        .speaker-img {
+            width: 120px; /* Adjust size as needed */
+            height: 120px;
+            border-radius: 50%; /* Circular image */
+            margin-right: 20px; /* Space between image and text */
+            object-fit: cover; /* Ensure the image fits well within the circle */
+        }
+
+        .speaker-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .speaker-info h3 {
+            margin: 0 0 5px 0;
+        }
+
+        .speaker-info p {
+            margin: 5px 0;
+        }
+
+        .abstract {
+            display: none; /* Initially hidden */
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function toggleAbstract(element) {
+            const abstract = element.nextElementSibling;
+            if (abstract.style.display === "none" || abstract.style.display === "") {
+                abstract.style.display = "block";
+                element.textContent = "Ocultar Abstract";
+            } else {
+                abstract.style.display = "none";
+                element.textContent = "Ver Abstract";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="speakers-section">
+        <h2 class="section-title">Speakers</h2>
+        <div class="speaker">
+            <img src="tania.jpg" alt="Speaker One" class="speaker-img">
+            <div class="speaker-info">
+                <h3>Speaker One</h3>
+                <p>Institution One</p>
+                <p><strong>Talk:</strong> Title of the talk</p>
+                <button onclick="toggleAbstract(this)">Ver Abstract</button>
+                <p class="abstract">This is the abstract for Speaker One.</p>
+            </div>
+        </div>
+        <div class="speaker">
+            <img src="speaker2.jpg" alt="Speaker Two" class="speaker-img">
+            <div class="speaker-info">
+                <h3>Speaker Two</h3>
+                <p>Institution Two</p>
+                <p><strong>Talk:</strong> Title of the talk</p>
+                <button onclick="toggleAbstract(this)">Ver Abstract</button>
+                <p class="abstract">This is the abstract for Speaker Two.</p>
+            </div>
+        </div>
+        <div class="speaker">
+            <img src="speaker3.jpg" alt="Speaker Three" class="speaker-img">
+            <div class="speaker-info">
+                <h3>Speaker Three</h3>
+                <p>Institution Three</p>
+                <p><strong>Talk:</strong> Title of the talk</p>
+                <button onclick="toggleAbstract(this)">Ver Abstract</button>
+                <p class="abstract">This is the abstract for Speaker Three.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
