@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini-workshop IDEUV</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Support both $...$ and \(...\)
+                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Support both $$...$$ and \[...\]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -145,7 +154,7 @@
                     <p><strong>${name}.</strong> <em>${institution}</em></p>
                     <p><strong> ${title} </strong></p>
                     <p class="show-abstract" onclick="toggleAbstract(this)">Ver Abstract</p>
-                    <p class="abstract">${abstract}.</p>
+                    <p class="abstract">${abstract}</p>
                 </div>`;
 
             speakersSection.appendChild(speakerDiv);
@@ -153,10 +162,17 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            addSpeaker('Dra. Tania Roa', 'Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez', 'tania.jpg', 'Título por definir', '');
+            addSpeaker('Dra. Tania Roa', 'Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez', 'tania.jpg', 
+            'Consistencia del estimador de Nadaraya Watson en un modelo de regresión no paramétrica dirigido por el movimiento Browniano fraccionario muestreado en tiempos aleatorios.', 
+'El estimador de Nadaraya-Watson (N-W) puede considerarse como un caso especial de una clase más amplia de estimadores no paramétricos: los llamados estimadores polinómicos locales. En este trabajo se aborda el estudio de la consistencia $L^{2}$ del estimador N-W cuando las observaciones se muestrean en tiempos aleatorios y considerando un ruido dirigido por un proceso con memoria larga, mediante un control del ancho de banda por el número de observaciones. A diferencia de trabajos anteriores, también se adjunta un estudio de simulación, donde se presentan dos kernels diferentes, el análisis del error y el comportamiento asintótico del Error Cuadrático Medio (ECM). Finalmente, se resumen las principales conclusiones del estudio teórico y práctico, implementadas a través del estudio de simulación, mostrando que el control del número de observaciones registradas junto con el uso del estimador N-W con un kernel con soporte acotado, proporciona mejores resultados.');
+
             addSpeaker("Dr. Felipe Osorio",'Departamento de Matemáticas, Universidad Técnica Federico Santa María', 'felipe.png', 'Título por definir', "");
             addSpeaker('Dra. Daira Velandia', 'Instituto de Estadística, Universidad de Valparaíso', 'daira.jpg', 'Título por definir','');
+            MathJax.typeset();
+        
         });
+        
+
     </script>
     
     <div class = "schedule-section"> 
@@ -188,4 +204,6 @@
 
 </body>
 </html>
+
+
 
