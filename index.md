@@ -15,10 +15,14 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 <br /><br />
 <br />
 
+<br>
+Workshop (in spanish): <a href="https://nnrivera.github.io/workshop_ideuv_2024"> Mini-workshop IDEUV: Despedida Año Académico 2024</a> 
+
+<br>
+
 Reading Group 2023-2 (in spanish): <a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> High-Dimensional Statistics</a>
 <br>
 Escuela de Verano - BioEstocástica 2024 (in spanish): <a href="https://nnrivera.github.io/teaching/biostochastics2024"> Introduction to Evolutionary Games</a> 
-
 <br>
 
 Here is a list of my publications (you can check my <a href="https://scholar.google.co.uk/citations?user=7yULPkgAAAAJ&hl=en"> Google scholar profile</a> as well):
