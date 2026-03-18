@@ -1,9 +1,20 @@
 <!--#1880D1 color boton, --><!--#1880D1 color tabla oscura--><!--#67A8DB color tabla clara-->
 
+<!DOCTYPE html>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  }
+};
+</script>
 
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <p>Bienvenidos a <strong>IECD411 - IMAT514 - IMAT524: Machine
     Learning </strong>en su versión 2026</p>
+    <p><strong>Usaremos este sitio web de forma oficial hasta que todos los estudiantes tengan acceso al Aula Virtual!</strong></p>
 <p></p>
 <p>En esta página web encontrarán los materiales vistos en clases, además de las
   tareas, ejercicios, etc.</p>
@@ -15,8 +26,9 @@
 <p></p>
 <p><strong> Horario </strong></p>
 <ul>
-  <li>Lunes 10:15 a 11:45 / 12:00 a 13:30 hrs. Sala 1 del Instituto de Estadística</li>
-  <li>Miércoles 12:00 a 13:30 hrs. Sala 1 del Instituto de Estadística</li>
+  <li>Lunes 10:15 a 11:45. Sala 3 Facultad de Ciencias</li>
+  <li>Lunes 12:00 a 13:30. Sala 6 Facultad de Ciencias</li>
+  <li>Miércoles 12:00 a 13:30 hrs. Sala 6 Facultad de Ciencias</li>
 </ul>
 <p></p>
 
@@ -220,16 +232,33 @@
 </center>
 <h2>Noticias</h2>
 <ul>
+<li><strong>17 de Marzo: </strong>Se han cambiado las salas de clases debido a que estabamos un poco apretados.</li>
   <li><strong>10 de Marzo: </strong>Se levanta sitio web de emergencia. Se recuerda que el Miércoles 11 de Marzo no hay clases debido al cambio de mando.</li>
 </ul>
 <h2>Clases</h2>
+
 <ul>
-<li> <strong>Clase 1 (<a href = notas_clase_1.pdf>Notas de Clase</a>): Introducción a Machine Learning:</strong> vimos una introducción bastante filosófica y un tanto abstracta de las ideas centrales de los métodos de Machine Learning
-<ul><li> Revisamos los clásicos problemas del análisis de datos: regresión, clasificación, clustering y prueba de hipótesis
+<li> <strong>Clase 1 y 2 (<a href = notas_clase_1.pdf>Notas de Clase</a>): Introducción a Machine Learning:</strong> 
+<ul><li>Vimos una introducción bastante filosófica y un tanto abstracta de las ideas centrales de los métodos de Machine Learning</li>
+<li> Revisamos los clásicos problemas del análisis de datos: regresión, clasificación, clustering y prueba de hipótesis</li>
 <li>Hablamos de problemas supervisados y no supervisados, y que nos enfocaremos en problemas supervisados</li>
 <li>Introdujimos de problemas de predicción y lo formalizamos matemáticamente a través de funciones de perdida, la función de riesgo, y la función de riesgo empírica. Vimos algunos ejemplos con la regresión lineal</li>
 <li>Hablamos de generalización y overfitting, y también comentamos sobre el famoso bias-variance tradeoff, aunque esto último lo continuaremos la próxima clase ya que fue al final y estabamos cansados</li>
-</li></ul></li>
-</ul>
+</ul></li>
 
+<li> <strong>Clase 3 (<a href = notas_clase_3.pdf>Notas de Clase</a>): Regresión Lineal </strong>
+<ul><li>  Vimos Regresión lineal como un ejemplo importante de las ideas usadas en Machine Learning (función de perdida, la familia $\mathcal F$ the funciones de predicción, riesgo empírico, etc)</li>
+<li>Minimizamos la función de riesgo empírica encontrando puntos críticos (usando el clásico "derivar e igualar a 0), encontrando una forma explicita para los coeficientes $\beta \in \mathbb{R}^{d+1}$</li>
+<li><a href = "ejercicios_clase3.pdf">Ejercicios de Regresión Lineal</a></li>
+</ul> 
+</li>
+
+
+<li> <strong>Clase 4 (<a href = notas_clase_4.pdf>Notas de Clase</a>): Regresión Logística </strong>
+<ul><li>  Vimos Regresión logística como un segundo ejemplo importante de las ideas usadas en Machine Learning</li>
+<li> Estudiamos la función de perdida llamada cross-entropy o pérdida logística que viene inspiradas por ideas de física y teoría de información</li>
+<li>Calculamos algunas derivadas útiles para encontrar el gradiente de la cross-entropy</li>
+<li>Empezamos el cálculo del gradiente de la cross-entropy, pero ya estabamos cansados, así que empezaremos con dicho cálculo la clase 5.</li> 
+</ul></li>
+</ul>
 
