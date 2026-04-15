@@ -313,8 +313,7 @@ window.MathJax = {
 <li><strong>Clase 10: Regularización IV</strong></li>
 <ul><li>Repasamos las ideas importantes de regularización y la implementamos en el computador</li>
 
-<li><a href = "codigo_regularizacion.py">Código</a>, <a href = "data_regresion.csv">Datos</a>. Ojo que en clases había un typo en el código que no pudimos solucionar, pero ya está listo, era un $-2/n$ perdido :(</li>. 
-
+<li><a href = "codigo_regularizacion.py">Código</a>, <a href = "data_regresion.csv">Datos</a>. Ojo que en clases había un typo en el código que no pudimos solucionar, pero ya está listo, era un $-2/n$ perdido :(</li>
 </ul>
 
 <li><strong>Clase 11 (<a href = notas_clase_11.pdf>Notas de Clase</a>) Modelos No-lineales I</strong></li>
@@ -335,9 +334,12 @@ window.MathJax = {
 <li>Vimos que el problema de optimización está mal definido y que es necesario regularizar o restringir los árboles de alguna forma, pero que en general es muy difícil de resolver</li>
 <li>Vimos criterios de partición local que nos permiten dividir una región en dos, y ahí construir un árbol usando el llamado algoritmo CART, y si bien no es óptimo, nos entrega un buen árbol. </li>
 <li>Discutimos problemas de "influencia" y por qué modificar un par de puntos puede cambiar demasiado el estimador (árbol) encontrado, lo que motiva el concepto de Random Forest</li>
-<li>Estudiamos dos conceptos importantes Bagging y Reducción de dimensionalidad para árboles de decisión: Bagging consiste en resamplear una muestra de $n$ datos de los $n$ datos originales, pero permitiendo repeticiones; esto ayuda a quitarle influencia a datos que tienen mucha. La reducción de dimensionalidad simplemente selecciona al azar al las covariables que entrarán al modelo de árbol de decisión (por cada muestra de bagging elegimos un conjunto de covariables). El estimador de Random Forest es el promedio de los estimadores en el caso de regresión, y la moda de los estimadores en el caso de clasificación. </li>
+<li>Estudiamos dos conceptos importantes Bagging y Reducción de dimensionalidad para árboles de decisión: Bagging consiste en resamplear una muestra de $n$ datos de los $n$ datos originales, pero permitiendo repeticiones; esto ayuda a quitarle influencia a datos que tienen mucha. La reducción de dimensionalidad simplemente selecciona al azar al las covariables que entrarán al modelo de árbol de decisión (por cada muestra de bagging elegimos un conjunto de covariables). El estimador de Random Forest es el promedio de los estimadores en el caso de regresión, y la moda de los estimadores en el caso de clasificación. </li></ul>
 
-
+<li><strong>Clase 14. Modelos No-lineales IIII: Arboles de Decisión y Random Forest II</strong></li>
+<ul><li>En esta clase solo vimos la implementación computacional de Árboles de Decisión y Random Forest</li>
+<li>Vimos en la práctica todo lo comentado la clase anterior: desde el overfitting hasta el algoritmo CART y sus diversos criterios de parada</li>
+<li><a href = "codigo_decision_tree.py">código del programa revisado en clases</a></li></ul>
 
 </ul>
 
