@@ -336,11 +336,18 @@ window.MathJax = {
 <li>Discutimos problemas de "influencia" y por qué modificar un par de puntos puede cambiar demasiado el estimador (árbol) encontrado, lo que motiva el concepto de Random Forest</li>
 <li>Estudiamos dos conceptos importantes Bagging y Reducción de dimensionalidad para árboles de decisión: Bagging consiste en resamplear una muestra de $n$ datos de los $n$ datos originales, pero permitiendo repeticiones; esto ayuda a quitarle influencia a datos que tienen mucha. La reducción de dimensionalidad simplemente selecciona al azar al las covariables que entrarán al modelo de árbol de decisión (por cada muestra de bagging elegimos un conjunto de covariables). El estimador de Random Forest es el promedio de los estimadores en el caso de regresión, y la moda de los estimadores en el caso de clasificación. </li></ul>
 
-<li><strong>Clase 14. Modelos No-lineales IIII: Arboles de Decisión y Random Forest II</strong></li>
+<li><strong>Clase 14. Modelos No-lineales IV: Arboles de Decisión y Random Forest II</strong></li>
 <ul><li>En esta clase solo vimos la implementación computacional de Árboles de Decisión y Random Forest</li>
 <li>Vimos en la práctica todo lo comentado la clase anterior: desde el overfitting hasta el algoritmo CART y sus diversos criterios de parada</li>
-<li><a href = "codigo_decision_tree.py">código del programa revisado en clases</a></li></ul>
+<li><a href = "codigo_decision_tree.py">código del programa revisado en clases</a></li>
+<li><a href = "ejercicios_clase_14.pdf">Ejercicios de Árboles de Decisión y Random Forest </a></li></ul>
 
+<li><strong>Clase 15 (<a href = notas_clase_14.pdf>Notas de Clase</a>).. Modelos No-lineales V: Boosting </strong></li>
+<ul><li> Empezamos a estudiar boosting: la idea de combinar muchas función de predicción simples y con bajo desempeño en una función de predicción más compleja</li>
+<li>La idea principal, al menos en clasificación, es usar un split de un árbol de decisión, pero en vez de hacer subdivisiones, queremos complejizar el estimador en una forma más "aditiva" y no en "profundidad". La idea es evitar los problemas que tienen los árboles de decisión (que en general se solucionan haciendo random forest), de una forma directa.</li>
+<li>Estudiamos el algoritmo de Adaboost</li>
+<li>Vimos un poco de la teoria de Adaboost y de donde salen los términos que aparecen en el algoritmo</li>
+</ul>
 </ul>
 
 
