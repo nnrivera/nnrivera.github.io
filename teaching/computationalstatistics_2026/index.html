@@ -195,17 +195,30 @@ window.MathJax = {
 
 
 
-<li><strong>Clase 9:</strong> Integración I.
+<li><strong>Clase 9:</strong> Integración I: Integración Determinística y Método de Montecarlo.
 <ul><li> Vimos que, esencialmente, integración numérica en baja dimensión es un problema resuelto, y hay muchas bibliotecas que implementan los métodos. Probablemente hasta dimensión 2/3 no deberíamos tener problemas.</li>
 <li>Hablamos del "curse of dimensionality" en integración en altas dimensiones y porque no es un problema fácil. Introdujimos el método de Monte Carlo como una alternativa 'lenta' pero segura</li>
 <li>Vimos que el método de montecarlo tiene un error del orden de $\sigma^2/\sqrt{n}$ donde $n$ es el número de muestras que simulamo, y $\sigma^2$ es la varianza de la variable aleatoria que usamos. Si $\sigma^2$ es relativamente constante, entonces el método achica el error relativamente lento, pero seguro, e independiente de la dimensión de la variable que estamos integrando.</li>
 </ul></li>
 
 
-<li><strong>Clase 10:</strong> Integración II.
+<li><strong>Clase 10:</strong> Integración II: Método de Montecarlo.
 <ul><li>Estudiamos más ejemplos de Integración con Monte Carlo: un problema involucrando la esperanza de un tiempo de parada, y un problema de conteo de caminos de tipo Norte-Este (NE)</li>
 <li>Estudiamos como la varianza de los estimadores de MonteCarlo juega un rol importane en la velocidad y viabilidad del método de Monte Carlo, dejando preparado el preámbulo para estudiar Importance Sampling en la próxima clase.</li>
 <li> <a href = "MonteCarloPaths.py">Código problema de conteo en caminos NE</a></li>
+</ul></li>
+
+<li><strong>Clase 11:</strong> Integración III: Importance Sampling.
+<ul><li>Hicimos un pequeño ejercicio donde demostramos usando la Cota de Cramer-Rao que los estimadores de Monte Carlos tienen mínima varianza dentro de los estimadores insesgados cuando generamos muestras de una distribución fija</li>
+<li>Estudiamos las bases del método y cómo hacerlo funcionar</li>
+<li>Vimos un ejemplo sencillo: integral $\int_2^{\infty} (x + cos(x))e^{-x}dx$ pero no alcanzamos a verlo en detalles</li>
+</ul></li>
+
+
+<li><strong>Clase 12:</strong> Integración IV: Importance Sampling.
+<ul><li>Trabajamos el ejemplo de la integral simple, calculando las varianzas de los estimadores de Monte Carlo tradicional y la propuesta con Importance Sampling</li>
+<li>Vimos otro ejemplo, mucho más complejo, de estimar la probabilidad de un evento raro relacionado a suma de variables aleatorias normales, en el contexto de control de calidad.</li>
+<li><a href = "CodigoProblemaSumaNormales.py"> Código problema de suma de normales</a> </li>
 </ul></li>
 
 
