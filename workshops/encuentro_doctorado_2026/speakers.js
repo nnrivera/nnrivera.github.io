@@ -9,57 +9,57 @@ function addSpeaker(id, data) {
 /* -------- SPEAKERS -------- */
 
 addSpeaker("s1", {
-  name: "Alice Smith",
-  affiliation: "MIT",
+  name: "Speaker 1",
+  affiliation: "IDEUV",
   img: "images/s1.jpg",
   abstract: "This talk introduces modern statistical learning methods and their theoretical guarantees."
 });
 
 addSpeaker("s2", {
-  name: "Bob Johnson",
-  affiliation: "Stanford University",
+  name: "Speaker 2",
+  affiliation: "IDEUV",
   img: "images/s2.jpg",
   abstract: "We discuss advances in kernel methods and applications to hypothesis testing."
 });
 
 addSpeaker("s3", {
-  name: "Carol Lee",
-  affiliation: "University of Chicago",
+  name: "Speaker3",
+  affiliation: "PUCV",
   img: "images/s3.png",
   abstract: "An overview of high-dimensional inference and sparsity-based techniques."
 });
 
 addSpeaker("s4", {
-  name: "David Kim",
-  affiliation: "UC Berkeley",
+  name: "David",
+  affiliation: "PUC",
   img: "images/s4.png",
   abstract: "Bayesian approaches to complex models with computational challenges."
 });
 
 addSpeaker("s5", {
-  name: "Eva Martínez",
+  name: "Eva",
   affiliation: "Universidad de Chile",
   img: "images/s5.jpg",
   abstract: "Applications of statistical modeling in social sciences and policy."
 });
 
 addSpeaker("s6", {
-  name: "Frank Müller",
-  affiliation: "ETH Zürich",
+  name: "Franco",
+  affiliation: "Universidad de Playa Ancha",
   img: "images/s6.jpg",
   abstract: "Optimization methods in machine learning and large-scale systems."
 });
 
 addSpeaker("s7", {
-  name: "Grace Chen",
-  affiliation: "Tsinghua University",
+  name: "Pedro",
+  affiliation: "IDEUV",
   img: "images/s7.jpg",
   abstract: "Deep learning theory and representation learning."
 });
 
 addSpeaker("s8", {
-  name: "Hassan Ali",
-  affiliation: "University of Oxford",
+  name: "Speaker 8",
+  affiliation: "IDEUV",
   img: "images/s8.jpg",
   abstract: "Stochastic processes and their applications in modern statistics."
 });
