@@ -1,0 +1,28 @@
+{
+  "days": [
+    {
+      "day": "Day 1",
+      "slots": [
+        { "start": "09:30", "end": "10:15", "type": "talk", "speaker": "s1", "title": "Opening Talk" },
+        { "start": "10:30", "end": "11:15", "type": "talk", "speaker": "s2" },
+        { "start": "11:30", "end": "12:15", "type": "panel", "speakers": ["s1","s2","s3"], "title": "Discussion Panel" }
+      ]
+    },
+    {
+      "day": "Day 2",
+      "slots": [
+        { "start": "09:30", "end": "10:15", "type": "talk", "speaker": "s3" },
+        { "start": "10:30", "end": "11:15", "type": "talk", "speaker": "s4" },
+        { "start": "11:30", "end": "12:15", "type": "talk", "speaker": "s5" }
+      ]
+    },
+    {
+      "day": "Day 3",
+      "slots": [
+        { "start": "09:30", "end": "10:15", "type": "talk", "speaker": "s6" },
+        { "start": "10:30", "end": "11:15", "type": "talk", "speaker": "s7" },
+        { "start": "11:30", "end": "12:15", "type": "talk", "speaker": "s8" }
+      ]
+    }
+  ]
+}
