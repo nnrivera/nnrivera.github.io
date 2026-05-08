@@ -158,9 +158,10 @@ window.MathJax = {
 <li> <strong><a href="Clase0.pdf">Formalidades</a> </strong> .</li>
 <li> <strong><a href="unit_01.pdf">Unidad 1: Repaso de programación</a> </strong> .</li>
 <li> <strong><a href="unit_02.pdf">Unidad 2: Variables aleatorias</a> </strong> .</li>
-<li> <strong><a href="unit_03.pdf">Unidad 3: Pseudo-Aleatoriedad y estandar IEEE754-</a> </strong>.</li>
-<li> <strong><a href="Unit_04.pdf">Unidad 4: Simulación Estocástica-</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulos 2 y 3), Ross - Simulation (Capítulos 4-6)</li>
-<li> <strong><a href="unit_05.pdf">Unidad 5: Integración-</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulo 5), Maria L. Rizzo - Statistical computing with R (Capítulo 5)</li>
+<li> <strong><a href="unit_03.pdf">Unidad 3: Pseudo-Aleatoriedad y estandar IEEE754</a> </strong>.</li>
+<li> <strong><a href="Unit_04.pdf">Unidad 4: Simulación Estocástica</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulos 2 y 3), Ross - Simulation (Capítulos 4-6)</li>
+<li> <strong><a href="unit_05.pdf">Unidad 5: Integración</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulo 5), Maria L. Rizzo - Statistical computing with R (Capítulo 5)</li>
+<li> <strong><a href="unit_06.pdf">Unidad 6: Boostrap</a> </strong> . Libros Recomendados: Rizzo - Statistical computing with R (Capítulo 7 para una introducción amable), Gentle - Elements of Computational Statistics (Capítulo 4 para una introducción relativamente amable),  Efron & Hastie - Computer Age Statistical Inference (Capítulo 10 para algo un poquito más avanzado), Davison & Hinkley - Bootstrap Methods and their Applications (para un tratamiento completo del tema), van der Vaart - Asymptotic Statistics (Capítulo 23 para un desarrollo teórico)</li>
 </ul>
 
 <p><strong>Clases.</strong></p>
@@ -212,6 +213,7 @@ window.MathJax = {
 <ul><li>Hicimos un pequeño ejercicio donde demostramos usando la Cota de Cramer-Rao que los estimadores de Monte Carlos tienen mínima varianza dentro de los estimadores insesgados cuando generamos muestras de una distribución fija</li>
 <li>Estudiamos las bases del método y cómo hacerlo funcionar</li>
 <li>Vimos un ejemplo sencillo: integral $\int_2^{\infty} (x + cos(x))e^{-x}dx$ pero no alcanzamos a verlo en detalles</li>
+
 </ul></li>
 
 
@@ -220,6 +222,25 @@ window.MathJax = {
 <li>Vimos otro ejemplo, mucho más complejo, de estimar la probabilidad de un evento raro relacionado a suma de variables aleatorias normales, en el contexto de control de calidad.</li>
 <li><a href = "CodigoProblemaSumaNormales.py"> Código problema de suma de normales.</a> El código está un poco optimizado, comparado el que hicimos en clases. </li>
 </ul></li>
+
+<li><strong>Clase 13:</strong> Bootstrap I.
+<ul><li>Empezamos la unidad de Bootstrap </li>
+<li>Nuestra motivación fue repasar un poco la inferencia estadística clásica, y ver que los métodos están profundamenta ligados a la teoría de la probabilidad, lo que en sí no es malo, pero tiene la desventaja de las limitantes de la teoría, que en general va más atrás que las aplicaciones</li>
+<li>En particular vimos que en el caso de intervalos de confianza para la mediana, el nivel de teoría de probabilidad necesario aumenta bastante en comparación a la media, todo esto considerando que la mediana es un estadístico muy simple.</li></ul>
+</li>
+
+<li><strong>Clase 13:</strong> Bootstrap II.
+<ul><li>Vimos el Bootstrap de Efron </li>
+<li>Construimos intervalos de confianza para la mediana y vimos lo simple que es adaptar el algoritmo para construir otros tipos de intervalos de confianza.</li></ul>
+</li>
+
+
+<li><strong>Clase 14:</strong> Bootstrap III.
+<ul><li>Vimos como aplicar boostrap a problemas de prueba de hipótesis</li>
+<li> En particular estudiamos el problema de las dos muestras (two-sample problem)</li>
+<li>Acá la idea cambia un poco: en vez de remuestrar, usamos permutaciones. La idea es tratar de "recuperar" la nula a partir de aleatorizar un poco las cosas. Si mezclamos dos grupos de datos, ambos grupos tienen la misma distribución. Bajo la Nula, nada cambia, pero bajo la alternativa nos pasamos a la Nula.</li>
+<li><a href = "bootstrap_permutacion.py"> Ejemplo de Bootstrap con permutaciones en python </a> </li></ul>
+</li>
 
 
 </ul>
