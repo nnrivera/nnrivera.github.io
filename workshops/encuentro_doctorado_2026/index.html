@@ -1,123 +1,211 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Workshop Schedule</title>
-<script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']], // Support both $...$ and \(...\)
-                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Support both $$...$$ and \[...\]
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encuentro Estadística UV</title>
+  <style>
+    :root {
+      --bg-main: #f8fafc;
+      --text-main: #334155;
+      --border-light: #e2e8f0;
+      
+      --talk-bg: #e0f2fe;
+      --talk-border: #38bdf8;
+      --talk-text: #0369a1;
+      
+      --panel-bg: #f3e8ff;
+      --panel-border: #c084fc;
+      --panel-text: #6b21a8;
+      
+      --lunch-bg: #fef3c7;
+      --lunch-border: #fbbf24;
+      --lunch-text: #b45309;
+      
+      --coffee-bg: #f5f5f4;
+      --coffee-border: #d6d3d1;
+      --coffee-text: #57534e;
+    }
 
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      margin: 0;
+      padding: 2rem;
+      justify-content: center;
+    }
 
-body {
-  font-family: sans-serif;
-  padding: 20px;
-}
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: [time-col] 60px [day-1-start] 1fr [day-1-end day-2-start] 1fr [day-2-end day-3-start] 1fr [day-3-end];
+      gap: 10px;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto
+    }
 
-/* layout */
-.schedule {
-  display: flex;
+    .day-header {
+      grid-row: header;
+      text-align: center;
+      font-weight: 600;
+      padding: 12px 0;
+      background-color: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .time-slot {
+      grid-column: time-col;
+      text-align: right;
+      padding-right: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #94a3b8;
+      transform: translateY(-8px);
+    }
+
+    .event {
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      border-left: 4px solid transparent;
+      line-height: 1.3;
+      /* Smooth transition base for hover effects */
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    /* Modifiers for Interaction */
+    .event.clickable {
+      cursor: pointer;
+    }
+
+    /* Elegant Hover Effect: Slight lift, zoom, and tiny 1-degree tilt */
+    .event.clickable:hover {
+      transform: translateY(-3px) scale(1.02) rotate(-1deg);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .event.talk { background-color: var(--talk-bg); border-left-color: var(--talk-border); color: var(--talk-text); font-weight: 500; }
+    .event.panel { background-color: var(--panel-bg); border-left-color: var(--panel-border); color: var(--panel-text); font-weight: 600; }
+    .event.lunch { background-color: var(--lunch-bg); border-left-color: var(--lunch-border); color: var(--lunch-text); font-style: italic; }
+    .event.coffee { background-color: var(--coffee-bg); border-left-color: var(--coffee-border); color: var(--coffee-text); font-style: italic; }
+    .event.talk.area-ae {
+      background-color: #dcfce7; /* soft green */
+      border-left-color: #22c55e;
+      color: #166534;
+    }
+    
+    .event.talk.area-ea {
+      background-color: #ffe4e6; /* soft rose */
+      border-left-color: #f43f5e;
+      color: #9f1239;
+    }
+    
+    .event.talk.area-me {
+      background-color: #e0e7ff; /* soft indigo */
+      border-left-color: #6366f1;
+      color: #3730a3;
+    }
+
+    /* Modal Styles */
+    #modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999; /*horrible, matenme por favor */
+      opacity: 1;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-content {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #64748b;
+      transition: background 0.2s;
+    }
+
+    .close-btn:hover { background: #e2e8f0; color: #0f172a; }
+
+    #modal-body h3 { margin-top: 0; color: var(--text-main); }
+    #modal-body p { color: #475569; line-height: 1.5; }
+    #modal-body img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-bottom: 8px;}
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+      text-align: center;
+    }
+    
+    
+     .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1600px;
+            margin-top: 20px;
+        }
+    
+     .logo {
+            max-height: 100px;
+            margin: 0 10px;
+        }
+         .title {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 48px;
+        }
+        .large-text{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        
+        /*Speakers CSS*/
+        .speakers-grid {
+  display: grid;
+   grid-template-columns: repeat(9, 140px);
+   justify-content: center;
   gap: 20px;
 }
 
-.day {
-  flex: 1;
-  min-width: 220px;
-}
-
-.day h2 {
-  text-align: center;
-  border-bottom: 2px solid #ddd;
-  padding-bottom: 5px;
-}
-
-/* slots */
-.slot {
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.15s;
-}
-
-.slot.talk {
-  background: #f5f5f5;
-}
-
-.slot.talk:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 5px 12px rgba(0,0,0,0.1);
-}
-
-.slot.panel {
-  background: #e8f0ff;
-}
-
-.slot.panel:hover {
-  transform: scale(1.03);
-  box-shadow: 0 5px 12px rgba(0,0,100,0.15);
-}
-
-.time {
-  font-size: 0.8em;
-  color: #666;
-}
-
-.speaker {
-  font-weight: bold;
-}
-
-/* modal */
-.modal {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index: 9999; // que horrible esto, quiero morir rápido y sin dolor.
-}
-
-.modal-content {
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  max-width:500px;
-  width:90%;
-}
-
-.modal img {
-  width: 100%;
-  max-width: 150px;   /* 🔥 control size */
-  height: auto;
-  display: block;
-  margin: 10px auto;
-  border-radius: 8px;
-}
-
-/* panel grid */
-.panel-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.panel-grid img {
-  width: 100%;
-  border-radius: 8px;
-}
-/* --- SPEAKERS GRID --- */
-
 .speakers-grid {
   display: grid;
-   grid-template-columns: repeat(5, 150px);
+   grid-template-columns: repeat(9, 140px);
    justify-content: center;
   gap: 20px;
 }
@@ -166,201 +254,315 @@ body {
 .speaker-name {
   font-weight: bold;
 }
- .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 1600px;
-            margin-top: 20px;
-        }
-        .logo {
-            max-height: 100px;
-            margin: 0 10px;
-        }
-         .location-summary{
-            align-items: center;text-align: center;
-        }
-         .title {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 24px;
-        }
-        
-   .location-section {
-            max-width: 800px;
-            width: 100%;
-            font-weight: normal;
-	    }
-	    
-	     .organisers-section {  max-width: 800px;
-            width: 100%;
-            font-weight: normal;
-	    }
-</style>
+
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem; /* Space before the grid starts */
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+}
+
+/* Matching the Area Colors */
+.legend-color.ae { background-color: #dcfce7; border-left-color: #22c55e; }
+.legend-color.ea { background-color: #ffe4e6; border-left-color: #f43f5e; }
+.legend-color.me { background-color: #e0e7ff; border-left-color: #6366f1; }
+
+/* Matching the Default Colors */
+.legend-color.default-talk { background-color: var(--talk-bg); border-left-color: var(--talk-border); }
+.legend-color.panel { background-color: var(--panel-bg); border-left-color: var(--panel-border); }
+   
+  </style>
 </head>
-
-
 <body>
+
 <script src="speakers.js"></script>
- <div class="header">
+  <div class="header">
         <img src="logo_UV_color.png" alt="University Logo" class="logo">
         <img src="logo_ideuv_degradado.png" alt="Institute Logo" class="logo">
     </div>
-    <h1 class="title">Encuentro Doctorado en Estadística 2026</h1>
-    <div class = location-summary>18, 19, y 20 de Mayo de 2026; 9:30-17:00; Instituto de Estadística, Universidad de Valparaíso</div>
-   
-    </div>    
+    <h1 class="title">Encuentro Doctorado en Estadística UV 2026</h1>
+    <div class = "large-text">18, 19, y 20 de Mayo de 2026; Auditorio de la Facultad de Ciencias, Universidad de Valparaíso</div>
+    <center><p>Encuentro para estudiantes, profesores, colaboradores, y amigos del Doctorado en Estadística del Instituto de Estadística de la Universidad de Valparaíso. Todos son bienvenidos!</p></center>
     
-<h1>Speakers</h1>
+    <h1>Speakers</h1>
 <div id="speakers-grid" class="speakers-grid"></div>
 <script>
 renderSpeakersGrid();
 </script>
 
 <h1>Programa</h1>
-
-<div id="schedule" class="schedule"></div>
-
-<!-- Modal -->
-<div id="modal" class="modal" onclick="closeModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <div id="modal-body"></div>
-  </div>
+<p> Click en cuadro para título y abstract!</p>
+  <!-- Schedule Grid -->
+   <div class="legend">
+    <div class="legend-item"><span class="legend-color ae"></span> Análisis Estocástico</div>
+    <div class="legend-item"><span class="legend-color ea"></span> Estadística Aplicada</div>
+    <div class="legend-item"><span class="legend-color me"></span> Métodos Estadísticos</div>
 </div>
+  <div id="schedule" class="schedule-grid"></div>
 
-<!-- Load speakers FIRST -->
+  <!-- Modal Overlay -->
+  <div id="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
 
 
-<script>
 
-/* ---------------- SCHEDULE ---------------- */
-
+  <script>
+    // Mock speaker data so the modal opens nicely
+   
+   
 const SCHEDULE = [
   {
     day: "18 Mayo",
     slots: [
-      { start:"09:30", end:"10:15", type:"talk", speaker:"s1", title:"Opening Talk" },
-      { start:"10:30", end:"11:15", type:"talk", speaker:"s2" },
-      { start:"11:30", end:"12:15", type:"panel", speakers:["s1","s2","s3"], title:"Discussion Panel" }
+      { start:"09:00", end:"09:30", type:"talk", speaker:"s1" },
+      { start:"09:30", end:"10:00", type:"talk", speaker:"s2" },
+      { start:"10:00", end:"10:30", type:"talk", speaker:"s3"},
+      { start:"10:30", end:"11:00", type:"coffee"},
+      { start:"11:00", end:"12:00", type:"panel", speakers:["s4"], title: "Conversatorio Graduados" },
+
+      { start:"12:00", end:"13:30", type:"lunch" },
+
+      { start:"13:30", end:"14:00", type:"talk", speaker:"s4" },
+      { start:"14:00", end:"14:30", type:"talk", speaker:"s5" },
+
+      { start:"14:30", end:"15:00", type:"coffee" },
+
+      { start:"15:00", end:"15:30", type:"talk", speaker:"TBA" },
+      { start:"15:30", end:"16:00", type:"talk", speaker:"TBA" }
     ]
   },
   {
     day: "19 Mayo",
     slots: [
-      { start:"09:30", end:"10:15", type:"talk", speaker:"s3" },
-      { start:"10:30", end:"11:15", type:"talk", speaker:"s4" },
-      { start:"11:30", end:"12:15", type:"talk", speaker:"s5" }
+      { start:"09:00", end:"09:30", type:"talk", speaker:"s6" },
+      { start:"09:30", end:"10:00", type:"talk", speaker:"s7" },
+      { start:"10:00", end:"10:30", type:"talk", speaker:"s8" },
+      { start:"10:30", end:"11:00", type:"coffee"},
+      { start:"11:00", end:"11:30", type:"talk", speaker:"s9" },
+      { start:"11:30", end:"12:00", type:"talk", speaker:"s10" },
+
+      { start:"12:00", end:"13:30", type:"lunch" },
+
+      { start:"13:30", end:"14:00", type:"talk", speaker:"s11" },
+      { start:"14:00", end:"14:30", type:"talk", speaker:"s12" },
+
+      { start:"14:30", end:"15:00", type:"coffee" },
+
+      { start:"15:00", end:"15:30", type:"talk", speaker:"s13" },
+      { start:"15:30", end:"16:00", type:"talk", speaker:"s14" }
     ]
   },
   {
     day: "20 Mayo",
     slots: [
-      { start:"09:30", end:"10:15", type:"talk", speaker:"s6" },
-      { start:"10:30", end:"11:15", type:"talk", speaker:"s7" },
-      { start:"11:30", end:"12:15", type:"talk", speaker:"s8" }
+        { start:"09:00", end:"09:30", type:"talk", speaker:"s15" },
+      { start:"09:30", end:"10:00", type:"talk", speaker:"s16" },
+      { start:"10:00", end:"10:30", type:"talk", speaker:"s17" },
+      { start:"10:30", end:"11:00", type:"coffee"},
+      { start:"11:00", end:"11:30", type:"talk", speaker:"s18" },
+      { start:"11:30", end:"12:00", type:"talk", speaker:"TBA" },
+
+      { start:"12:00", end:"13:30", type:"lunch" },
     ]
   }
 ];
 
-/* ---------------- RENDER ---------------- */
 
-function createDay(day) {
-  return `
-    <div class="day">
-      <h2>${day.day}</h2>
-      ${day.slots.map(createSlot).join("")}
-    </div>
-  `;
-}
-
-function createSlot(slot) {
-
-  if (slot.type === "talk") {
-    const sp = SPEAKERS[slot.speaker];
-
-    return `
-      <div class="slot talk" onclick="openTalk('${slot.speaker}')">
-        <div class="time">${slot.start}–${slot.end}</div>
-        <div class="speaker">${sp.name}</div>
-        ${slot.title ? `<div>${slot.title}</div>` : ""}
-      </div>
-    `;
-  }
-
-  if (slot.type === "panel") {
-    const names = slot.speakers.map(id => SPEAKERS[id].name).join(", ");
-
-    return `
-      <div class="slot panel" onclick='openPanel(${JSON.stringify(slot.speakers)})'>
-        <div class="time">${slot.start}–${slot.end}</div>
-        <div class="speaker">${names}</div>
-        <div>${slot.title}</div>
-      </div>
-    `;
-  }
-
-  return "";
-}
-
-document.getElementById("schedule").innerHTML =
-  SCHEDULE.map(createDay).join("");
-
-/* ---------------- MODAL ---------------- */
-
-function openTalk(id) {
-  const sp = SPEAKERS[id];
-
-  document.getElementById("modal-body").innerHTML = `
-    <h3>${sp.name}</h3>
-    <p><em>${sp.affiliation}</em></p>
-    <p>${sp.abstract}</p>
-  `;
-//<img src="${sp.img}">
-  document.getElementById("modal").style.display = "flex";
-}
-
-function openPanel(ids) {
-  const people = ids.map(id => SPEAKERS[id]);
-
-  document.getElementById("modal-body").innerHTML = `
-    <h3>Discussion Panel</h3>
-    <div class="panel-grid">
-      ${people.map(p => `
-        <div>
-          <img src="${p.img}">
-          <div>${p.name}</div>
+    /* --- Modal Functions --- */
+    function openTalk(id) {
+      const sp = SPEAKERS[id] || SPEAKERS["TBA"];
+      document.getElementById("modal-body").innerHTML = `
+        <div style="display:flex; align-items:center; gap: 15px; margin-bottom: 10px;">
+          <img src="${sp.img || 'images/placeholder.png'}" alt="${sp.name}">
+          <div>
+            <h3 style="margin:0; padding:0;">${sp.name}</h3>
+            <span style="color:#64748b; font-size: 0.9em;"><em>${sp.affiliation}</em></span>
+          </div>
         </div>
-      `).join("")}
-    </div>
-  `;
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+        <p>${sp.abstract}</p>
+      `;
+      document.getElementById("modal").style.display = "flex";
+    }
 
-  document.getElementById("modal").style.display = "flex";
-}
+    function openPanel(ids) {
+      const people = ids.map(id => SPEAKERS[id] || SPEAKERS["TBA"]);
+      document.getElementById("modal-body").innerHTML = `
+        <h3>Discussion Panel</h3>
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+        <div class="panel-grid">
+          ${people.map(p => `
+            <div>
+              <img src="${p.img}" alt="${p.name}">
+              <div style="font-weight: 500; font-size: 0.9em;">${p.name}</div>
+              <div style="color:#64748b; font-size: 0.8em;">${p.affiliation}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+      document.getElementById("modal").style.display = "flex";
+    }
 
-function closeModal() {
-  document.getElementById("modal").style.display = "none";
-}
+    function closeModal(event) {
+      // If event is passed, check if we clicked outside the modal content
+      if (event && event.target.id !== 'modal') return;
+      document.getElementById("modal").style.display = "none";
+    }
 
-</script>
+    /* --- Grid Generation --- */
+    function initSchedule() {
+      const grid = document.getElementById('schedule');
+      
+      const timeSet = new Set();
+      SCHEDULE.forEach(dayObj => {
+        dayObj.slots.forEach(slot => {
+          timeSet.add(slot.start);
+          timeSet.add(slot.end);
+        });
+      });
+      
+      const sortedTimes = Array.from(timeSet).sort();
+      const minTime = sortedTimes[0];
+      const maxTime = sortedTimes[sortedTimes.length - 1];
 
+      const allTimeBlocks = generateTimeSlots(minTime, maxTime);
 
+      let rowTemplate = `[header] auto `;
+      for (let i = 0; i < allTimeBlocks.length - 1; i++) {
+        let tStr = allTimeBlocks[i].replace(':', '');
+        rowTemplate += `[time-${tStr}] minmax(45px, 1fr) `;
+      }
+      let lastTStr = allTimeBlocks[allTimeBlocks.length - 1].replace(':', '');
+      rowTemplate += `[time-${lastTStr}]`;
 
-   <div class = location-section> 
+      grid.style.gridTemplateRows = rowTemplate;
+
+      SCHEDULE.forEach((dayObj, index) => {
+        const headerEl = document.createElement('div');
+        headerEl.className = 'day-header';
+        headerEl.textContent = dayObj.day;
+        headerEl.style.gridColumn = `day-${index + 1}-start / day-${index + 1}-end`;
+        grid.appendChild(headerEl);
+      });
+
+      allTimeBlocks.forEach((time, index) => {
+        if(index === allTimeBlocks.length - 1) return; 
+        const timeEl = document.createElement('div');
+        timeEl.className = 'time-slot';
+        timeEl.textContent = time;
+        timeEl.style.gridColumn = 'time-col';
+        timeEl.style.gridRow = `time-${time.replace(':', '')}`;
+        grid.appendChild(timeEl);
+      });
+
+      SCHEDULE.forEach((dayObj, index) => {
+        const dayColumnStr = `day-${index + 1}-start / day-${index + 1}-end`;
+        
+        dayObj.slots.forEach(slot => {
+          const eventEl = document.createElement('div');
+          eventEl.className = `event ${slot.type}`;
+          
+          let content = '';
+          switch(slot.type) {
+            case 'talk': 
+              // Convert speaker ID to actual name if available, otherwise fallback
+              const sp = SPEAKERS[slot.speaker] || { name: slot.speaker };
+              content = sp.name; 
+              
+              // Add interactive elements
+              eventEl.classList.add('clickable');
+              eventEl.onclick = () => openTalk(slot.speaker);
+
+              // --- NEW: Apply color based on area ---
+              if (sp.area) {
+                // converts "AE" to "area-ae" to match the CSS
+                eventEl.classList.add(`area-${sp.area.toLowerCase()}`); 
+              }
+              break;
+              
+            case 'panel': 
+              content = slot.title; 
+              
+              // Add interactive elements
+              eventEl.classList.add('clickable');
+              eventEl.onclick = () => openPanel(slot.speakers);
+              break;
+              
+            case 'lunch': 
+              content = 'Lunch'; 
+              break;
+              
+            case 'coffee': 
+              content = 'Coffee'; 
+              break;
+          }
+          eventEl.textContent = content;
+
+          const startStr = slot.start.replace(':', '');
+          const endStr = slot.end.replace(':', '');
+          eventEl.style.gridColumn = dayColumnStr;
+          eventEl.style.gridRow = `time-${startStr} / time-${endStr}`;
+          
+          grid.appendChild(eventEl);
+        });
+      });
+    }
+
+    function generateTimeSlots(start, end) {
+      const times = [];
+      let [h, m] = start.split(':').map(Number);
+      const [endH, endM] = end.split(':').map(Number);
+      
+      while (h < endH || (h === endH && m <= endM)) {
+        times.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        m += 30;
+        if (m >= 60) { m = 0; h++; }
+      }
+      return times;
+    }
+
+    document.addEventListener('DOMContentLoaded', initSchedule);
+  </script>
+  
+  
     <h1 >Dirección</h1>
     Auditorio de la Facultad de Ciencias, <br>
     Facultad de Ciencias, Universidad de Valparaíso <br>
     Avenida Gran Bretania 1111, <br>
     Valparaíso
     
-    
-    </div>
-    
-    <div class = organisers-section> 
     <h1>Contacto</h1>    
     Contacto: secretaria dot ideuv at uv dot cl.
     </div>
-
     
+    <h1>Organización</h1>    
+    Alejandra Christen. <br>
+    Nicolás Rivera.
+    </div>
 </body>
 </html>
