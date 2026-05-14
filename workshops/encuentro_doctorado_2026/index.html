@@ -343,7 +343,7 @@ const SCHEDULE = [
       { start:"09:30", end:"10:00", type:"talk", speaker:"s2" },
       { start:"10:00", end:"10:30", type:"talk", speaker:"s3"},
       { start:"10:30", end:"11:00", type:"coffee"},
-      { start:"11:00", end:"12:00", type:"panel", speakers:["s4"], title: "Conversatorio Graduados" },
+      { start:"11:00", end:"12:00", type:"panel", speakers:["s1","s2","s4", "s14"], title: "Conversatorio Graduados" },
 
       { start:"12:00", end:"13:30", type:"lunch" },
 
@@ -414,17 +414,19 @@ const SCHEDULE = [
     function openPanel(ids) {
       const people = ids.map(id => SPEAKERS[id] || SPEAKERS["TBA"]);
       document.getElementById("modal-body").innerHTML = `
-        <h3>Discussion Panel</h3>
+        <h3>Conversatorio</h3>
         <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 15px 0;">
         <div class="panel-grid">
           ${people.map(p => `
             <div>
-              <img src="${p.img}" alt="${p.name}">
+              <img src="${p.img || 'images/placeholder.png'}" alt="${p.name}">
               <div style="font-weight: 500; font-size: 0.9em;">${p.name}</div>
               <div style="color:#64748b; font-size: 0.8em;">${p.affiliation}</div>
             </div>
           `).join("")}
         </div>
+        <br>
+        <center><h3>Conversatorio de Graduados del Programa de Doctorado en Estadística de la Universidad de Valparaíso.</h3></center>
       `;
       document.getElementById("modal").style.display = "flex";
     }
