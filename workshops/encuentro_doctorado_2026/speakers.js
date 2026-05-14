@@ -10,7 +10,7 @@ function addSpeaker(id, data) {
 
 addSpeaker("s1", {
   name: "Andrés Ochoa",
-  affiliation: "Escuela de Estadística, Facultad de Ingeniería. Universidad del Valle. Cali. Colombia",
+  affiliation: "Escuela de Estadística. Universidad del Valle. Colombia",
   img: "images/andres_ochoa.jpg",
   title: "Un enfoque flexible para la regresión PLS utilizando modelos GAMLSS", 
   abstract: "En este trabajo se propone un nuevo modelo PLS (Partial Least Square) basado en los modelos aditivos generalizados para locación, escala y forma (GAMLSS). Los modelos GAMLSS ofrecen una gran versatilidad para la modelacion estadística, puesto que permiten trabajar con variables respuesta en distintos dominios $(\mathbb{R}, \mathbb{R}^{+}, (0,1))$. Además, permiten trabajan con variables respuesta que tengan distintas distribuciones e incluir el enfoque no paramétrico dentro la modelación utilizando splines, b-splines, entre otros. En este proyecto sea desea combinar dos enfoques de modelación, por un lado los modelos GAMLSS que permiten trabajar con varias distribuciones de probabilidad en la variable respuesta y por otro lado, los modelos PLS, los cuales solucionan problemas de multicolinealidad, datos faltantes y son recomendados en casos de más variables que muestra ($p > n$ ). De esta forma, en este proyecto se propone trabajar el modelo PLS-GAMLSS y comparar su ajuste vs el modelo tradicional PLS.",
@@ -53,7 +53,7 @@ addSpeaker("s5", {
 
 addSpeaker("s6", {
   name: "Alvaro Figueroa",
-  affiliation: "USACH",
+  affiliation: "Universidad de Santiago de Chile",
   img: "",
   title: "Modelos de Clasificación Diagnóstica para reducir el Riesgo y la Deserción Académica",
   abstract: "La evaluación diagnóstica en educación superior constituye una herramienta relevante para orientar ajustes curriculares y estrategias de nivelación que favorezcan el desarrollo académico de los estudiantes. En este marco, la presente investigación propone una evaluación diagnóstica para quienes ingresan a Pedagogía en Matemática, basada en Modelos de Clasificación Diagnóstica (MCD), con el propósito de identificar competencias iniciales y caracterizar perfiles de habilidades latentes vinculados con la formación inicial docente.  Se utiliza el Modelo de Clasificación Diagnóstica Mixto, que permite analizar tanto la interacción conjunta de múltiples habilidades como sus efectos aditivos sobre la probabilidad de respuesta correcta en los ítems, reduciendo el número de parámetros estimadoss. Este enfoque contribuye a formular recomendaciones más precisas para la enseñanza y la nivelación, y a sostener la validez de las interpretaciones al vincular explícitamente las respuestas observadas con los atributos evaluados.  El análisis se realizó en RStudio, mediante el paquete CDM y el criterio del menor RMSEA, sobre una muestra seleccionada por conglomerados. Se consideraron siete habilidades latentes: TICs, Aritmética, Álgebra, Función, Geometría, Estadística y Análisis Crítico. Los resultados evidencian fortalezas en Aritmética y Análisis Crítico, y debilidades importantes en Geometría, Estadística, Álgebra y uso académico de TICs. Además, el análisis de regresión sugiere que el número y tipo de habilidades latentes dominadas al inicio del curso pueden constituir un indicador relevante de riesgo académico, especialmente en asignaturas que demandan un alto nivel de desarrollo. Estos hallazgos aportan evidencia útil para el diseño de programas remediales y el fortalecimiento de la formación docente inicial.",
@@ -62,7 +62,7 @@ addSpeaker("s6", {
 
 addSpeaker("s7", {
   name: "Milagros García",
-  affiliation: "IDEUV",
+  affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
   title: "Medición de la Alfabetización Estadística: Diseño y Validación de un Instrumento",
   img: "images/milagros_garcia.webp",
   abstract: "La alfabetización estadística se ha consolidado como una competencia clave en sociedades caracterizadas por la creciente disponibilidad de datos y la necesidad de interpretar información en diversos contextos. A pesar de la incorporación de la estadística en los currículos educativos a distintos niveles, la literatura evidencia persistentes debilidades en su comprensión y aplicación, incluso en poblaciones con formación universitaria. Situaciones recientes, como la pandemia por COVID-19, han puesto de manifiesto la relevancia de la estadística en la toma de decisiones y la comprensión de fenómenos complejos. En este contexto, surge la necesidad de contar con instrumentos válidos y confiables que permitan medir la alfabetización estadística en estudiantes de educación superior, particularmente en formación de posgrado, donde se espera un mayor nivel de competencia analítica. Sin embargo, se observa una limitada disponibilidad de herramientas adaptadas a estos niveles educativos y contextos contemporáneos. \n El presente estudio tiene como objetivo desarrollar y validar psicométricamente un instrumento para la medición de la alfabetización estadística. Para ello, se emplean técnicas de modelización estadística, considerando la evaluación de la validez de constructo y la confiabilidad del instrumento, así como el análisis de sus propiedades bajo posibles condiciones de no normalidad en los datos. Este trabajo busca aportar evidencia empírica y metodológica para la medición de la alfabetización estadística, contribuyendo al fortalecimiento de su evaluación en contextos educativos y al desarrollo de herramientas que permitan una mejor comprensión de esta competencia en la formación académica avanzada.",
@@ -71,7 +71,7 @@ addSpeaker("s7", {
 
 addSpeaker("s8", {
   name: "Germán Ibacache",
-  affiliation: "IDEUV",
+  affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
   img: "images/german_ibacache.jpg",
   title: "TBA",
   abstract: "TBA",
@@ -80,7 +80,7 @@ addSpeaker("s8", {
 
 addSpeaker("s9", {
   name: "Felipe Osorio",
-  affiliation: "Universidad de Valparaiso",
+  affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
   img: "images/felipe_osorio.png",
   title: "On the mean-shift outlier model for LAD regression",
   abstract: "The least absolute deviation (LAD) regression technique is well known for providing an estimation mechanism insensitive to outliers in the response variable. However, relatively few studies have highlighted that these models still can be susceptible to influential observations; therefore the development of appropriate diagnostic measures is required. In this talk, we introduce a procedure for detecting outlying observations in LAD regression based on the mean-shift outlier model. This formulation provides a framework for defining standardized residuals, which enables the construction of a QQ-plot with simulated envelope. A noteworthy by-product of this work is the derivation of the gradient statistic for testing linear hypotheses in LAD regression. We illustrate our findings through the analysis of several datasets commonly examined in the literature.",
@@ -88,7 +88,7 @@ addSpeaker("s9", {
 });
 
 addSpeaker("s10", {
-  name: "Tamara Fernandez",
+  name: "Tamara Fernández",
   affiliation: "Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez",
   img: "images/tamara_fernandez.jpg",
   title: "TBA",
@@ -117,7 +117,7 @@ addSpeaker("s12", {
 
 addSpeaker("s13", {
   name: "Soledad Torres",
-  affiliation: "Instituto de Ingeniería Matemática - CIMFAV Facultad de Ingeniería",
+  affiliation: "Instituto de Ingeniería Matemática, Universidad de Valparaíso",
   img: "images/soledad_torres.webp",
   title: "Modelos estocásticos derivados del movimiento Browniano fraccionario",
   abstract: "El Movimiento Browniano Fraccionario (fBm) es una generalización que modela sistemas con memoria. Su esencia reside en el exponente de Hurst ($H$), que regula la correlación de sus incrementos. Si $H=0.5$, actúa como un movimiento Browniano clásico; es decir, un proceso sin memoria. Para $H > 0.5$, el sistema muestra persistencia, manteniendo tendencias previas en el tiempo. Para $H < 0.5$, presenta anti-persistencia, con una tendencia constante a revertir a la media. En esta charla exploraremos modelos estadísticos derivados del fBm.",
