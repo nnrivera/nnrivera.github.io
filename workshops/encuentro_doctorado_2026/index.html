@@ -458,7 +458,7 @@ const SCHEDULE = [
       let rowTemplate = `[header] auto `;
       for (let i = 0; i < allTimeBlocks.length - 1; i++) {
         let tStr = allTimeBlocks[i].replace(':', '');
-        rowTemplate += `[time-${tStr}] minmax(45px, 1fr) `;
+        rowTemplate += `[time-${tStr}] minmax(25px, 1fr) `;
       }
       let lastTStr = allTimeBlocks[allTimeBlocks.length - 1].replace(':', '');
       rowTemplate += `[time-${lastTStr}]`;
