@@ -54,7 +54,7 @@ addSpeaker("s5", {
 addSpeaker("s6", {
   name: "Alvaro Figueroa",
   affiliation: "Universidad de Santiago de Chile",
-  img: "",
+  img: "images/alvaro_figueroa.jpg",
   title: "Modelos de Clasificación Diagnóstica para reducir el Riesgo y la Deserción Académica",
   abstract: "La evaluación diagnóstica en educación superior constituye una herramienta relevante para orientar ajustes curriculares y estrategias de nivelación que favorezcan el desarrollo académico de los estudiantes. En este marco, la presente investigación propone una evaluación diagnóstica para quienes ingresan a Pedagogía en Matemática, basada en Modelos de Clasificación Diagnóstica (MCD), con el propósito de identificar competencias iniciales y caracterizar perfiles de habilidades latentes vinculados con la formación inicial docente.  Se utiliza el Modelo de Clasificación Diagnóstica Mixto, que permite analizar tanto la interacción conjunta de múltiples habilidades como sus efectos aditivos sobre la probabilidad de respuesta correcta en los ítems, reduciendo el número de parámetros estimadoss. Este enfoque contribuye a formular recomendaciones más precisas para la enseñanza y la nivelación, y a sostener la validez de las interpretaciones al vincular explícitamente las respuestas observadas con los atributos evaluados.  El análisis se realizó en RStudio, mediante el paquete CDM y el criterio del menor RMSEA, sobre una muestra seleccionada por conglomerados. Se consideraron siete habilidades latentes: TICs, Aritmética, Álgebra, Función, Geometría, Estadística y Análisis Crítico. Los resultados evidencian fortalezas en Aritmética y Análisis Crítico, y debilidades importantes en Geometría, Estadística, Álgebra y uso académico de TICs. Además, el análisis de regresión sugiere que el número y tipo de habilidades latentes dominadas al inicio del curso pueden constituir un indicador relevante de riesgo académico, especialmente en asignaturas que demandan un alto nivel de desarrollo. Estos hallazgos aportan evidencia útil para el diseño de programas remediales y el fortalecimiento de la formación docente inicial.",
     area: "EA"
@@ -65,7 +65,7 @@ addSpeaker("s7", {
   affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
   title: "Medición de la Alfabetización Estadística: Diseño y Validación de un Instrumento",
   img: "images/milagros_garcia.webp",
-  abstract: "La alfabetización estadística se ha consolidado como una competencia clave en sociedades caracterizadas por la creciente disponibilidad de datos y la necesidad de interpretar información en diversos contextos. A pesar de la incorporación de la estadística en los currículos educativos a distintos niveles, la literatura evidencia persistentes debilidades en su comprensión y aplicación, incluso en poblaciones con formación universitaria. Situaciones recientes, como la pandemia por COVID-19, han puesto de manifiesto la relevancia de la estadística en la toma de decisiones y la comprensión de fenómenos complejos. En este contexto, surge la necesidad de contar con instrumentos válidos y confiables que permitan medir la alfabetización estadística en estudiantes de educación superior, particularmente en formación de posgrado, donde se espera un mayor nivel de competencia analítica. Sin embargo, se observa una limitada disponibilidad de herramientas adaptadas a estos niveles educativos y contextos contemporáneos. \n El presente estudio tiene como objetivo desarrollar y validar psicométricamente un instrumento para la medición de la alfabetización estadística. Para ello, se emplean técnicas de modelización estadística, considerando la evaluación de la validez de constructo y la confiabilidad del instrumento, así como el análisis de sus propiedades bajo posibles condiciones de no normalidad en los datos. Este trabajo busca aportar evidencia empírica y metodológica para la medición de la alfabetización estadística, contribuyendo al fortalecimiento de su evaluación en contextos educativos y al desarrollo de herramientas que permitan una mejor comprensión de esta competencia en la formación académica avanzada.",
+  abstract: "Más allá de su concepción pedagógica tradicional, la alfabetización estadística se erige hoy como un constructo multidimensional que exige protocolos de medición de alta precisión psicométrica. El presente estudio examina el panorama científico de este campo mediante una revisión bibliométrica de la producción indexada en Scopus entre 1977 y 2025, con el fin de fundamentar la evaluación de este constructo en la población universitaria panameña. <br> Metodológicamente utilizando herramientas de mapeo bibliométrico (VOSviewer) sobre un corpus de 362 publicaciones, se identificaron tres ejes temáticos dominantes: 1) El desarrollo de competencias en estudiantes y docentes, 2) La conceptualización del razonamiento estadístico, y 3) La arquitectura de los instrumentos de evaluación. Geográficamente, el análisis de red revela una hegemonía en la producción liderada por Estados Unidos, España y Brasil, quienes marcan la pauta en la estandarización de este campo evidenciando la necesidad de generar evidencia local. <br> La investigación se focaliza en un análisis crítico de 45 instrumentos específicos, donde se observó una transición metodológica en la estimación de la fiabilidad: el abandono paulatino del Alfa de Cronbach (α) en favor del Coeficiente Omega (ω) Este cambio se justifica por la capacidad del estadístico ω para gestionar el incumplimiento del principio de tau-equivalencia, ofreciendo estimaciones más realistas de la consistencia interna. Asimismo, se destaca la invarianza de medida según el sexo como una frontera investigativa esencial. Este procedimiento, fundamentado en el Análisis Factorial Confirmatorio (AFC) multigrupo, resulta imperativo para descartar sesgos estructurales y asegurar la equidad en la evaluación de competencias. <br> Finalmente, persiste una brecha entre la propuesta teórica y la validación empírica. El futuro del área en Panamá depende de adoptar estándares métricos robustos que garanticen la neutralidad demográfica de evaluación sean estadísticamente válidos y culturalmente neutros. ",
     area: "EA"
 });
 
@@ -73,8 +73,8 @@ addSpeaker("s8", {
   name: "Germán Ibacache",
   affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
   img: "images/german_ibacache.jpg",
-  title: "TBA",
-  abstract: "TBA",
+  title: "Semiparametric Generalized Modeling",
+  abstract: "In this work we discuss some aspect of the theory and application in partially varying-coefficient generalized linear model (PVC-GLM). The discussed model is useful for situations where the variable of interest belongs to the exponential family, and is related to other variables through a semiparamteric regression structure with non-linear interactions. The applicability of our proposal is illustrated through a real data set.",
     area: "ME"
 });
 
@@ -168,6 +168,14 @@ addSpeaker("s18", {
     area: "AE"
 });
 
+addSpeaker("s19", {
+  name: "Héctor Araya",
+  affiliation: "Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez.",
+  img: "images/hector_araya.webp",
+  title: "Partially observed Ornstein-Uhlenbeck process driven by small General fractional Gaussian noise.",
+  abstract: " The problem of identifying the drift parameter in a partially observed Ornstein--Uhlenbeck process driven by a small general Gaussian noise is considered. This class of Gaussian noises includes several processes, such as fractional Brownian motion, sub-fractional Brownian motion, bi-fractional Brownian motion, and generalized sub-fractional Brownian motion, among others. By applying a least-squares-type method together with finite-difference approximations of the unobserved process, two classes of estimators for the drift parameter of the model are obtained. Their convergence is established under suitable conditions. Some simulations are also presented to illustrate the behavior of these estimators.",
+    area: "AE"
+});
 
 addSpeaker("TBA", {
   name: "TBA",
