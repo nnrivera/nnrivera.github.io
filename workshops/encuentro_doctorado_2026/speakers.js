@@ -99,10 +99,10 @@ addSpeaker("s10", {
 addSpeaker("s11", {
   name: "William Canales",
   affiliation: "Instituto de Estadística, Universidad de Valparaíso",
-  img: "",
-  title: "TBA",
-  abstract: "TBA",
-    area: ""
+  img: "images/william_canales.png",
+  title: "Métodos de muestreo estadístico para mejorar los planes de examen administrativo y la detección de valores extremos",
+  abstract: "Esta investigación propone integrar el muestreo estadístico con la Teoría de Valores Extremos para mejorar la eficiencia de los planes de examen administrativo en la detección de observaciones anómalas y casos críticos. Para ello, desarrolla una nueva familia de estimadores robustos del índice de cola, basados en transformaciones logarítmicas y en el uso de la mediana, que superan limitaciones de estimadores clásicos como Hill, t-Hill y Hill generalizado en términos de sesgo, error cuadrático medio y sensibilidad a outliers, especialmente en muestras pequeñas y contaminadas. A partir de una estimación más estable de la pesadez de cola, se propone además un algoritmo que rediseña dinámicamente los planes de revisión según la estructura extrema de la población. Los resultados preliminares muestran mejoras significativas en precisión y capacidad de detección, aportando tanto al desarrollo teórico de la EVT como a su aplicación práctica en contextos administrativos.",
+    area: "ME"
 });
 
 addSpeaker("s12", {

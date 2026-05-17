@@ -16,8 +16,9 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 <br />
 
 <strong> Activities</strong>
+Workshop Doctorado en Estadística UV 2026(in spanish): <a href="https://nnrivera.github.io/workshops/workshop_ideuv_2024"> Mini-workshop IDEUV: Despedida Año Académico 2024</a> 
 <br>
-Workshop (in spanish): <a href="https://nnrivera.github.io/workshop_ideuv_2024"> Mini-workshop IDEUV: Despedida Año Académico 2024</a> 
+Workshop IDEUV 2024(in spanish): <a href="https://nnrivera.github.io/workshops/workshop_ideuv_2024"> Mini-workshop IDEUV: Despedida Año Académico 2024</a> 
 <br>
 Reading Group 2023-2 (in spanish): <a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> High-Dimensional Statistics</a>
 <br>
