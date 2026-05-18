@@ -180,9 +180,9 @@ addSpeaker("s19", {
 addSpeaker("s20", {
   name: "Milan Stehlik",
   affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
-  img: "",
-  title: "TBA",
-  abstract: "TBA",
+  img: "images/stehlik_milan.webp",
+  title: "Experiencias en publicación y procesos editoriales de revistas científicas Taylor and Francis Journals",
+  abstract: "Discutiremos el portafolio Estadística y Matemáticas de Taylor and Francis con dirección a revistas seleccionadas donde estoy activo como editor en jefe o editor asociado, Research in Statistics, Journal of Applied Statistics, and Stochastic Analysis and Applications. También se mencionarán Revstat y la revista Chilena de estadística. Se mencionarán nuevas tendencias de la publicadora. Se prestará especial atención a los jóvenes investigadores.",
     area: ""
 });
 
