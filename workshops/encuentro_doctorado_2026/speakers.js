@@ -177,6 +177,15 @@ addSpeaker("s19", {
     area: "AE"
 });
 
+addSpeaker("s20", {
+  name: "Milan Stehlik",
+  affiliation: "Instituto de Estadística, Universidad de Valparaíso.",
+  img: "",
+  title: "TBA",
+  abstract: "TBA",
+    area: ""
+});
+
 addSpeaker("TBA", {
   name: "TBA",
   affiliation: "TBA",
@@ -194,7 +203,11 @@ function renderSpeakersGrid() {
 const placeholder = "images/placeholder.png";
 
   const cards = Object.values(SPEAKERS)
-    .filter(sp => sp && sp.name !== "TBA")   
+    .filter((sp, index, self) => 
+      sp && 
+      sp.name !== "TBA" && 
+      index === self.findIndex(s => s && s.name === sp.name) // Keeps only the first match
+    ) 
     .map(sp => `
       <div class="speaker-card">
         <img src="${sp.img ||placeholder}">
