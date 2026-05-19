@@ -91,8 +91,8 @@ addSpeaker("s10", {
   name: "Tamara Fernández",
   affiliation: "Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez",
   img: "images/tamara_fernandez.jpg",
-  title: "TBA",
-  abstract: "TBA",
+  title: "A kernel test for the proportional hazard assumption",
+  abstract: "The Cox proportional hazards model is one of the most widely used tools for analyzing survival data, but its validity relies on the assumption that covariate effects remain constant over time. In many applications, however, this assumption may fail, leading to biased interpretation of risk factors and treatment effects. This talk presents a kernel-based test for assessing the proportional hazards assumption. The proposed approach builds on the idea of score tests and maximum mean discrepancy, replacing a fixed alternative direction with a rich class of time–covariate functions in a reproducing kernel Hilbert space. This yields a flexible statistic capable of detecting complex departures from proportionality while retaining analytical tractability through kernel methods. A key challenge is that the Cox regression parameter is unknown and must be estimated, which alters the null distribution and invalidates a naive wild bootstrap. We discuss a corrected bootstrap procedure that accounts for this additional estimation variability, and illustrate the method through preliminary simulation studies.",
     area: "ME"
 });
 
