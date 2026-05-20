@@ -498,6 +498,67 @@ $$
 **Key idea:** The bootstrap preserves the observed increment magnitudes while randomizing their signs.
 </div>
 
+## Bootstrap Intuition: Forcing the Martingale Property
+
+
+
+```{python}
+#| echo: false
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 5
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set seed for reproducible, good-looking paths
+np.random.seed(42)
+n = 500
+time = np.arange(1, n + 1)
+
+# Multiplier bootstrap weights (mean 0, variance 1)
+xi = np.random.randn(n)
+
+# --- Scenario 1: Non-Martingale (Random Walk with Drift) ---
+# Increments have a strict positive drift
+inc_Y = 0.15 + np.random.normal(0, 0.5, n)
+Y = np.cumsum(inc_Y)
+Y_boot = np.cumsum(xi * inc_Y)
+
+# --- Scenario 2: Martingale (Asymmetric/Skewed Increments) ---
+# Increments are Exponential(1) minus 1, so mean is exactly 0
+inc_M = np.random.exponential(1, n) - 1
+M = np.cumsum(inc_M)
+M_boot = np.cumsum(xi * inc_M)
+
+# --- Plotting ---
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+
+# Plot 1: Non-Martingale
+ax1.plot(time, Y, color='#c0392b', label='Original Process', alpha=0.85, linewidth=1.5)
+ax1.plot(time, Y_boot, color='#2980b9', label='Bootstrapped Process', alpha=0.85, linewidth=1.5)
+ax1.set_title('1. Clear Drift (Non-Martingale)', fontsize=14, fontweight='bold', color='#2c3e50')
+ax1.grid(True, linestyle='--', alpha=0.5)
+ax1.spines['top'].set_visible(False)
+ax1.spines['right'].set_visible(False)
+
+# Plot 2: Martingale
+ax2.plot(time, M, color='#c0392b', label='Original Process', alpha=0.85, linewidth=1.5)
+ax2.plot(time, M_boot, color='#2980b9', label='Bootstrapped Process', alpha=0.85, linewidth=1.5)
+ax2.set_title('2. Asymmetric Increments (Martingale)', fontsize=14, fontweight='bold', color='#2c3e50')
+ax2.grid(True, linestyle='--', alpha=0.5)
+ax2.spines['top'].set_visible(False)
+ax2.spines['right'].set_visible(False)
+
+# Shared legend at the bottom
+handles, labels = ax1.get_legend_handles_labels()
+fig.legend(handles, labels, loc='lower center', ncol=2, fontsize=12, frameon=False, bbox_to_anchor=(0.5, -0.05))
+
+plt.tight_layout()
+plt.subplots_adjust(bottom=0.15) # Make room for the legend
+plt.show()
+```
+
 # Experiments
 
 ## Experiments {.extra-small}
