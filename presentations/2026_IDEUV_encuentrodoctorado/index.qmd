@@ -774,6 +774,16 @@ $$\frac{1}{2}\xi_{\Lambda^{-1}}''(x) +  C_\Lambda x=0$$
 
 for a constant $C_{\Lambda}$. Now $\xi_{\Lambda^{-1}}\in \mathcal H$ and the solution of that differential equation is a polynomial at least in $(0,b)$. Here the Gaussian kernel is fundamental: The RKHS of a Gaussian Kernel contain analytic functions, therefore, if they are equal to a polynomial in an interval then they are exactly that polynomial. Gaussian RKHSs *do not* contain polynomials. A contradiction.
 
+# References
+
+- Park, J. Y. and Whang, Y.-J. (2005). A test of the martingale hypothesis. Studies in Nonlinear Dynamics & Econometrics.
+- Kurtz, T. G. and Protter, P. (1991). Weak limit theorems for stochastic integrals and stochastic differential equations. The Annals of Probability.
+- van der Vaart, A. W. and Wellner, J. A. (2023). Weak convergence and empirical processes—with applications to statistics.
+- Helland, I. S. (1982). Central limit theorems for martingales with discrete or continuous time. Scandinavian Journal of Statistics.
+-Dominguez, M. A. and Lobato, I. N. (2003). Testing the martingale difference hypothesis. Econometric Reviews.
+- Nualart, D. (2006). The Malliavin calculus and related topics.
+
+
 # A bit of self-promotion.
 
 ## Probística-Valparaíso
