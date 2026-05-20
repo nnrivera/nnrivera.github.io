@@ -1,0 +1,786 @@
+---
+title: A kernel test for the Martingale Hypothesis
+format:
+  clean-revealjs:
+    self-contained: true
+    toc: true
+    toc-depth: 1
+    number-sections: true
+    number-depth: 1
+    center: true
+author:
+  - name: Tamara Fernández
+    affiliations: Universidad Adolfo Ibañez
+  - name: Merle Munko
+    affiliations: Otto-von-Guericke University Magdeburg
+  - name: Nicolás Rivera*
+    affiliations: Universidad de Valparaíso
+  
+date: 20/May/2026
+bibliography: refs.bib
+---
+
+<style>
+/* Appends a period right after the auto-generated section number */
+.header-section-number::after {
+  content: ".";
+}
+
+/* Forces footnotes to stay at the absolute bottom, even on vertically centered slides */
+.reveal .aside {
+  position: absolute !important;
+  bottom: 20px !important;
+  left: 20px !important;
+  right: 20px !important;
+  font-size: 0.5em !important;
+  color: #a0a0a0 !important;
+}
+</style>
+$$
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\boldvec}[1]{\mathbf{#1}}
+$$
+```{r setup}
+#| include: false
+library(reticulate)
+
+# path.expand ensures R correctly translates the "~" to your actual home directory
+use_python(path.expand("~/.venvs/enviroment_python_nico/bin/python"))
+```
+
+# Martingales
+
+## Martingales
+
+A sequence $X_0, X_1,\ldots, X_n$ is a martingale if $\E(|X_m|)<\infty$ and 
+$$\E(X_{m+1}-X_m|X_0,\ldots, X_m)=0,$$
+for all $m$
+
+Then we can define the martingale differences $D_1,\ldots, D_m$ as
+$$D_m = X_{m}-X_{m-1}.$$
+<br><br>
+The idea is that a martingale difference generalises/relaxes the iid hypothesis with 0 mean. A martingale generalises the andom walk.
+
+## Examples
+
+- iid data with mean 0 are martingale differences
+- Let $X_0=0$ and $X_m = \sum_{i=1}^m Z_i$, with $Z_i$ rademacher. Then $X_m$ is a martingale
+- $X_m$ as before, then $Y_m = X_m^2 - m$ is also a martingale
+
+## How does a martingale looks
+
+```{python}
+#| label: fig-martingale
+#| fig-cap: "A standard random walk (left) and its independent increments (right)."
+#| fig-width: 10
+#| fig-height: 4.5
+#| echo: true
+#| code-fold: true
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Setup the Math
+np.random.seed(123)
+n_steps = 100
+
+# Increments: mean zero, independent (the "noise")
+increments = np.random.normal(loc=0, scale=1, size=n_steps)
+
+# Random Walk: cumulative sum of increments (the Martingale)
+random_walk = np.insert(np.cumsum(increments), 0, 0)
+
+# 2. Setup the Aesthetics
+plt.style.use('seaborn-v0_8-whitegrid')
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4.5))
+
+# Plot 1: The Martingale (Random Walk)
+ax1.plot(random_walk, color='#0055aa', linewidth=2)
+ax1.set_title("The Martingale (Random Walk, $X_n$)")
+ax1.set_xlabel("Time Step ($n$)")
+ax1.set_ylabel("Value")
+
+# Plot 2: The Increments
+ax2.plot(increments, color='#d95f02', marker='o', linestyle='none', alpha=0.6)
+ax2.axhline(0, color='gray', linestyle='--')
+ax2.set_title("The Increments ($X_{n} - X_{n-1}$)")
+ax2.set_xlabel("Time Step ($n$)")
+ax2.set_ylabel("Difference")
+
+plt.tight_layout()
+plt.show()
+```
+
+
+
+## Spot the Fake Martingale
+
+Two of these processes are martingales. Can you tell which is which?
+
+```{python}
+#| label: fig-martingale-mystery
+#| echo: false   # Hides all code
+#| fig-width: 12  # Optimal proportions for centered layout
+#| fig-height: 8.5
+#| fig-cap: "Three stochastic processes: two martingales and one fake. Titles are neutral for the challenge."
+
+import matplotlib
+matplotlib.use('Agg') # Force non-interactive backend for reliable display
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(20052026) # Set seed for reproducibility
+n_steps = 200
+z = np.random.normal(0, 1, n_steps) # Standard noise base
+
+# --- Generate data ---
+# 1. Deceptive Non-Martingale (AR(1) Mean-Reverting) - PUT FIRST
+path1 = np.zeros(n_steps + 1)
+inc1 = np.zeros(n_steps)
+for i in range(n_steps):
+    expected_drift = -0.10 * path1[i] 
+    inc1[i] = expected_drift + z[i]
+    path1[i+1] = path1[i] + inc1[i]
+
+# 2. Standard Martingale (Random Walk, iid noise) - PUT SECOND
+path2 = np.insert(np.cumsum(z), 0, 0)
+inc2 = z
+
+# 3. Random Walk with Martingale Differences (increasing variance) - PUT THIRD
+# Here, sigma increases linearly over time, not iid, but martingale property holds
+sigma3 = np.linspace(0.5, 3.0, n_steps) 
+inc3 = z * sigma3
+path3 = np.insert(np.cumsum(inc3), 0, 0)
+
+# Pack for easier plotting
+all_paths = [path1, path2, path3]
+all_incs = [inc1, inc2, inc3]
+colors = ['#d95f02', '#0055aa', '#2ca02c'] # Orange (fake), Blue (standard), Green (inc var)
+neutral_titles = ["Process 1", "Process 2", "Process 3"]
+
+# --- Plotting (Slide 1, neutral titles) ---
+plt.style.use('seaborn-v0_8-whitegrid')
+fig, axes = plt.subplots(3, 2, figsize=(12, 8.5))
+
+for i in range(3):
+    # Left Column: The Path
+    axes[i, 0].plot(all_paths[i], color=colors[i], linewidth=2)
+    axes[i, 0].set_title(f"{neutral_titles[i]} Path", fontweight='bold')
+    axes[i, 0].set_ylabel("Value")
+    
+    # Right Column: The Increments
+    axes[i, 1].plot(all_incs[i], color='gray', marker='o', linestyle='none', alpha=0.5)
+    axes[i, 1].axhline(0, color='black', linestyle='--')
+    axes[i, 1].set_title(f"{neutral_titles[i]} Increments", fontweight='bold')
+
+plt.tight_layout()
+fig # Return figure for display instead of plt.show()
+```
+
+---
+
+```{python}
+#| label: fig-martingale-reveal
+#| echo: false   # Hides all code
+#| fig-width: 12  # Same proportions for consistency
+#| fig-height: 8.5
+#| fig-cap: "The mysteries revealed. Titles explicitly label the martingale status and type."
+
+import matplotlib
+matplotlib.use('Agg') # Force non-interactive backend
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42) # Regenerate exact same data using same seed
+n_steps = 100
+z = np.random.normal(0, 1, n_steps) 
+
+# --- Generate data --- (identical generation and order as above)
+path1 = np.zeros(n_steps + 1)
+inc1 = np.zeros(n_steps)
+for i in range(n_steps):
+    expected_drift = -0.10 * path1[i] 
+    inc1[i] = expected_drift + z[i]
+    path1[i+1] = path1[i] + inc1[i]
+
+path2 = np.insert(np.cumsum(z), 0, 0)
+inc2 = z
+
+sigma3 = np.linspace(0.5, 3.0, n_steps) 
+inc3 = z * sigma3
+path3 = np.insert(np.cumsum(inc3), 0, 0)
+
+all_paths = [path1, path2, path3]
+all_incs = [inc1, inc2, inc3]
+colors = ['#d95f02', '#0055aa', '#2ca02c'] 
+# Descriptive titles for the reveal
+descriptive_titles = [
+    "1. Mean-Reverting AR(1) (Non-Martingale)",
+    "2. Standard Random Walk (Martingale)",
+    "3. Increasing Variance RW (Martingale Difference)"
+]
+
+# --- Plotting (Slide 2, descriptive titles) ---
+plt.style.use('seaborn-v0_8-whitegrid')
+fig, axes = plt.subplots(3, 2, figsize=(12, 8.5))
+
+for i in range(3):
+    # Left Column: The Path (now with descriptive titles)
+    axes[i, 0].plot(all_paths[i], color=colors[i], linewidth=2)
+    axes[i, 0].set_title(f"{descriptive_titles[i]} Path", fontweight='bold')
+    axes[i, 0].set_ylabel("Value")
+    
+    # Right Column: The Increments (neutral titles on this side too)
+    axes[i, 1].plot(all_incs[i], color='gray', marker='o', linestyle='none', alpha=0.5)
+    axes[i, 1].axhline(0, color='black', linestyle='--')
+    axes[i, 1].set_title(f"Process {i+1} Increments", fontweight='bold')
+
+plt.tight_layout()
+fig # Return figure for display
+```
+
+## Testing the martingale hypothesis
+
+Given a process $X_0, X_1,\ldots, X_n$ we have the hypothesis testing problem
+
+$$H_0: (X_m: m\in \{0,\ldots, n\}) \text{ is a martingale }$$
+vs
+$$H_1: (X_m: m\in \{0,\ldots, n\}) \text{ is not a martingale }$$
+
+## Testing the martingale hypothesis
+
+
+
+- The problem is very hard because we have only one path
+- A lot of things can be an almost martingale and it is impossible to know with just one path. For example the differences
+$$ D_1 = 1, D_i \overset{iid}{\sim} \text{Rademacher} $$
+are not a martingale difference, but impossible to realize with one path
+- The best we can hope for are **recurrent** failures of the  differences, so we can gather evidence against the null
+- Also, **some martingale don't look like martingales**: we will likely reject them
+- We need nicer objects
+
+## Testing the martingale hypothesis: A simple problem
+
+:::{.callout-important}
+## First order Martingales
+
+We will restrict our null to martingales of first order, i.e.
+$$\E(X_{m+1}|X_0,X_1,\ldots, X_m) = \E(X_{m+1}|X_m)$$
+however, we can do finite order without much problem
+::: 
+
+
+
+## Testing the martingale hypothesis
+
+:::{.callout-note}
+## A simple lemma
+
+$(X_m: m \in \{0,1,\ldots, n\})$ is a martingale of first order if and only if $\E(\omega(X_n)(X_{n+1}-X_n))=0$ for all functions $f$[^1].
+
+:::
+
+This suggests the following type of statistics:
+
+:::{.callout-tip}
+## Test-Statistic
+
+$$S_n(\omega)=\frac{1}{n}\sum_{i=m}^n \omega(X_{m-1})\underbrace{(X_m-X_{m-1})}_{D_m}$$
+:::
+
+For most reasonable martingales that should be close like a normal with mean 0, and for most reasonable non-martingales that should be far away from 0.
+
+[^1]: measurable functions
+
+## Testing the martingale hypothesis
+
+The test-statistic 
+$$S_n(\omega)=\frac{1}{\sqrt{n}}\sum_{i=m}^n \omega(X_{m-1})\underbrace{(X_m-X_{m-1})}_{D_m}$$
+
+is very reasonable but it has two issues
+
+1. We need to choose $f$
+2. It needs to be rescaled to have a proper limit (and thus nice stabilising rejection region)
+
+# Kernel tests
+## Kernel tests: Choosing a weight $\omega$ 
+
+Since $S_n(\omega)$ is linear in $f$, then we can transform it into a kernel test-statistic
+
+$$\Phi_n = \sup_{\omega\in B_1(\mathcal H)} S_n(\omega)^2.$$
+
+where $\mathcal H$ is a RKHS and $B_1$ its unit ball.
+
+
+## Reproducing Kernel Hilbert Spaces
+
+A *Reproducing Kernel Hilbert Space* (RKHS) is a Hilbert space  
+$\mathcal H$ of functions $f:\mathcal X \to \mathbb R$ such that
+
+$$
+f \mapsto f(x)
+$$
+
+is a *continuous* linear functional for every $x \in \mathcal X$.
+
+By the Riesz representation theorem, for every $x$ there exists
+$K_x \in \mathcal H$ such that
+
+$$
+f(x) = \langle f, K_x \rangle_{\mathcal H}.
+$$
+
+The function $K(x,y) := K_y(x)$ is called the *reproducing kernel*.
+
+
+## Kernels determine the RKHS
+:::{.callout-note}
+## Kernels characterise RKHSs
+Every RKHS has a reproducing kernel which is positive and definite positive. A positive definite kernel completely determines a unique RKHS.
+:::
+
+Example: Gaussian kernel
+
+$$
+K(x,y)
+=
+\exp\left(
+-\frac{\|x-y\|^2}{2\sigma^2}
+\right).
+$$
+
+## Kernelised Statistic
+
+<div style="
+position:absolute;
+top:60px;
+right:-160px;
+font-size:0.55em;
+background:#fff8dc;
+border:3px solid #d4a017;
+border-radius:12px;
+padding:12px 16px;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+color:black;
+max-width:320px;
+">
+Reminder
+$$S_n(\omega)=\frac{1}{n}\sum_{i=m}^n \omega(X_{m-1})(X_m-X_{m-1}).$$
+
+</div>
+
+By using the reproducing property: $\omega(x) = \left\langle K_x, \omega \right\rangle_{\mathcal H}$, we conclude that
+
+$$S_n(\omega) = \left\langle \frac{1}{n}\sum_{i=m}^n K_{X_{m-1}}(X_m-X_{m-1}), \omega\right\rangle_{\mathcal H}$$
+and 
+$$\Phi_n = \sup_{\omega\in B_1(\mathcal H)} S_n(\omega)^2 = \left\|\frac{1}{\sqrt{n}}\sum_{m=1}^n K_{X_{m-1}}(X_m-X_{m-1}) \right\|_{\mathcal H}^2$$
+
+This can be avaluated analytically as
+$$\frac{1}{n} \sum_{i=1}^n\sum_{j=1}^nK(X_{i-1},X_{j-1})(X_i-X_{i-1})(X_j-X_{j-1})$$
+
+
+## Scaling and Anticipated Integrals
+
+The second issue with our strategy is the choice of an appropriate scaling parameter.
+
+1. Standarising general differences is much harder than standarising iid data. 
+2. Martingales/Martingale Differences can be standarised by dividing by $\sqrt{\frac{1}{n}\sum_{m=1}^n D_{m}^2}$ (as we do with iid variables with mean 0)
+3. That scaling can be a bit dangerous for non-martingales. Not robust
+4. There are robust scalings such as $\sum_{m=1}^n\sum_{k=1}^n (X_m-X_k)^2$, which under i.i.d. gives $\approx \frac{\sigma^2}3 n^3$
+
+## Continuous Martingales
+
+Consider the martingale difference $D_1,\ldots, D_n$ and the associated process $X_m = X_0 + \sum_{i=1}^m D_i$. Then we can embeed the martingale in continuous time as
+
+$$Z_t^n = \sum_{m=1}^{\lfloor nt \rfloor} D_m \text{ for all $t \in [0,1]$ }$$
+
+
+$Z_t$ is a picewise function and thus we observe that
+$$S_n(\omega) = \int_0^1 \omega(Z_t^n)dZ_t^n$$
+here integration is done in the Stiljest style.
+
+## Scaling
+
+A few scalings are reasonable
+
+1. $\lambda_V(Z^n) = \sqrt{\int_0^1 {(Z^n_t)^2}dt}$
+2. $\lambda_S(Z^n) = \sup(|Z^n_t|)$
+3. $\lambda_{D}(Z^n) = \sqrt{\int_0^1 \int_0^1 (Z^n_{t-}Z^n_s)^2 ds dt}$
+4. $\lambda_A(Z^n) = \int_0^1 |Z^n_t|dt$
+5. $\lambda_M(Z^n) = \operatorname{median}(|Z_n^t|)$
+
+for most martingales (including iid increments), these quantities do not converge to a constant, but rather to a random variable. 
+
+## Scaling
+
+In any case, instead of working with $Z_t^n$, we work with $Z_t^n/\lambda(Z^n)$
+
+For the case of kernel methods, particularly for the Gaussian Kernel,  this scaling is equivalent to modifying the length-scale of the kernel.
+
+<div style="
+position:absolute;
+top:-200px;
+right:-80px;
+font-size:0.55em;
+background:#fff8dc;
+border:3px solid #d4a017;
+border-radius:12px;
+padding:12px 16px;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+color:black;
+max-width:320px;
+">
+Reminder
+$$
+K(x,y)
+=
+\exp\left(
+-\frac{\|x-y\|^2}{2\sigma^2}
+\right).
+$$
+
+</div>
+This kernel works very well in practice and we use it in our experiments
+
+# Boostrapping to a Martingale
+
+## Boostrapping to a Martingale.
+
+From data $(X_m: m\in \{0,\ldots, n\})$ we need to construct the rejection region. 
+
+:::{.callout-warning}
+## We only have one path
+We only have one path of the process, so some regularity is needed.
+:::
+Given the increments it is easy to bootstrap a martingale.
+
+
+
+## Wild Bootstrap Random Walk
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+### Original process
+
+$$
+X_m = X_0 + \sum_{i=1}^m D_i
+$$
+
+- increments $D_i$
+- dependence structure fixed
+- randomness comes from the data
+- Not always a martingale
+:::
+
+::: {.column width="48%"}
+
+### Bootstrap process
+
+$$
+X_m^{W} = X_0 + \sum_{i=1}^m \textcolor{red}{ W_i} D_i
+$$
+
+
+- data $D_i$ fixed
+- randomness comes from the weights
+- conditionally centered:
+  $$ \mathbb E[W_i D_i \mid D_1,\ldots,D_n] = 0 $$
+- therefore $(X_m^{W})_{m\ge0}$ is a martingale conditionally on the data.
+
+:::
+
+::::
+
+<div style="position:absolute; top:0px; right:-40px; font-size:0.45em; background:#eef5ff; border-left:6px solid #2563eb; border-radius:10px; padding:10px 14px; box-shadow:0 4px 10px rgba(0,0,0,0.12); color:black; max-width:250px; z-index:10;">
+**Key idea:** The bootstrap preserves the observed increment magnitudes while randomizing their signs.
+</div>
+
+# Experiments
+
+## Experiments {.extra-small}
+<div style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+From Park and Wang (2005).
+
+* **NULL**: $X_{t,n} = X_{t-1,n} + D_{t,n}, D_{t,n} = \sigma_t\varepsilon_t, \sigma_t^2 = 1 + \theta_1 D_{t-1,n}^2 + \theta_2 \sigma_{t-1}^2$
+* **ARMA**: $X_{t,n} = \theta_1 X_{t-1,n} + \theta_2 \varepsilon_{t-1} + \varepsilon_t$
+* **EXAR**: $X_{t,n} = \theta_1 X_{t-1,n} + \theta_2 X_{t-1,n} \exp(-0.1|X_{t-1,n}|) + \varepsilon_t$ 
+* **TAR**: $X_{t,n} = \theta_1 X_{t-1,n} \mathbb{1}\{|X_{t-1,n}| < \theta_2\} + 0.9 X_{t-1,n}\mathbb{1}\{|X_{t-1,n}| \geq\theta_2\} + \varepsilon_t$ 
+* **BL**: $X_{t,n} = \theta_1 X_{t-1,n} + \theta_2 X_{t-1,n} \varepsilon_{t-1} + \varepsilon_t$
+* **NLMA**: $X_{t,n} = \theta_1X_{t-1,n} + \theta_2\varepsilon_{t-1}\varepsilon_{t-2} + \varepsilon_t$
+* **MARKOV**: $X_{t,n} = \theta_1 (X_{t-1,n} - s_{t-1}) + s_t, s_t \in \{0,1\}$ with $\theta_2 = \mathbb{P}(s_t = 0 \mid s_{t-1} = 0) = \mathbb{P}(s_t = 1 \mid s_{t-1} = 1)$
+* **FM**: $X_{t,n} = m_t + u_t, m_t = \theta_1 X_{t-1,n} (1- X_{t-1,n}), u_t = \theta_2 v_t \eta_t, v_t = \min\{m_t, 1-m_t\}, \eta_t \sim U(0,1)$ i.i.d. 
+* **EXP**: $X_{t,n} = \theta_1 X_{t-1,n} + u_t, |\theta_1| > 1, u_t = \sigma_t \varepsilon_t, \sigma_t^2 = 1 + \theta_2 u_{t-1}^2 + \theta_3 \sigma_{t-1}^2$ 
+* **UNIT**: $X_{t,n} = X_{t-1,n} + D_{t,n}, D_{t,n} = \theta_1 D_{t-1,n} + \varepsilon_t$
+* **TREND**: $X_{t,n} = \theta_1 + \theta_2 t/n + X_{t-1,n} + \varepsilon_t$ 
+</div>
+
+
+## All Experiment Results
+
+<div style="max-height: 60vh; overflow-y: auto; padding-right: 15px;">
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| output: asis
+
+library(knitr)
+library(kableExtra) # <-- Added for column highlighting
+
+# 1. Read the raw LaTeX file
+tex_lines <- readLines("table.tex", warn = FALSE)
+
+# 2. Find the boundaries of every table
+starts <- grep("\\\\begin\\{tabular\\}", tex_lines)
+ends <- grep("\\\\end\\{tabular\\}", tex_lines)
+captions_idx <- grep("\\\\caption\\{", tex_lines)
+
+table_names <- gsub(".*\\\\caption\\{(.*?)\\}.*", "\\1", tex_lines[captions_idx])
+
+# 3. Process each table dynamically
+for (i in seq_along(starts)) {
+  
+  tab_lines <- tex_lines[(starts[i] + 1):(ends[i] - 1)]
+  
+  # Clean LaTeX syntax
+  tab_lines <- tab_lines[!grepl("\\\\hline", tab_lines)] 
+  tab_lines <- gsub("\\\\\\\\", "", tab_lines)            
+  tab_lines <- gsub("&", "|", tab_lines)                  
+  
+  # Convert to DataFrame
+  df <- read.table(text = paste(tab_lines, collapse = "\n"), 
+                   sep = "|", header = TRUE, strip.white = TRUE, check.names = FALSE)
+  
+  # Filter columns
+  cols_to_keep <- c("theta", "n", "KerM", "KerA", "KerV", "KerS", "PWMax", "PWInt")
+  cols_avail <- intersect(cols_to_keep, colnames(df))
+  df <- df[, cols_avail, drop = FALSE]
+  
+  # --- NEW: Identify YOUR columns before renaming ---
+  # We find the numerical index of your columns so we can highlight them later
+  my_results_idx <- which(colnames(df) %in% c("KerM", "KerA", "KerV", "KerS"))
+  
+  # Prettify the math column names
+  if ("theta" %in% colnames(df)) colnames(df)[colnames(df) == "theta"] <- "$\\theta$"
+  if ("n" %in% colnames(df)) colnames(df)[colnames(df) == "n"] <- "$n$"
+  
+  # Split the data in half
+  n_rows <- nrow(df)
+  mid_point <- ceiling(n_rows / 2)
+  
+  df_left <- df[1:mid_point, , drop = FALSE]
+  df_right <- if (n_rows > mid_point) df[(mid_point + 1):n_rows, , drop = FALSE] else NULL
+  
+  # --- NEW: Helper function to generate the styled HTML table ---
+  make_styled_table <- function(data) {
+    # Using kbl instead of basic kable, with escape=FALSE to protect the $\theta$
+    tbl <- kbl(data, align = "c", row.names = FALSE, format = "html", escape = FALSE)
+    
+    if (length(my_results_idx) > 0) {
+      # Highlight your columns: Bold text and a soft professional blue background
+      tbl <- column_spec(tbl, my_results_idx, bold = TRUE, background = "#eef5ff")
+    }
+    return(tbl)
+  }
+
+  # 4. Output the Quarto Accordion and Columns
+  cat(sprintf("::: {.callout-note collapse=\"true\" title=\"%s\"}\n\n", table_names[i]))
+  
+  cat(":::: {.columns}\n\n")
+  
+  cat("::: {.column width=\"48%\"}\n")
+  # Use cat(as.character()) to safely inject the HTML into the markdown stream
+  cat(as.character(make_styled_table(df_left)))
+  cat("\n:::\n\n")
+  
+  cat("::: {.column width=\"4%\"}\n")
+  cat("\n:::\n\n")
+  
+  cat("::: {.column width=\"48%\"}\n")
+  if (!is.null(df_right)) {
+    cat(as.character(make_styled_table(df_right)))
+  }
+  cat("\n:::\n\n")
+  
+  cat("::::\n\n")
+  cat(":::\n\n")
+}
+```
+
+</div>
+
+# Asymptotic Theory
+
+## Asymptotic Theory
+
+In practice our test work very well, it remains to show it has some theoretical guarantees
+
+* Correct type-I error
+* Rejection Regions stabilise
+* Power against a good collection of alternatives
+
+##  Limit Distribution and anticipated integrals
+
+Recall that our test-statistic is given by
+$$\left\| \frac{1}{\sqrt{n}}\sum_{i=m}^n K_{\frac{X^n_{m-1}}{\lambda(X^n)}}(X_m^n-X_{m-1}^n)\right\|_{\mathcal H}^2$$
+
+- The term inside the inner product is a Hilbert-valued random variable
+- In terms of the continuised process $Z^n$
+$$\frac{1}{\sqrt{n}}\sum_{i=m}^n K_{\frac{X_{m-1}}{\lambda(X^n)}}(X_m-X_{m-1}) = \frac{1}{\sqrt{n}}\int_0^1 K_{\frac{Z^n_{t-}}{\lambda(Z^n)}}dZ^n_t$$
+
+##  Limit Distribution and anticipated integrals
+- $\frac{1}{\sqrt{n}}\int_0^1 K_{\frac{Z^n_{t-}}{\lambda(Z^n)}}dZ^n_t$ is not a stochastic integral because $\lambda$ uses the whole path as input.
+- If $\frac{\sqrt n} Z^n \overset{\mathcal D}{\to} Z:=\int_0^{\cdot} q(s)dB(t)$ for a brownian $B$, the *limit*
+$$\int_0^1 K_{\frac{Z_t}{\lambda(Z)}}dZ_t$$
+does not make sense as a martingale integral
+- We need to take the long-route of empirical processes + stochastic analysis
+
+## Asymptotic Convergence
+
+::: {.callout-note icon=false title="Theorem: Kernel Integral Convergence"}
+
+Let $(Z^n)_{n \geq 1}$ be a sequence of càdlàg martingales on $[0,1]$, and let $K: \mathbb{R} \to \mathbb{R}$ be a bounded, continuous kernel function. Let $\lambda(\cdot)$ be a strictly positive bandwidth functional. 
+
+Under standard regularity conditions on the increments of $Z^n$, the scaled integral converges in distribution as $n \to \infty$:
+
+$$
+\frac{1}{\sqrt{n}} \int_0^1 K \left( \frac{Z^n_{t-}}{\lambda(Z^n)} \right) dZ^n_t \xrightarrow{d} \mathcal{L}
+$$
+
+where $\mathcal{L}$ is a well-defined random variable on $\mathcal H$ 
+
+:::
+
+For the Bootstrap statistic the story is better, because even if $D_i$ are not martingale increments, $W_i D_i$ are. So the theorem applies to it for almost every sequence $D_i$, under some regularity conditions on the sequence $D_i$.
+
+## Regularity Conditions
+
+
+::: {.callout-warning}
+
+## Regularity Conditions
+
+- Under null and alternative:
+$$\left(\frac{1}{n}\sum_{i=1}^{\lfloor tn \rfloor} D_i^2 \right)_{t\in[0,1]} \to \left(\int_0^t q(s)^2 ds\right)$$
+
+- Under null and alternative we need uniformly (in $n$) boundedness of $\frac{1}{n}\sum_{i=1}^{\lfloor tn \rfloor} D_i^2$
+
+- Also we need to ensure that $D_i$ are, individually, not to big, they all of them contribute more or less the same to the process.
+
+- We need continuity of $\lambda$ as a functional $D([0,1])\to \R$ with respecto to the $J_1$ Skorokhod metric
+
+
+:::
+
+These regularity conditions imply a bit more than $Z^n \overset{\mathcal D}{\to} \int_0^{\cdot} q(t)dB_t$ in $D([0,1])$.
+
+## Proof of Asymptotic Limit
+
+The proof is a long list of suitable transformation between spaces and continuius mapping theorems. For simplicity, I'll assume that $n^{-1/2}$ scaling is inside the martingale $Z^n$
+
+1. $\int_0^1 K_{\frac{Z^n_{t-}}{\lambda(Z^n)}}dZ^n_t$ is a $H$-valued random variable but it does not make sense as stochastic integrals.
+2. We have to think $\int_0^1 K_{\frac{Z^n_{t-}}{\lambda(Z^n)}}dZ^n_t$ as a $D([0,1])\to \mathcal H$ process
+3. We work with:
+$$D([0,1])\times \R^+ \ni (Z^n, a)\to \xi_a(Z^n):= \int_0^1 K_{aZ^n_{t-}}dZ^n_t,$$
+in the product topology. The evaluation at $a = \lambda(Z^n)$ will be continuous, assuming $\lambda(Z^n)\to \lambda(Z)$
+
+---
+
+
+4. Hence, we just need to work with the process $\left(\left(\int_0^1 K_{aZ^n_{t-}}dZ^n_t\right)_{a\in \R^+}, \lambda(Z^n)\right)$ that takes paths in $\ell^{\infty}(\R^+, \mathcal H) \times \R$
+
+5. Assuming $\lambda$ continuous it is easier to work with the process
+$\left(\left(\int_0^1 K_{aZ^n_{t-}}dZ^n_t\right)_{a\in \R^+}, Z^n\right)$ taking values in $\ell^{\infty}(\R^+, \mathcal H) \times D([0,1])$ with the product topology. Of course $(q,z)\to (q,\lambda(z))$ is continuius
+
+6. $\ell^{\infty}$ is not separable hence we need to ensure continuity of $a \to \int_0^1 K_{aZ^n_{t-}}dZ^n_t$. This works well due to Ito's isometry
+
+---
+
+7. (Continuity) $$
+  \E\left\| \int_0^1 \left( K_{(a+h)Z^n_{t-}} - K_{aZ^n_{t-}} \right) dZ^n_t \right\|_{\mathcal{H}}^2
+  = \E\int_0^1 \left\| K_{(a+h)Z^n_{t-}} - K_{aZ^n_{t-}} \right\|_{\mathcal{H}}^2 d\langle Z^n \rangle_t
+  $$
+
+  Kernels are usually continuous enough to allow the computation. In most cases $\left\| K_{(a+h)Z^n_{t-}} - K_{aZ^n_{t-}} \right \|_{\mathcal{H}}^2 = O(h^2(Z^n_{t-})^2)$ so not much of a fight.
+
+8. We can think of $\left(\left(\int_0^1 K_{aZ^n_{t-}}dZ^n_t\right)_{a\in \R^+}, Z^n\right)$ taking values in $C(\R^+, \mathcal H) \times D([0,1])$ with the product topology ($\text{compact-open} \times J_1$), which is separable, we can use Prokohorov theorem from here but tightness is free from the previous computation 
+
+----
+
+9. We essentially have to prove that marginals converge: let $F$ a finite set of $\R^+$, we have to show that 
+
+$$\left(\left(\int_0^1 K_{aZ^n_{t-}}dZ^n_t\right)_{a\in F}, Z^n\right)$$
+
+This is a random variable in $\mathcal H^F \times D[0,1]$. Since $\mathcal H^{\times F}$ (cartesian) is also a Hilbert Space, we just need to check convergence of 
+
+$$\left(\left(\int_0^1 \omega_a(aZ^n_{t-})dZ^n_t\right)_{a\in F}, Z^n\right), \text{ for any $\omega_a \in \mathcal H$}$$
+
+This is done with a very important theorem of Kurtz and Protter (1991 - AP)
+----
+
+10. Kurtz and Protter (1991 - AP) give conditions for a sort of *continuity* of the map
+
+$$Z^n \to \left(\left(\int_0^1 \omega_a(aZ^n_{t-})dZ^n_t\right)_{a\in F}, Z^n\right)$$
+hence $Z^n \overset{\mathcal D}{\to} Z$ in $D([0,1])$ implies 
+
+$$\left(\left(\int_0^1 \omega_a(aZ^n_{t-})dZ^n_t\right)_{a\in F}, Z^n\right) \overset{\mathcal D}{\to} \left(\left(\int_0^1 \omega_a(aZ_t)dZ_t\right)_{a\in F}, Z\right)$$
+
+## A Fun problem
+
+In many application of statistics we need to ensure that the limit distribution has limit so the consistency region has exactly probability $1-\alpha$ under the null and no less. This is because we don't want **conservative tests**.
+<br>
+In our case the limit distribution is $$\|\xi_{1/\Lambda}\|_{\mathcal H}^2$$ where $\Lambda = \lambda(Z)$ and $$\xi_{a}= \int_0^1 K_{aZ_t}dZ_t.$$
+<br>
+The best way to solve this is to use Maliaving Calculus and the Bouleau–Hirsch Criterion.
+
+## A fun Problem
+
+Without much detail, if $\Lambda(Z) = \sqrt{\int_0^1 Z_t^2 dt}$ then
+
+<div style="font-size: 0.6em; margin-top: 20px;">
+$$
+D_r(\|\xi_{1/\Lambda}\|_{\mathcal{H}}^2) = 2q(r)\left\langle  K_{\frac{Z(1)}{\Lambda}} - \frac{1}{2\Lambda^2}\int_r^1  K''_{\frac{Z(s)}{\Lambda}} q^2(s)ds - \frac{1}{\Lambda^3}\left(\int_r^1 Z_t dt\right)\int_0^1 Z(s) K'_{\frac{Z(s)}{\Lambda}} dZ(s), \xi_\Lambda \right\rangle_{\mathcal{H}}
+$$
+</div>
+
+::: {.callout-note icon=false title="Theorem (Bouleau–Hirsch Criterion)"}
+
+Let $F$ be a random variable in the local Malliavin Sobolev space $\mathbb{D}^{1,2}_{loc}$, and let $D$ denote the Malliavin derivative operator.</p>
+If
+
+$$
+ \int (D_rF)^2dr>0 \quad \text{a.s.}
+$$
+
+<p>Then the probability law of $F$ is absolutely continuous with respect to the Lebesgue measure on $\mathbb{R}$.</p>
+:::
+
+Most of the time, since $r\to D_rF$ is continuous, we just need to verify $D_t\neq 0$ for some point, usually by contradiction. Assuming $D_t =0$ for all $t$ allows for a lot of operations.
+
+
+---
+
+In this contradiction setting: a few computation gives us that 
+
+$$\frac{1}{2}\xi_{\Lambda^{-1}}''(Z(t)/\Lambda) + \frac{Z(t)}{\Lambda}  C_\Lambda=0, \text{ for all $t \in (0,b)$}.$$
+
+for some $b>0$. Reeplacing $x = Z(t)/\Lambda$, we get
+
+$$\frac{1}{2}\xi_{\Lambda^{-1}}''(x) +  C_\Lambda x=0$$
+
+for a constant $C_{\Lambda}$. Now $\xi_{\Lambda^{-1}}\in \mathcal H$ and the solution of that differential equation is a polynomial at least in $(0,b)$. Here the Gaussian kernel is fundamental: The RKHS of a Gaussian Kernel contain analytic functions, therefore, if they are equal to a polynomial in an interval then they are exactly that polynomial. Gaussian RKHSs *do not* contain polynomials. A contradiction.
+
+# A bit of self-promotion.
+
+## Probística-Valparaíso
+
+Con Héctor Oliveiro hace un tiempo creamos una lista de Emails
+<br>
+*Probabilidad y Estadística en Valparaíso*
+<br>
+Cuyo nombre es probistica-valparaiso@googlegroups.com
+![](lista.png){fig-align="center" width="80%"}
