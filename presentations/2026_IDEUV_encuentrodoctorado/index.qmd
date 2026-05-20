@@ -498,7 +498,7 @@ $$
 **Key idea:** The bootstrap preserves the observed increment magnitudes while randomizing their signs.
 </div>
 
-## Bootstrap Intuition: Forcing the Martingale Property
+## Bootstrap Intuition: Forcing the Martingale Property.
 
 
 
