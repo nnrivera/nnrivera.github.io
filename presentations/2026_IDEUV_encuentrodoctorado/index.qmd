@@ -300,7 +300,7 @@ $$S_n(\omega)=\frac{1}{\sqrt{n}}\sum_{i=m}^n \omega(X_{m-1})\underbrace{(X_m-X_{
 
 is very reasonable but it has two issues
 
-1. We need to choose $f$
+1. We need to choose $\omega$
 2. It needs to be rescaled to have a proper limit (and thus nice stabilising rejection region)
 
 # Kernel tests
@@ -355,7 +355,7 @@ $$
 <div style="
 position:absolute;
 top:60px;
-right:-160px;
+right:-140px;
 font-size:0.55em;
 background:#fff8dc;
 border:3px solid #d4a017;
@@ -389,7 +389,7 @@ The second issue with our strategy is the choice of an appropriate scaling param
 3. That scaling can be a bit dangerous for non-martingales. Not robust
 4. There are robust scalings such as $\sum_{m=1}^n\sum_{k=1}^n (X_m-X_k)^2$, which under i.i.d. gives $\approx \frac{\sigma^2}3 n^3$
 
-## Continuous Martingales
+## (Detour) Continuous Martingales
 
 Consider the martingale difference $D_1,\ldots, D_n$ and the associated process $X_m = X_0 + \sum_{i=1}^m D_i$. Then we can embeed the martingale in continuous time as
 
@@ -406,7 +406,7 @@ A few scalings are reasonable
 
 1. $\lambda_V(Z^n) = \sqrt{\int_0^1 {(Z^n_t)^2}dt}$
 2. $\lambda_S(Z^n) = \sup(|Z^n_t|)$
-3. $\lambda_{D}(Z^n) = \sqrt{\int_0^1 \int_0^1 (Z^n_{t-}Z^n_s)^2 ds dt}$
+3. $\lambda_{D}(Z^n) = \sqrt{\int_0^1 \int_0^1 (Z^n_{t}-Z^n_s)^2 ds dt}$
 4. $\lambda_A(Z^n) = \int_0^1 |Z^n_t|dt$
 5. $\lambda_M(Z^n) = \operatorname{median}(|Z_n^t|)$
 
