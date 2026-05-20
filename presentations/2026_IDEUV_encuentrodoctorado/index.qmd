@@ -436,7 +436,7 @@ $$
 K(x,y)
 =
 \exp\left(
--\frac{\|x-y\|^2}{2\sigma^2}
+-\frac{\|x-y\|^2}{2\lambda^2}
 \right).
 $$
 
@@ -782,9 +782,10 @@ for a constant $C_{\Lambda}$. Now $\xi_{\Lambda^{-1}}\in \mathcal H$ and the sol
 - Helland, I. S. (1982). Central limit theorems for martingales with discrete or continuous time. Scandinavian Journal of Statistics.
 -Dominguez, M. A. and Lobato, I. N. (2003). Testing the martingale difference hypothesis. Econometric Reviews.
 - Nualart, D. (2006). The Malliavin calculus and related topics.
+- Fernandez, T. & Rivera, N. (2024). A general framework for the analysis of kernel-based tests. Journal of Machine Learning Research.
 
 
-# A bit of self-promotion.
+# A bit of shameless self-promotion.
 
 ## Probística-Valparaíso
 
