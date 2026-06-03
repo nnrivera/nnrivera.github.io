@@ -56,6 +56,7 @@ window.MathJax = {
 
 <h2>Noticias</h2>
 <ul>
+<li><strong>27 de Mayo: </strong>Están listas las notas de la Tarea 1, ver en Aula Virtual.</li>
 <li><strong>7 de Mayo: </strong>Se sube la tarea dos (en aula virtual).</li>
 <li><strong>9 de Abril: </strong>Se sube primera tarea.</li>
   <li><strong>10 de Marzo: </strong>Se levanta sitio web. Se recuerda que debido al cambio de mando no hay clases el día 11 de Marzo.</li>
@@ -71,6 +72,7 @@ window.MathJax = {
 <li> <strong><a href="Unit_04.pdf">Unidad 4: Simulación Estocástica</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulos 2 y 3), Ross - Simulation (Capítulos 4-6)</li>
 <li> <strong><a href="unit_05.pdf">Unidad 5: Integración</a> </strong> . Libros Recomendados: Ripley - Stochastic Simulation (Capítulo 5), Maria L. Rizzo - Statistical computing with R (Capítulo 5)</li>
 <li> <strong><a href="unit_06.pdf">Unidad 6: Boostrap</a> </strong> . Libros Recomendados: Rizzo - Statistical computing with R (Capítulo 7 para una introducción amable), Gentle - Elements of Computational Statistics (Capítulo 4 para una introducción relativamente amable),  Efron & Hastie - Computer Age Statistical Inference (Capítulo 10 para algo un poquito más avanzado), Davison & Hinkley - Bootstrap Methods and their Applications (para un tratamiento completo del tema), van der Vaart - Asymptotic Statistics (Capítulo 23 para un desarrollo teórico)</li>
+<li> <strong><a href="unit_07.pdf">Unidad 7: Optimización</a> </strong> . Libros Recomendados: Kevin P. Murphy - Machine Learning: A Probabilistic Perspective (capítulo 8, solo regresión logística, pero explica las ideas), Deisenroth et al. - Mathematics for Machine Learning (capítulo 7, introductorio y general), Goodfellow et al. Deep Learning (Chapitulo 4, bastante introductorio y general) </li>
 </ul>
 
 <p><strong>Clases.</strong></p>
@@ -150,6 +152,41 @@ window.MathJax = {
 <li>Acá la idea cambia un poco: en vez de remuestrar, usamos permutaciones. La idea es tratar de "recuperar" la nula a partir de aleatorizar un poco las cosas. Si mezclamos dos grupos de datos, ambos grupos tienen la misma distribución. Bajo la Nula, nada cambia, pero bajo la alternativa nos pasamos a la Nula.</li>
 <li><a href = "bootstrap_permutacion.py"> Ejemplo de Bootstrap con permutaciones en python </a> </li></ul>
 </li>
+
+<li><strong>Clase 15:</strong> Optimización I: Básicos I
+<ul><li>Empezamos la unidad de optimización revisando las ideas básicas de funciones continuas, diferenciables, gradiente y hessiano.</li>
+<li> Vimos el concepto de punto crítico</li>
+<li>Vimos el criterio de la segunda derivada: revisar si el hessiano es definido positivo, negativo o nada para determinar si un punto es un mínimo local, máximo local, etc..</li>
+</li>
+</ul>
+
+<li><strong>Clase 16:</strong> Optimización II: Básicos II
+<ul><li>Continuamos con los básicos, revisnado dos ejemplos: la normal en una dimensión (dos parámetro, media y varianza) y regresión lineal</li>
+<li>Hablamos de las ideas básicas de optimización numérica, incluyendo el concepto de punto fijo</li>
+<li>Vimos una mini-introducción al método de descenso de gradiente para encontrar mínimos</li>
+</li>
+</ul>
+
+
+<li><strong>Clase 17:</strong>  Optimización III: Descenso de Gradiente I
+<ul><li>Estudiamos descenso de gradiente con más detalles</li>
+<li>Vimos un ejemplo de regresión logística, donde no es posible encontrar los parámetros $\beta$ de forma exacta</li>
+<li>Vimos un poco de interpretación del gradiente en término de "fuerzas" que empujan los parámetros en ciertas direcciones</li>
+<li>Revisamos algunos criterios de parada del algoritmo</li>
+<li>Estudiamos la aproximación de primer y segundo orden para poder elegir el tamaño del salto de forma más apropiada</li>
+</li>
+</ul>
+
+<li><strong>Clase 18:</strong> Optimización III: Descenso de Gradiente II
+<ul><li>Revisamos detalles de la implementación de descenso de gradiente en Regresión logística en particular los concepto de vectorización necesarios</li>
+<li>En particular, vimos dos interpretaciones importantes del producto entre una matriz y un vector</li>
+<li>Revisamos el código de descenso de gradiente para regresión y vimos que funciona igual que el de algunas librerias</li>
+</li>
+<li><a href = "codigo_regresion_logistica.py"> Regresión Logística en Python </a> </li>
+</ul>
+
+
+</ul>
 
 
 </ul>
