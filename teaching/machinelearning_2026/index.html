@@ -368,6 +368,8 @@ window.MathJax = {
 <ul><li>Vimos código de adaboost, gradient boosting y random forest, y comparamos como se van estabilizando/mejorando a medida que más predictores se van combinando</li>
 <li>Basados en estos cálculos y la teoría que hay por detras, vimos cuando este tipo de técnicas funciona</li>
 <a href = "ejercicios_clase17.pdf"> Ejercicio Boosting </a>
+<a href = "codigo_ensembles_1.py"> Código Ensembles Datos Sintétitocs </a>, <a href = "codigo_ensembles_2.py"> Código Ensembles en Datos Reales </a>, <a href = "spambase.data"> Base de datos spam </a>, <a href = "spambase.names"> Base de datos (nombre de las columnas)</a>
+
 </ul>
 
 <li><strong>Clase 18 (<a href = notas_clase_18.pdf>Notas de Clase</a>). Redes Neuronales I: Introducción</strong></li>
@@ -383,6 +385,26 @@ window.MathJax = {
 <li> Vimos que el problema de optimización, si es que tiene solución, tiene infinitas soluciones</li>
 <li>Vimos que naturalmente gradient descent encuentra soluciones con menor norma $\|\beta\|_2^2$, es decir, una suerte de regularización ridge natural. Para lo anterior usamos harta algebra lineal</li>
 <a href = "ejercicios_clase19.pdf"> Ejercicios Redes Neuronales </a>
+</ul>
+
+<li><strong>Clase 20 (<a href = notas_clase_20.pdf>Métodos de Kernel I</a>). Empezamos a ver métodos de kernel</strong></li>
+<ul><li>La idea es que muchos algoritmos están basados en calcular productos puntos. Podemos reemplazar el producto punto por un Kernel</li>
+<li> Si un producto punto "compara" o "proyecta" información de un vector sobre el otro, entonces la idea es hacer regresión basada en comparaciones (y no basada en aprender características, como en la regresión tradicional).</li>
+<li>Por eso vimos que la regresión con kernels tiene $n$ parametros, uno por cada dato que tenemos.</li>
+<li>Vimos la definición de Kernel como una función bivariada simétrica y definida positiva</li>
+<li>Introdujimos los Espacios de Hilbert con Kernel Reproductor o en ingles Reproducing Kernel Hilbert Spaces (RKHS) que representan el espacio de todos los predictores posibles</li>
+</ul>
+
+<li><strong>Clase 21 (<a href = notas_clase_21.pdf>Métodos de Kernel II</a>). Empezamos a ver métodos de kernel</strong></li>
+<ul><li>Vimos un Ejemplo de un RKHS con todos los detalles</li>
+<li> Estudiamos propiedades de Kernels</li>
+<li>Vimos el teorema de Moore–Aronszajn theorem que dice que cada RKHS tiene un único kernel, y para cada kernel $K$ hay un RKHS cuyo kernel es K. (el nombre Aronszajn fue terriblemente mal escrito en la clase.)</li>
+</ul>
+
+
+<li><strong>Clase 22 (<a href = notas_clase_22.pdf>Métodos de Kernel III</a>). Algebra de kernels</strong></li>
+<ul><li>Vimos un poquito más de Moore–Aronszajn</li>
+<li> Estudiamos algebra de kernels: operaciones que permiten construir kerneles a partir de otros. Quedaron algunas pendientes que veremos en la siguiente clase.</li>
 </ul>
 
 </ul>

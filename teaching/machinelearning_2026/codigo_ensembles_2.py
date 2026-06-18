@@ -11,7 +11,7 @@ from sklearn.datasets import fetch_openml
 
 import os
 # =========================
-# Load dataset
+# Load dataset: base de datos de spam
 # =========================
 
 #os.chdir("ACÁ PONER DIRECTORIO DONDE ESTAN LAS BASE DE DATOS")
@@ -72,7 +72,7 @@ gb = GradientBoostingClassifier(
     random_state=0
 )
 
-# RF needs manual growth
+# Ranfom Forest agregando los árboles de a uno
 def rf_errors(Xtr, ytr, Xte, yte, max_estimators=200):
     rf = RandomForestClassifier(
         n_estimators=1,
@@ -101,7 +101,7 @@ gb_tr, gb_te = staged_errors(gb, Xtr, ytr, Xte, yte)
 rf_tr, rf_te = rf_errors(Xtr, ytr, Xte, yte, n_estimators)
 
 # =========================
-# Build DataFrame
+# DataFrame para gráficos
 # =========================
 def build_df(errors, model_name):
     return pd.DataFrame({

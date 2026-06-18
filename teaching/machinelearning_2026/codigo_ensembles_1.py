@@ -61,7 +61,7 @@ gb.fit(Xtr, ytr)
 gb_tr, gb_te = staged_errors(gb, Xtr, ytr, Xte, yte)
 
 # =========================
-# Random Forest (manual growth)
+# Random Forest: acá hubo un pequeño hackeo para hacer crecer el random forest agregando árboles de a uno
 # =========================
 def rf_errors(Xtr, ytr, Xte, yte, max_estimators=200):
     rf = RandomForestClassifier(
