@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-workshop IDEUV</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Support both $...$ and \(...\)
+                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Support both $$...$$ and \[...\]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            align-items: left;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+        .logo {
+            max-height: 100px;
+            margin: 0 10px;
+        }
+        .title {
+            text-align: left;
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        .speakers {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 30px;
+        }
+        .speaker {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+         .speaker-img {
+            width: 120px; /* Adjust size as needed */
+            height: 120px;
+            border-radius: 50%; /* Circular image */
+            margin-right: 20px; /* Space between image and text */
+            object-fit: cover; /* Ensure the image fits well within the circle */
+        }
+        .speaker-info
+        {
+         display: block;
+         font-weight: normal;
+        }
+        .speakers-photos
+        {
+            display: flex; 
+            flex-direction: column;
+        }
+        .speakers-section {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .abstract {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+        .show-abstract {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+        .schedule-section {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 10px;
+	    }
+	    .location-section {
+            max-width: 800px;
+            width: 100%;
+            font-weight: normal;
+	    }
+	    .schedule-section ul {
+            list-style-type: disc;
+            padding: 0;
+            font-weight: normal; /* Ensure text is not bold */
+            list-style-position: inside;
+	    }
+
+    	.schedule-section li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: normal; /* Ensure list items are not bold */
+	    }
+	
+	    .organisers-section {  max-width: 800px;
+            width: 100%;
+            font-weight: normal;
+	    }
+
+        .location-summary{
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="logo_UV_color.png" alt="University Logo" class="logo">
+        <img src="logo_ideuv_degradado.png" alt="Institute Logo" class="logo">
+    </div>
+    <h1 class="title">Mini-workshop IDEUV  on Statistical Methodology and Machine Learning Methods</h1>
+    <div class = location-summary>Thursday  10th of August 2026; 10:30 - 13:00; Instituto de Estadística, Universidad de Valparaíso</div>
+    <div class="speakers-section">
+        <h2 class="section-title">Speakers</h2>
+    </div>    
+    
+    <script>
+        const speakerNames = [] 
+        function toggleAbstract(element) {
+            const abstract = element.nextElementSibling;
+            if (abstract.style.display === "" || abstract.style.display === "none") {
+                abstract.style.display = "block";
+                element.textContent = "Hide Abstract";
+            } else {
+                abstract.style.display = "none";
+                element.textContent = "Show Abstract";
+            }
+        }
+        function addSpeaker(name, institution, photo, title, abstract) {
+            const speakersSection = document.querySelector('.speakers-section');
+
+            const speakerDiv = document.createElement('div');
+            speakerDiv.classList.add('speaker');
+
+            speakerDiv.innerHTML = `
+                <div class = "speakers-photos">
+                <img src="${photo}" alt="${name}" class="speaker-img">
+                </div>
+                <div class="speaker-info">
+                    <p><strong>${name}.</strong> <em>${institution}</em></p>
+                    <p><strong> ${title} </strong></p>
+                    <p class="show-abstract" onclick="toggleAbstract(this)">Show Abstract</p>
+                    <p class="abstract">${abstract}</p>
+                </div>`;
+
+            speakersSection.appendChild(speakerDiv);
+            speakerNames.push(name);
+        }
+        
+        function addDoubleSpeaker(name1, institution1, photo1, name2, institution2, photo2, title, abstract){
+            const speakersSection = document.querySelector('.speakers-section');
+
+            const speakerDiv = document.createElement('div');
+            speakerDiv.classList.add('speaker');
+
+            speakerDiv.innerHTML = `
+            <div class = "speakers-photos">
+                <img src="${photo1}" alt="${name1}" class="speaker-img">
+                <img src="${photo2}" alt="${name2}" class="speaker-img">
+            </div>
+                <div class="speaker-info">
+                    <p><strong>${name1}.</strong> <em>${institution1}</em></p>
+                    <p><strong>${name2}.</strong> <em>${institution2}</em></p>
+                    <p><strong> ${title} </strong></p>
+                    <p class="show-abstract" onclick="toggleAbstract(this)">Show Abstract</p>
+                    <p class="abstract">${abstract}</p>
+                </div>`;
+
+            speakersSection.appendChild(speakerDiv);
+            speakerNames.push(name);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            addSpeaker('Wenkai Xu', 'Department of Statistics, University of Warwirk', 'wenkai.jpeg', "TBA", 
+            'Abstract');
+
+          addSpeaker('Tamara Fernández', 'Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibañez', 'tamara.jpg','TBA.', "Abstract");
+             addSpeaker("TBA",'TBA', "TBA", 'TBA', "Abstract");
+           
+            MathJax.typeset();
+        
+        });
+        
+
+    </script>
+    
+    <div class = "schedule-section"> 
+    <h2 class="section-title">Time-Table</h2> <!-- Left-aligned title for the speakers section -->
+    <ul>
+    <li> 10:30-11:10: TBA</li>
+    <li>11:10-11:50: Tamara Fernández</li>
+    <li>11:50-12:10: Coffee Break</li>
+    <li>12:10-12:50: Wenkai Xu</li>
+</ul></div>
+    <div class = location-section> 
+    <h2 class="section-title">Address</h2>
+    Auditorio de la Facultad de Ciencias, <br>
+    Facultad de Ciencias, Universidad de Valparaíso <br>
+    Avenida Gran Bretania 1111, <br>
+    Valparaíso
+    
+    
+    </div>
+    
+    <div class = organisers-section> 
+    <h2 class="section-title">Organizadores</h2>    
+    Nicolás Rivera - IDEUV <br>
+    Contacto: secretaria dot ideuv at uv dot cl.
+    </div>
+
+    
+
+</body>
+</html>
+
+
+
