@@ -16,13 +16,15 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 <br />
 
 <strong> Activities</strong> <br>
-<a href="https://nnrivera.github.io/workshops/encuentro_doctorado_2026"> Encuentro Doctorado en Estadística UV 2026 (in spanish) </a> 
+<a href="https://nnrivera.github.io/workshops/2026_miniworkshop_ideuv"> Mini-workshop IDEUV  on Statistical Methodology and Machine Learning Methods</a> 2026 
 <br>
-<a href="https://nnrivera.github.io/workshops/workshop_ideuv_2024"> Mini-workshop IDEUV: Despedida Año Académico (in spanish) 2024</a> 
+<a href="https://nnrivera.github.io/workshops/2026_encuentro_doctorado"> Encuentro Doctorado en Estadística UV</a> 2026 (in spanish) 
 <br>
-<a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> Reading Group 2023-2: High-Dimensional Statistics (in spanish)</a>
+<a href="https://nnrivera.github.io/workshops/2024_workshop_ideuv"> Mini-workshop IDEUV: Despedida Año Académico</a> 2024 (in spanish) 
 <br>
-<a href="https://nnrivera.github.io/teaching/biostochastics2024"> Escuela de Verano - BioEstocástica 2024: Introduction to Evolutionary Games</a> 
+<a href="https://nnrivera.github.io/ReadingGroup/HDS_2_2023.html"> Reading Group 2023-2: High-Dimensional Statistics</a> (in spanish)
+<br>
+<a href="https://nnrivera.github.io/teaching/biostochastics2024"> Escuela de Verano - BioEstocástica 2024: Introduction to Evolutionary Games</a> (in spanish)
 <br>
 
 <strong> Publications </strong>
