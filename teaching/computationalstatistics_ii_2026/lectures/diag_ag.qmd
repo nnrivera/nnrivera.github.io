@@ -1,0 +1,1523 @@
+
+
+``` {ojs}
+//| echo: false
+
+d3 = require("d3@7")
+
+viewof pars = Inputs.form(
+  {
+    a: Inputs.range([-1, 1], {
+      value: 0.10,
+      step: 0.01,
+      label: "a"
+    }),
+
+    b: Inputs.range([-2, 2], {
+      value: 0.50,
+      step: 0.05,
+      label: "b"
+    }),
+
+    c: Inputs.range([-3, 3], {
+      value: -1,
+      step: 0.05,
+      label: "c"
+    }),
+
+    d: Inputs.range([-3, 3], {
+      value: 0,
+      step: 0.05,
+      label: "d"
+    }),
+
+    alpha: Inputs.range([0.01, 0.49], {
+      value: 0.20,
+      step: 0.01,
+      label: "α"
+    }),
+
+    beta: Inputs.range([0.51, 0.99], {
+      value: 0.80,
+      step: 0.01,
+      label: "β"
+    })
+  },
+
+  {
+    template: ({
+      a,
+      b,
+      c,
+      d,
+      alpha,
+      beta
+    }) => html`
+
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(3, minmax(150px, 1fr));
+        gap:0.15rem 0.8rem;
+        align-items:end;
+      ">
+
+        ${a}
+        ${b}
+        ${c}
+
+        ${d}
+        ${alpha}
+        ${beta}
+
+      </div>
+    `
+  }
+)
+
+mutable xk = 0
+
+mutable zoomFactor = 1
+
+```
+
+```{ojs}
+//| echo: false
+
+armijo_plot = {
+
+  const A = pars.a
+  const B = pars.b
+  const C = pars.c
+  const D = pars.d
+
+  const alpha = pars.alpha
+  const beta  = pars.beta
+
+
+  // ============================================================
+  // Function and derivative
+  // ============================================================
+
+  const f = x =>
+    A * x ** 3 +
+    B * x ** 2 +
+    C * x +
+    D
+
+
+  const df = x =>
+    3 * A * x ** 2 +
+    2 * B * x +
+    C
+
+
+  const x0 = xk
+  const f0 = f(x0)
+  const g  = df(x0)
+
+
+  // ============================================================
+  // Tangent and Armijo-Goldstein boundaries
+  // ============================================================
+
+  const tangent = x =>
+    f0 +
+    g * (x - x0)
+
+
+  const armijo = x =>
+    f0 +
+    alpha * g * (x - x0)
+
+
+  const goldstein = x =>
+    f0 +
+    beta * g * (x - x0)
+
+
+  // ============================================================
+  // Is x an acceptable next point?
+  //
+  // Goldstein:
+  //
+  //   f(x) >= f(x_k) + beta f'(x_k)(x-x_k)
+  //
+  // Armijo:
+  //
+  //   f(x) <= f(x_k) + alpha f'(x_k)(x-x_k)
+  //
+  // We also require movement in the descent direction.
+  // ============================================================
+
+  const acceptable = x => {
+
+    if (
+      g * (x - x0) >= 0
+    ) {
+      return false
+    }
+
+
+    const fx =
+      f(x)
+
+
+    const lower =
+      goldstein(x)
+
+
+    const upper =
+      armijo(x)
+
+
+    const tol =
+      1e-10 *
+      (
+        1 +
+        Math.abs(f0) +
+        Math.abs(fx)
+      )
+
+
+    return (
+      fx >= lower - tol &&
+      fx <= upper + tol
+    )
+  }
+
+
+  // ============================================================
+  // Find first Armijo-Goldstein interval automatically
+  // ============================================================
+
+  const eps = 1e-8
+
+  let direction = 0
+
+  let firstGood = null
+  let lastGood  = null
+  let foundEnd  = false
+
+
+  if (
+    Math.abs(g) > eps
+  ) {
+
+    // Gradient descent direction
+    direction =
+      -Math.sign(g)
+
+
+    let searchRadius =
+      0.5
+
+
+    for (
+      let round = 0;
+      round < 12;
+      round++
+    ) {
+
+      const N = 1600
+
+      firstGood = null
+      lastGood  = null
+      foundEnd  = false
+
+      let inside = false
+
+
+      for (
+        let i = 1;
+        i <= N;
+        i++
+      ) {
+
+        const distance =
+          searchRadius *
+          i / N
+
+
+        const x =
+          x0 +
+          direction * distance
+
+
+        const ok =
+          acceptable(x)
+
+
+        if (
+          ok &&
+          firstGood === null
+        ) {
+          firstGood = distance
+        }
+
+
+        if (ok) {
+
+          lastGood = distance
+          inside = true
+
+        } else if (inside) {
+
+          foundEnd = true
+          break
+        }
+      }
+
+
+      if (
+        firstGood !== null &&
+        foundEnd
+      ) {
+        break
+      }
+
+
+      searchRadius *= 2
+    }
+  }
+
+
+  // ============================================================
+  // Automatic x window
+  // ============================================================
+
+  let xDomain
+
+
+  if (
+    Math.abs(g) < eps
+  ) {
+
+    xDomain = [
+      x0 - 3,
+      x0 + 3
+    ]
+
+
+  } else if (
+    firstGood !== null
+  ) {
+
+    const reach =
+      Math.max(
+        1.5,
+        1.25 * lastGood
+      )
+
+
+    const backwards =
+      Math.max(
+        0.5,
+        Math.min(
+          2,
+          0.18 * reach
+        )
+      )
+
+
+    if (
+      direction > 0
+    ) {
+
+      xDomain = [
+        x0 - backwards,
+        x0 + reach
+      ]
+
+    } else {
+
+      xDomain = [
+        x0 - reach,
+        x0 + backwards
+      ]
+    }
+
+
+  } else {
+
+    xDomain = [
+      x0 - 4,
+      x0 + 4
+    ]
+  }
+
+
+  // ============================================================
+  // Manual zoom
+  //
+  // zoomFactor = 1   automatic framing
+  // zoomFactor > 1   zoom out
+  // zoomFactor < 1   zoom in
+  //
+  // The asymmetry of the automatic view is preserved.
+  // ============================================================
+
+  const leftDistance =
+    x0 - xDomain[0]
+
+
+  const rightDistance =
+    xDomain[1] - x0
+
+
+  xDomain = [
+
+    x0 -
+      zoomFactor *
+      leftDistance,
+
+    x0 +
+      zoomFactor *
+      rightDistance
+  ]
+
+
+  // ============================================================
+  // Polynomial data
+  // ============================================================
+
+  const n = 900
+
+
+  const curve =
+    d3.range(n).map(i => {
+
+      const x =
+        xDomain[0] +
+        (
+          xDomain[1] -
+          xDomain[0]
+        ) *
+        i / (n - 1)
+
+
+      return {
+        x: x,
+        y: f(x)
+      }
+    })
+
+
+  // ============================================================
+  // Cone
+  //
+  // Draw only in the descent direction.
+  // ============================================================
+
+  const coneEdge =
+    direction > 0
+      ? xDomain[1]
+      : xDomain[0]
+
+
+  const cone =
+    Math.abs(g) > eps
+      ? d3.range(400).map(i => {
+
+          const t =
+            i / 399
+
+
+          const x =
+            x0 +
+            t *
+            (coneEdge - x0)
+
+
+          return {
+
+            x: x,
+
+            lower:
+              goldstein(x),
+
+            upper:
+              armijo(x)
+          }
+        })
+      : []
+
+
+  // ============================================================
+  // Find acceptable parts of polynomial
+  // ============================================================
+
+  const acceptedSegments = []
+
+  let currentSegment = []
+
+
+  for (
+    const p of curve
+  ) {
+
+    if (
+      acceptable(p.x)
+    ) {
+
+      currentSegment.push(p)
+
+    } else if (
+      currentSegment.length > 0
+    ) {
+
+      acceptedSegments.push(
+        currentSegment
+      )
+
+      currentSegment = []
+    }
+  }
+
+
+  if (
+    currentSegment.length > 0
+  ) {
+
+    acceptedSegments.push(
+      currentSegment
+    )
+  }
+
+
+  // ============================================================
+  // y range
+  // ============================================================
+
+  const yValues = [
+
+    ...curve.map(
+      d => d.y
+    ),
+
+    tangent(
+      xDomain[0]
+    ),
+
+    tangent(
+      xDomain[1]
+    ),
+
+    ...cone.flatMap(
+      d => [
+        d.lower,
+        d.upper
+      ]
+    )
+
+  ].filter(
+    Number.isFinite
+  )
+
+
+  let [yMin, yMax] =
+    d3.extent(yValues)
+
+
+  if (
+    yMin === yMax
+  ) {
+
+    yMin -= 1
+    yMax += 1
+  }
+
+
+  const yPad =
+    0.08 *
+    (yMax - yMin)
+
+
+  const yDomain = [
+
+    yMin - yPad,
+
+    yMax + yPad
+
+  ]
+
+
+  // ============================================================
+  // SVG setup
+  //
+  // Smaller dimensions for RevealJS
+  // ============================================================
+
+  const W =
+    Math.max(
+      400,
+      Math.min(
+        width,
+        900
+      )
+    )
+
+
+  const H = 400
+
+
+  const margin = {
+
+    top: 15,
+
+    right: 25,
+
+    bottom: 35,
+
+    left: 50
+
+  }
+
+
+  const xs =
+    d3.scaleLinear()
+      .domain(xDomain)
+      .range([
+        margin.left,
+        W - margin.right
+      ])
+
+
+  const ys =
+    d3.scaleLinear()
+      .domain(yDomain)
+      .range([
+        H - margin.bottom,
+        margin.top
+      ])
+
+
+  const svg =
+    d3.create("svg")
+
+      .attr(
+        "viewBox",
+        `0 0 ${W} ${H}`
+      )
+
+      .style(
+        "width",
+        "100%"
+      )
+
+      .style(
+        "height",
+        "auto"
+      )
+
+      .style(
+        "overflow",
+        "visible"
+      )
+
+
+  // ============================================================
+  // Axes
+  // ============================================================
+
+  svg.append("g")
+
+    .attr(
+      "transform",
+      `translate(
+        0,
+        ${H - margin.bottom}
+      )`
+    )
+
+    .call(
+      d3.axisBottom(xs)
+        .ticks(8)
+    )
+
+
+  svg.append("g")
+
+    .attr(
+      "transform",
+      `translate(
+        ${margin.left},
+        0
+      )`
+    )
+
+    .call(
+      d3.axisLeft(ys)
+        .ticks(6)
+    )
+
+
+  // ============================================================
+  // Clip plot to axes region
+  // ============================================================
+
+  const clipId =
+    "armijo-clip-" +
+    Math.random()
+      .toString(36)
+      .slice(2)
+
+
+  svg.append("defs")
+
+    .append("clipPath")
+
+    .attr(
+      "id",
+      clipId
+    )
+
+    .append("rect")
+
+    .attr(
+      "x",
+      margin.left
+    )
+
+    .attr(
+      "y",
+      margin.top
+    )
+
+    .attr(
+      "width",
+      W -
+      margin.left -
+      margin.right
+    )
+
+    .attr(
+      "height",
+      H -
+      margin.top -
+      margin.bottom
+    )
+
+
+  const drawing =
+    svg.append("g")
+
+      .attr(
+        "clip-path",
+        `url(#${clipId})`
+      )
+
+
+  // ============================================================
+  // Armijo-Goldstein cone
+  // ============================================================
+
+  if (
+    cone.length > 0
+  ) {
+
+    const area =
+      d3.area()
+
+        .x(
+          d => xs(d.x)
+        )
+
+        .y0(
+          d => ys(d.lower)
+        )
+
+        .y1(
+          d => ys(d.upper)
+        )
+
+
+    drawing.append("path")
+
+      .datum(cone)
+
+      .attr(
+        "d",
+        area
+      )
+
+      .attr(
+        "fill",
+        "#56B4E9"
+      )
+
+      .attr(
+        "opacity",
+        0.16
+      )
+  }
+
+
+  // ============================================================
+  // Tangent
+  // ============================================================
+
+  const tangentData = [
+
+    {
+      x: xDomain[0],
+      y: tangent(
+        xDomain[0]
+      )
+    },
+
+    {
+      x: xDomain[1],
+      y: tangent(
+        xDomain[1]
+      )
+    }
+
+  ]
+
+
+  drawing.append("path")
+
+    .datum(
+      tangentData
+    )
+
+    .attr(
+      "d",
+
+      d3.line()
+
+        .x(
+          d => xs(d.x)
+        )
+
+        .y(
+          d => ys(d.y)
+        )
+    )
+
+    .attr(
+      "fill",
+      "none"
+    )
+
+    .attr(
+      "stroke",
+      "#777"
+    )
+
+    .attr(
+      "stroke-width",
+      2
+    )
+
+    .attr(
+      "stroke-dasharray",
+      "7,5"
+    )
+
+
+  // ============================================================
+  // Alpha boundary
+  // ============================================================
+
+  if (
+    cone.length > 0
+  ) {
+
+    drawing.append("path")
+
+      .datum(cone)
+
+      .attr(
+        "d",
+
+        d3.line()
+
+          .x(
+            d => xs(d.x)
+          )
+
+          .y(
+            d => ys(d.upper)
+          )
+      )
+
+      .attr(
+        "fill",
+        "none"
+      )
+
+      .attr(
+        "stroke",
+        "#0072B2"
+      )
+
+      .attr(
+        "stroke-width",
+        2.5
+      )
+
+
+    // ==========================================================
+    // Beta boundary
+    // ==========================================================
+
+    drawing.append("path")
+
+      .datum(cone)
+
+      .attr(
+        "d",
+
+        d3.line()
+
+          .x(
+            d => xs(d.x)
+          )
+
+          .y(
+            d => ys(d.lower)
+          )
+      )
+
+      .attr(
+        "fill",
+        "none"
+      )
+
+      .attr(
+        "stroke",
+        "#D55E00"
+      )
+
+      .attr(
+        "stroke-width",
+        2.5
+      )
+  }
+
+
+  // ============================================================
+  // Polynomial
+  // ============================================================
+
+  drawing.append("path")
+
+    .datum(curve)
+
+    .attr(
+      "d",
+
+      d3.line()
+
+        .x(
+          d => xs(d.x)
+        )
+
+        .y(
+          d => ys(d.y)
+        )
+    )
+
+    .attr(
+      "fill",
+      "none"
+    )
+
+    .attr(
+      "stroke",
+      "currentColor"
+    )
+
+    .attr(
+      "stroke-width",
+      3
+    )
+
+
+  // ============================================================
+  // Highlight acceptable region
+  // ============================================================
+
+  for (
+    const segment
+    of acceptedSegments
+  ) {
+
+    drawing.append("path")
+
+      .datum(segment)
+
+      .attr(
+        "d",
+
+        d3.line()
+
+          .x(
+            d => xs(d.x)
+          )
+
+          .y(
+            d => ys(d.y)
+          )
+      )
+
+      .attr(
+        "fill",
+        "none"
+      )
+
+      .attr(
+        "stroke",
+        "#009E73"
+      )
+
+      .attr(
+        "stroke-width",
+        7
+      )
+  }
+
+
+  // ============================================================
+  // Selected point x_k
+  // ============================================================
+
+  drawing.append("circle")
+
+    .attr(
+      "cx",
+      xs(x0)
+    )
+
+    .attr(
+      "cy",
+      ys(f0)
+    )
+
+    .attr(
+      "r",
+      6
+    )
+
+    .attr(
+      "fill",
+      "#CC79A7"
+    )
+
+    .attr(
+      "stroke",
+      "white"
+    )
+
+    .attr(
+      "stroke-width",
+      2
+    )
+
+
+  // ============================================================
+  // Vertical guide
+  // ============================================================
+
+  drawing.append("line")
+
+    .attr(
+      "x1",
+      xs(x0)
+    )
+
+    .attr(
+      "x2",
+      xs(x0)
+    )
+
+    .attr(
+      "y1",
+      margin.top
+    )
+
+    .attr(
+      "y2",
+      H - margin.bottom
+    )
+
+    .attr(
+      "stroke",
+      "#999"
+    )
+
+    .attr(
+      "stroke-dasharray",
+      "3,5"
+    )
+
+    .attr(
+      "opacity",
+      0.45
+    )
+
+
+  // ============================================================
+  // Click layer
+  //
+  // Important:
+  // changing x_k does NOT reset the zoom.
+  // ============================================================
+
+  svg.append("rect")
+
+    .attr(
+      "x",
+      margin.left
+    )
+
+    .attr(
+      "y",
+      margin.top
+    )
+
+    .attr(
+      "width",
+      W -
+      margin.left -
+      margin.right
+    )
+
+    .attr(
+      "height",
+      H -
+      margin.top -
+      margin.bottom
+    )
+
+    .attr(
+      "fill",
+      "transparent"
+    )
+
+    .style(
+      "cursor",
+      "crosshair"
+    )
+
+    .on(
+      "click",
+
+      event => {
+
+        const [px] =
+          d3.pointer(
+            event,
+            svg.node()
+          )
+
+
+        const newX =
+          xs.invert(px)
+
+
+        mutable xk =
+          newX
+      }
+    )
+
+
+  // ============================================================
+  // Text describing first acceptable interval
+  // ============================================================
+
+  let regionText
+
+
+  if (
+    Math.abs(g) < eps
+  ) {
+
+    regionText =
+      "f′(xₖ) ≈ 0: xₖ is approximately stationary."
+
+
+  } else if (
+    firstGood !== null
+  ) {
+
+    const x1 =
+      x0 +
+      direction *
+      firstGood
+
+
+    const x2 =
+      x0 +
+      direction *
+      lastGood
+
+
+    const low =
+      Math.min(
+        x1,
+        x2
+      )
+
+
+    const high =
+      Math.max(
+        x1,
+        x2
+      )
+
+
+    regionText =
+      `Acceptable interval: x ∈ [${low.toFixed(3)}, ${high.toFixed(3)}]`
+
+
+  } else {
+
+    regionText =
+      "No Armijo-Goldstein interval found in the automatic search."
+  }
+
+
+  // ============================================================
+  // Information row
+  // ============================================================
+
+  const info = html`
+
+    <div style="
+      display:flex;
+      flex-wrap:wrap;
+      gap:0.4rem 1rem;
+      align-items:center;
+      margin-top:0.25rem;
+      font-size:0.76em;
+    ">
+
+      <span>
+        <b>xₖ</b> =
+        ${x0.toFixed(3)}
+      </span>
+
+
+      <span>
+        <b>f(xₖ)</b> =
+        ${f0.toFixed(3)}
+      </span>
+
+
+      <span>
+        <b>f′(xₖ)</b> =
+        ${g.toFixed(3)}
+      </span>
+
+
+      <span style="
+        color:#0072B2;
+      ">
+        ━ α bound
+      </span>
+
+
+      <span style="
+        color:#D55E00;
+      ">
+        ━ β bound
+      </span>
+
+
+      <span style="
+        color:#009E73;
+      ">
+        ━ acceptable
+      </span>
+
+
+      <span>
+        ${regionText}
+      </span>
+
+    </div>
+  `
+
+
+  // ============================================================
+  // Controls
+  //
+  // Manual x_k entry
+  // Zoom − / +
+  // Reset
+  // ============================================================
+
+  const controls = html`
+
+    <div style="
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:0.4rem;
+      margin-top:0.25rem;
+      margin-bottom:0.15rem;
+      font-size:0.82em;
+    ">
+
+
+      <label style="
+        display:flex;
+        align-items:center;
+        gap:0.3rem;
+      ">
+
+        <b>xₖ =</b>
+
+        <input
+          data-xk-input
+          type="number"
+          step="any"
+          value=${x0}
+          style="
+            width:5.5rem;
+            height:2rem;
+            padding:0 0.35rem;
+            font-size:0.95em;
+          "
+        >
+
+      </label>
+
+
+      <button
+        data-action="set-xk"
+        type="button"
+        style="
+          height:2rem;
+          padding:0 0.6rem;
+          cursor:pointer;
+        "
+      >
+        Set
+      </button>
+
+
+      <span style="
+        width:0.4rem;
+      ">
+      </span>
+
+
+      <button
+        data-action="zoom-out"
+        type="button"
+        title="Zoom out"
+        style="
+          width:2.2rem;
+          height:2rem;
+          font-size:1.2rem;
+          cursor:pointer;
+        "
+      >
+        −
+      </button>
+
+
+      <button
+        data-action="zoom-in"
+        type="button"
+        title="Zoom in"
+        style="
+          width:2.2rem;
+          height:2rem;
+          font-size:1.2rem;
+          cursor:pointer;
+        "
+      >
+        +
+      </button>
+
+
+      <button
+        data-action="reset"
+        type="button"
+        title="Return to automatic view"
+        style="
+          height:2rem;
+          padding:0 0.65rem;
+          cursor:pointer;
+        "
+      >
+        Reset
+      </button>
+
+
+      <span style="
+        margin-left:0.25rem;
+        opacity:0.7;
+      ">
+
+        Zoom:
+        ${zoomFactor.toFixed(3)}×
+
+      </span>
+
+    </div>
+  `
+
+
+  // ============================================================
+  // Manual x_k
+  // ============================================================
+
+  const xInput =
+    controls.querySelector(
+      "[data-xk-input]"
+    )
+
+
+  const setButton =
+    controls.querySelector(
+      '[data-action="set-xk"]'
+    )
+
+
+  const setXk = () => {
+
+    const newX =
+      Number(
+        xInput.value
+      )
+
+
+    if (
+      Number.isFinite(newX)
+    ) {
+
+      // Preserve current zoom
+      mutable xk =
+        newX
+    }
+  }
+
+
+  setButton.addEventListener(
+    "click",
+    setXk
+  )
+
+
+  // Enter also sets x_k
+  xInput.addEventListener(
+    "keydown",
+
+    event => {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        setXk()
+      }
+    }
+  )
+
+
+  // ============================================================
+  // Zoom out
+  // ============================================================
+
+  controls
+    .querySelector(
+      '[data-action="zoom-out"]'
+    )
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        mutable zoomFactor =
+          Math.min(
+            zoomFactor * 1.6,
+            100
+          )
+      }
+    )
+
+
+  // ============================================================
+  // Zoom in
+  // ============================================================
+
+  controls
+    .querySelector(
+      '[data-action="zoom-in"]'
+    )
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        mutable zoomFactor =
+          Math.max(
+            zoomFactor / 1.6,
+            0.001
+          )
+      }
+    )
+
+
+  // ============================================================
+  // Reset zoom only
+  // ============================================================
+
+  controls
+    .querySelector(
+      '[data-action="reset"]'
+    )
+    .addEventListener(
+
+      "click",
+
+      () => {
+
+        mutable zoomFactor =
+          1
+      }
+    )
+
+
+  // ============================================================
+  // Return widget
+  // ============================================================
+
+  return html`
+
+    <div style="
+      max-width:1400px;
+      margin:0 auto;
+    ">
+
+      ${svg.node()}
+
+      ${controls}
+
+      ${info}
+
+      <div style="
+        margin-top:0.25rem;
+        font-size:0.7em;
+        opacity:0.7;
+      ">
+
+        Click on the plot or enter a value manually to choose
+        <i>x</i><sub>k</sub>.
+        Use − to see farther away and + to zoom in.
+
+      </div>
+
+    </div>
+  `
+}
+```
+
+

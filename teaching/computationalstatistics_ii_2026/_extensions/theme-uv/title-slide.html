@@ -1,0 +1,29 @@
+<section id="title-slide" class="uv-title-slide">
+
+  <div class="uv-title-text">
+
+    $if(course)$
+      <p class="uv-course">$course$</p>
+    $endif$
+
+    $if(title)$
+      <p class="uv-title">$title$</p>
+    $endif$
+
+    $if(author)$
+      <p class="uv-author">
+        $for(author)$
+          $author$$sep$,
+        $endfor$
+      </p>
+    $endif$
+
+  </div>
+
+  <div class="uv-gradient"></div>
+  <div class="uv-logos">
+    <img src="../assets/logo_uv.png" class="uv-logo">
+    <img src="../assets/imagotipo.svg" class="uv-imagotipo">
+  </div>
+
+</section>

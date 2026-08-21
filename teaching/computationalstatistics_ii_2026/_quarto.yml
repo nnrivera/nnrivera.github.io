@@ -1,0 +1,8 @@
+project:
+  type: default
+
+format:
+  revealjs:
+    theme:
+      - simple
+      - theme.scss

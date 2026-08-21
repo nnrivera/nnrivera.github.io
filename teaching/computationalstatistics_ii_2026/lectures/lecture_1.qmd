@@ -1,0 +1,1516 @@
+---
+course: "DOCE-202 Computational Statistics II"
+title: "Unit 1: Advanced Optimization"
+author: "Nicolás Rivera"
+format: 
+    theme-uv-revealjs:
+        embed-resources: false
+        toc: true
+        toc-depth: 1
+        width: 1600    # Default is 1050. Larger width = smaller text (1600,900), (1760,990),(1920,1080) (2240,1260), (1840, 1035), (2400, 1350)
+        height: 900 # Default is 700. Larger height = smaller text
+        #center: true #this is buggy because I overwrite a lot of reveal stuff.. I'll have to redesign this. 
+
+
+---
+
+$\newcommand{\R}{\mathbb{R}}$
+
+# Fundamentals of Nonlinear Optimization I: Basic Multivariate Calculus
+
+
+## Euclidian Norm
+
+::: {#def-euclidean-norm name="Euclidean Norm -$L_2$ Norm"}
+For a vector ${x} = (x_1, x_2, \dots, x_n) \in \R^n$, the **Euclidean norm** (or $2$-norm) is defined as:
+
+::: {.eqbox}
+$$ \|{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2} = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2} $$
+:::
+
+Some people writes $\| \cdot \|$ if it is clear from the context that we are using the Euclidean norm
+:::
+
+
+::: {.box title = "Properties"}
+For any ${x}, {y} \in \R^n$ and scalar $\alpha \in \R$:
+
+1. **Non-negativity:** $\|{x}\|_2 \ge 0$, and $\|{x}\|_2 = 0 \iff {x} = \mathbf{0}$.
+2. **Absolute Homogeneity:** $\|\alpha {x}\|_2 = |\alpha| \|{x}\|_2$.
+3. **Triangle Inequality:** $\|{x} + {y}\|_2 \le \|{x}\|_2 + \|\mathbf{y}\|_2$.
+:::
+
+## Inner Product
+
+::: {#def-inner-product name="Inner Product (Dot Product)"}
+
+For two vectors ${x} = (x_1, x_2, \dots, x_n)$ and
+${y} = (y_1, y_2, \dots, y_n)$ in $\R^n$, the **inner product** (or **dot product**) is defined as:
+
+::: {.eqbox}
+$$
+\langle {x}, {y} \rangle
+=
+\sum_{i=1}^{n} x_i y_i
+=
+x_1y_1 + x_2y_2 + \cdots + x_ny_n.
+$$
+:::
+
+The Euclidean norm is induced by the inner product:
+
+::: {.eqbox}
+$$
+\|{x}\|_2 = \sqrt{\langle {x}, {x}\rangle }.
+$$
+:::
+:::
+
+::: {.box title="Properties"}
+For any ${x}, {y}, {z} \in \R^n$ and scalar $\alpha \in \R$:
+
+1. **Symmetry:** $\langle {x}, {y} \rangle = \langle {y}, {x} \rangle$.
+2. **Linearity:** $\langle \alpha {x} + {y}, {z} \rangle = \alpha \langle {x}, {z} \rangle + \langle {y}, {z} \rangle$.
+3. **Positive Definiteness:** $\langle {x}, {x} \rangle \ge 0$, and $\langle {x}, {x} \rangle = 0 \iff {x} = \mathbf{0}$.
+4. **Cauchy--Schwarz Inequality:** $|\langle {x}, {y} \rangle| \le \|{x}\|_2 \|{y}\|_2$.
+:::
+
+## Smoothness: Continuity
+
+
+::: {#def-Continuity name="Continuity"}
+A function $F:U\subseteq \R^n \to \R^m$ is called continuous in $x$ if for every sequence $x_k\in \R^n$ wuch that $\lim_{k\to \infty}\|x_k-x\|= 0$, then
+$$\lim_{k\to \infty} \|F(X_k)- F(x)\|=0$$
+:::
+
+A stronger notion is being Lipschitz continuous
+
+::: {#def-Lipschitz-Continuity name="Lipschitz Continuity"}
+A function $F:U\subseteq \R^n \to \R^m$ is called Lispchitz continuous if there exists $L>0$ such that
+$$ \|F(x_k)- F(x)\|\leq L \|x_k-x\|$$
+:::
+
+The notion of Lipschitz continuity is a sort of **practical continuity**: while nobody discuss that jumps are clear discontinuities, there are other type of discontinuities
+
+## 2. The Pathological Case
+
+Consider the function $f(t) = \sin\left(\frac{1}{1-t}\right)$ on $[0,1)$. 
+Define $f(1) = 0$. 
+
+Even without a jump, as $t \to 1$, the function compresses an infinite number of waves into a finite space. It lacks a limit at $1$.
+<br>
+<br>
+<br>
+<br>
+
+```{ojs}
+//| echo: false
+//| fig-align: center
+
+html`<div style="display: flex; justify-content: center; width: 100%;">
+${Plot.plot({
+  width: 900,
+  height: 420,
+  y: {domain: [-1.2, 1.2], label: "f(t)"},
+  x: {domain: [0.9, 1], label: "t"},
+  marks: [
+    Plot.line(d3.range(0.9, 0.9995, 0.0001).map(t => ({t, y: Math.sin(1/(1-t))})), {
+      x: "t", y: "y", stroke: "#333", strokeWidth: 1
+    }),
+    Plot.ruleX([1], {stroke: "red", strokeDasharray: "4,4"})
+  ]
+})}
+</div>`
+```
+
+In practice, we won't find functions as bad as the previous one, but still function can be very wavy, making it hard of us to predict the behaviour in a vecinity. This is awful for algorithm that work locally, as they need a predictable of the function around the current point.
+
+## Intuition for Lipschitz continuity
+
+ Consider the function $t\to \sin(ct)$
+
+```{ojs}
+//| echo: false
+
+// 1. The Inputs (Stacked at the top)
+viewof c = Inputs.range([0.1, 5], {
+  value: 1.0, step: 0.1, label: "Wave Frequency (c):"
+});
+
+viewof L = Inputs.range([0.1, 5], {
+  value: 1.5, step: 0.1, label: "Lipschitz Limit (L):"
+});
+
+viewof x0 = Inputs.range([0, 10], {
+  value: 5, step: 0.1, label: "Test Point (x₀):"
+});
+
+// 2. The Math for f(t) = sin(c * t)
+// The maximum derivative of sin(ct) is exactly c.
+maxSlope = c; 
+isLipschitz = maxSlope <= L;
+
+data = d3.range(0, 10.05, 0.05).map(t => {
+  let ft = Math.sin(c * t);
+  let coneUpper = Math.sin(c * x0) + L * Math.abs(t - x0);
+  let coneLower = Math.sin(c * x0) - L * Math.abs(t - x0);
+  return { t, ft, coneUpper, coneLower };
+});
+
+// 3. The Plot (Centered below the sliders)
+html`<div style="display: flex; justify-content: center; width: 100%; margin-top: 15px;">
+  ${Plot.plot({
+    width: 900,
+    height: 420, 
+    
+    style: {
+      fontSize: "18px",     
+      fontFamily: "system-ui, sans-serif" 
+    },
+    
+    // Domain widened to [-2, 2] so the standard sine wave (-1 to 1) fits nicely
+    y: {domain: [-2, 2], label: "f(t)", labelOffset: 45},
+    x: {domain: [0, 10], label: "t"},
+    grid: true,
+    
+    marks: [
+      Plot.areaY(data, {
+        x: "t", y1: "coneLower", y2: "coneUpper", 
+        fill: isLipschitz ? "#bfdbfe" : "#fecaca", fillOpacity: 0.5
+      }),
+      Plot.line(data, {
+        x: "t", y: "ft", 
+        stroke: isLipschitz ? "#16a34a" : "#dc2626", strokeWidth: 3
+      }),
+      Plot.dot([{t: x0, y: Math.sin(c * x0)}], {
+        x: "t", y: "y", r: 8, fill: "#1e293b"
+      }),
+      Plot.text([{t: 0.2, y: 1.8}], {
+        x: "t", y: "y", 
+        text: () => `Max Slope: ${maxSlope.toFixed(2)} | Threshold: ${L.toFixed(2)}`,
+        fontSize: 22, 
+        fontWeight: "bold", 
+        textAnchor: "start"
+      }),
+      Plot.text([{t: 0.2, y: 1.5}], {
+        x: "t", y: "y", 
+        text: () => isLipschitz ? "Status: L-Lipschitz Maintained" : "Status: Cone Pierced! (Function too wavy)",
+        fontSize: 22, 
+        fontWeight: "bold", 
+        textAnchor: "start",
+        fill: isLipschitz ? "#16a34a" : "#dc2626"
+      })
+    ]
+  })}
+</div>`
+```
+
+## Smoothness: Derivative - Jacobian
+
+::: {#def-Jacobian name="Differentiability and Jacobian"}
+A function $F:U\subseteq \R^n \to \R^m$ is called differentiable in $x$ if there exists a linear mapping $F'_x:\R^n \to \R^m$ with
+
+$$\lim_{\|h\|\to 0} \frac{\|F(x+h)-F(x)-F'_x(h)\|}{\|h\|}=0$$
+
+The matrix representation of $F'_x$ is called the Jacobi matrix of $F$, or **Jacobian**, which is given by
+
+$$J_F = \begin{bmatrix}
+\frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \cdots & \frac{\partial f_1}{\partial x_n} \\[1ex]
+\frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \cdots & \frac{\partial f_2}{\partial x_n} \\[1ex]
+\vdots & \vdots & \ddots & \vdots \\[1ex]
+\frac{\partial f_m}{\partial x_1} & \frac{\partial f_m}{\partial x_2} & \cdots & \frac{\partial f_m}{\partial x_n}
+\end{bmatrix}$$
+:::
+
+Then $F'_x = J_F(x)$.
+
+
+## Smoothness: Gradient and Hessian
+
+In the particular case that $m=1$, the transpose of the Jacobian is the so-called **gradient** $\nabla$:
+
+::: {.box title = "Gradient"}
+$$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\[1ex] \frac{\partial f}{\partial x_2} \\[1ex] \vdots \\[1ex] \frac{\partial f}{\partial x_n} \end{bmatrix}$$
+:::
+
+but in general writting gradient as a row or column has little importance. 
+
+* We say that $f$ is continuously differentiable if $\nabla f$ is a continuous function
+* We say that $f$ is $L$-smooth if $\nabla f$ is Lipschitz continuous with constant $L$
+
+##  Smoothness: Directional Derivative
+
+Another important concept is the **Directional Derivative**
+
+
+:::{.box title = "Directional Derivative"}
+ Given a vector $v\in \R^n$ we can show that
+$$\lim_{\lambda\to 0} \frac{f(x+\lambda v)-f(x)}{\lambda} = \langle \nabla f(x) , v\rangle$$
+
+which is called the **directional derivative** in the direction of $v$.
+:::
+
+
+## Smoothness: Gradient and Hessian
+
+
+Let $f:\R^n \to\R$. The **Hessian** of $f$ is the matrix of second-order partial derivatives. Equivalently, it is the **Jacobian of the gradient**:
+
+::: {.eqbox}
+$$
+(Hf)(x)=J(\nabla f)(x)=
+\begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} &
+\frac{\partial^2 f}{\partial x_1\partial x_2} &
+\cdots &
+\frac{\partial^2 f}{\partial x_1\partial x_n} \\[0.4em]
+\frac{\partial^2 f}{\partial x_2\partial x_1} &
+\frac{\partial^2 f}{\partial x_2^2} &
+\cdots &
+\frac{\partial^2 f}{\partial x_2\partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial^2 f}{\partial x_n\partial x_1} &
+\frac{\partial^2 f}{\partial x_n\partial x_2} &
+\cdots &
+\frac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}.
+$$
+:::
+
+::: {.box title="Remark"}
+
+1. Some people writes $\nabla^2$ instead of $H$.
+2. If $f$ has **continuous** second-order partial derivatives, then the Hessian is **symmetric**:
+
+$$H f(x)=\big(Hf(x)\big)^\top,$$
+
+i.e.,
+
+$$\frac{\partial^2 f}{\partial x_i\partial x_j}=\frac{\partial^2 f}{\partial x_j\partial x_i}.$$
+
+:::
+## Smoothness: Key Results
+
+::: {#thm-mvt-1 name="Mean Value Theorem I"}
+Let $f : \R^n \to \R$ be smooth. Then for any $x, y \in \R^n$, there exists a $\xi := y + \gamma(x - y)$ with $\gamma \in (0,1)$ such that:
+
+$$ f(y) = f(x) + \langle \nabla f(\xi), y - x \rangle $$
+:::
+
+
+::: {#thm-mvt-2 name="Mean Value Theorem II: Integral Form"}
+Let $F : \R^n \to \R^m$ be continuously differentiable. Then for any $x, y \in \R^n$:
+
+$$ F(y) = F(x) + \int_0^1 J_F(x + \gamma(y - x))(y - x) d\gamma $$
+
+and for $m=1$, the previous equations reads
+
+$$F(y) - F(x) = \int_0^1 \langle \nabla F(y + t(x-y)), x-y \rangle \, dt$$
+:::
+
+## Smoothness: Key Results {.scrollable}
+
+::: {#cor-descent-lemma name="Descent Lemma"}
+Let $f : \R^n \to \R$ be $L$-smooth. Then for any $x, y \in \R^n$,
+
+$$ f(x) \le f(y) + \langle \nabla f(y), x - y \rangle + \frac{L}{2} \|x - y\|^2 $$
+:::
+
+::: {.proofbox}
+By the mean value theorem II (exchaing the role of $x$ and $y$), we can write the exact difference as an integral:
+$$ f(x) - f(y) = \int_0^1 \langle \nabla f(y + t(x-y)), x-y \rangle \, dt $$
+
+We can subtract and add $\langle \nabla f(y), x-y \rangle$ inside the integral:
+$$ f(x) - f(y) = \langle \nabla f(y), x-y \rangle + \int_0^1 \langle \nabla f(y + t(x-y)) - \nabla f(y), x-y \rangle \, dt $$
+
+Applying the Cauchy-Schwarz inequality to the integral term gives:
+$$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \int_0^1 \|\nabla f(y + t(x-y)) - \nabla f(y)\| \|x-y\| \, dt $$
+
+By the definition of $L$-smoothness, the gradient is $L$-Lipschitz continuous, meaning:
+$$ \|\nabla f(y + t(x-y)) - \nabla f(y)\| \le L \|t(x-y)\| = Lt \|x-y\| $$
+
+Substituting this upper bound into our integral:
+$$ \dots \le \int_0^1 Lt \|x-y\|^2 \, dt = L \|x-y\|^2 \int_0^1 t \, dt $$
+
+Finally, evaluating the integral $\int_0^1 t \, dt = \frac{1}{2}$ yields the required result:
+$$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \frac{L}{2} \|x-y\|^2 $$
+:::
+
+
+
+# Fundamentals of Nonlinear Optimization II: Convex Analysis
+
+## Open Set
+
+:::: {.columns}
+
+::: {.column width="50%"}
+We define the $\varepsilon$-ball around the point $x\in \R^n$ by
+
+$$B_\varepsilon(x) = \{y\in \R^n: \|x-y\|\leq \varepsilon\}$$
+
+::: {#def-open-set name="Open Sets"}
+
+1. We say that a point $x \in U\subseteq \R^n$ is an **interior point of $U$** if there exists $\varepsilon > 0$ such that $B_{\varepsilon}(x) \subseteq U$
+
+2. We say $U\subseteq \R^n$ is an **open set** if every $x\in U$ is an interior point of $U$.
+:::
+
+:::
+
+::: {.column width="50%" .fragment}
+
+``` {ojs}
+//| echo: false
+
+viewof openSetDemo = {
+  // 1. Create the HTML layout 
+  const container = html`
+    <div>
+      <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+        <!-- touch-action: none prevents the page from scrolling while dragging -->
+        <svg width="700" height="400" viewBox="0 0 300 250" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; cursor: crosshair;">
+        <text x="120" y="10" font-family="sans-serif" font-size="10" fill="#64748b" font-weight="bold">Example</text>
+           <text x="15" y="42" font-family="sans-serif" font-size="10" fill="#64748b">Top & Left: Open (dashed) | Bottom & Right: Closed (solid)</text>
+          
+          <!-- The Set (Fill) -->
+          <polygon points="60,70 240,70 240,200 60,200" fill="#bfdbfe" opacity="0.4" />
+          
+          <!-- Dashed (Excluded) Borders -->
+          <path d="M 60 200 L 60 70 L 240 70" fill="none" stroke="#3b82f6" stroke-width="3" stroke-dasharray="6,6" />
+          
+          <!-- Solid (Included) Borders -->
+          <path d="M 240 70 L 240 200 L 60 200" fill="none" stroke="#1d4ed8" stroke-width="4" />
+          
+          <!-- Dynamic Epsilon Ball and Point -->
+          <circle id="ball" cx="150" cy="135" r="20" fill="#bbf7d0" opacity="0.6" stroke="#22c55e" stroke-width="1.5" />
+          <circle id="point-x" cx="150" cy="135" r="3" fill="#0f172a" />
+          <text id="point-label" x="156" y="139" font-style="italic" font-family="serif" font-weight="bold" font-size="12" fill="#0f172a">x</text>
+          
+          <!-- Status Text at the bottom -->
+          <text id="status-text" x="15" y="235" font-family="sans-serif" font-size="12" font-weight="bold" fill="#16a34a"></text>
+        </svg>
+      </div>
+      
+      <!-- The Radius Slider -->
+      <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin: 0 auto; max-width: 200px;">
+        <span style="font-family: sans-serif; font-size: 2rem; white-space: nowrap; color: #334155;">Radius (ε):</span>
+        <input id="radius-slider" type="range" min="2" max="50" step="1" value="20" style="width: 400px; margin: 0; cursor: pointer;">
+      </div>
+    </div>
+  `;
+  
+  // 2. Select elements to update them dynamically
+  const svg = container.querySelector("svg");
+  const slider = container.querySelector("#radius-slider");
+  const ball = container.querySelector("#ball");
+  const pt_x = container.querySelector("#point-x");
+  const pt_label = container.querySelector("#point-label");
+  const statusText = container.querySelector("#status-text");
+  
+  // Start the point safely inside the set
+  let currentPt = {x: 180, y: 135}; 
+  
+  // 3. The Math Engine: Calculates colors and text based on position
+  function updateVisuals() {
+    const r = slider.valueAsNumber;
+    
+    // Update graphic positions
+    ball.setAttribute("cx", currentPt.x);
+    ball.setAttribute("cy", currentPt.y);
+    ball.setAttribute("r", r);
+    pt_x.setAttribute("cx", currentPt.x);
+    pt_x.setAttribute("cy", currentPt.y);
+    pt_label.setAttribute("x", currentPt.x + 6);
+    pt_label.setAttribute("y", currentPt.y + 4);
+    
+    // MATHEMATICS CHECK:
+    // The set S is defined as X in (60, 240] and Y in (70, 200]
+    const inSet = currentPt.x > 60 && currentPt.x <= 240 && currentPt.y > 70 && currentPt.y <= 200;
+    
+    // The ball is completely inside if all its edges are inside the boundary 
+    // (Notice it must be STRICTLY less than the solid borders to not include boundary points)
+    const ballContained = (currentPt.x - r > 60) && (currentPt.x + r < 240) && 
+                          (currentPt.y - r > 70) && (currentPt.y + r < 200);
+    
+    if (!inSet) {
+       ball.setAttribute("fill", "#e2e8f0"); // Gray
+       ball.setAttribute("stroke", "#94a3b8");
+       statusText.textContent = "Point x is outside the set S.";
+       statusText.setAttribute("fill", "#64748b");
+    } else if (ballContained) {
+       ball.setAttribute("fill", "#bbf7d0"); // Green
+       ball.setAttribute("stroke", "#22c55e");
+       statusText.textContent = "✓ Ball is inside S, the point is an interior point";
+       statusText.setAttribute("fill", "#16a34a");
+    } else {
+       ball.setAttribute("fill", "#fca5a5"); // Red
+       ball.setAttribute("stroke", "#ef4444");
+       statusText.textContent = "✗ Ball spills out.";
+       statusText.setAttribute("fill", "#dc2626");
+    }
+  }
+  
+  // 4. Mouse / Touch Dragging Logic
+  let isDragging = false;
+  
+  function handlePointer(e) {
+    const rect = svg.getBoundingClientRect();
+    // Convert physical screen pixels to internal SVG coordinates
+    let x = (e.clientX - rect.left) * (300 / rect.width);
+    let y = (e.clientY - rect.top) * (250 / rect.height);
+    
+    // MAGNETIC SNAP: If they drag near a border, snap it exactly onto the border!
+    if (Math.abs(x - 240) < 8 && y >= 70 && y <= 200) x = 240; // Right solid border
+    if (Math.abs(y - 200) < 8 && x >= 60 && x <= 240) y = 200; // Bottom solid border
+    if (Math.abs(x - 60) < 8 && y >= 70 && y <= 200) x = 60;   // Left dashed border
+    if (Math.abs(y - 70) < 8 && x >= 60 && x <= 240) y = 70;   // Top dashed border
+    
+    currentPt.x = x;
+    currentPt.y = y;
+    updateVisuals();
+  }
+  
+  // Wire up the event listeners
+  slider.addEventListener("input", updateVisuals);
+  
+  svg.addEventListener("pointerdown", (e) => {
+    isDragging = true;
+    svg.setPointerCapture(e.pointerId); // Keeps tracking even if mouse leaves the box slightly
+    handlePointer(e);
+  });
+  
+  svg.addEventListener("pointermove", (e) => {
+    if (isDragging) handlePointer(e);
+  });
+  
+  svg.addEventListener("pointerup", () => isDragging = false);
+  svg.addEventListener("pointercancel", () => isDragging = false);
+  
+  updateVisuals(); // Paint the first frame
+  
+  return container;
+}
+```
+:::
+
+:::
+
+
+## Convex Sets
+
+::: {#def-convex-set name="Convex Sets"}
+
+A set $C \subseteq \R^n$ is **convex** if, for every
+$x, y \in C$ and every $\lambda \in [0,1]$,
+
+::: {.eqbox}
+$$
+\lambda x + (1-\lambda)y \in C.
+$$
+:::
+
+Equivalently, the line segment joining any two points of the set
+lies entirely inside the set.
+:::
+
+
+```{ojs}
+//| echo: false
+
+// 1. The images are now first so they render on top
+html`
+<div style="display: flex; gap: 2rem; justify-content: center; margin-bottom: 1.5rem;">
+  
+  <!-- CONVEX SET (Modify width="450" and height="305" below to change size) -->
+  <svg width="900" height="500" viewBox="0 0 300 250" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <text x="15" y="45" font-family="sans-serif" font-weight="bold" fill="#334155"> Convex Set</text>
+    <g transform="translate(0, 20)">
+      <ellipse cx="150" cy="130" rx="100" ry="80" fill="#bbf7d0" opacity="0.7" stroke="#22c55e" stroke-width="2"/>
+      <line x1="100" y1="100" x2="200" y2="160" stroke="#64748b" stroke-dasharray="4"/>
+      <circle cx="100" cy="100" r="4" fill="#0f172a" />
+      <text x="85" y="95" font-style="italic" font-family="serif">x</text>
+      <circle cx="200" cy="160" r="4" fill="#0f172a" />
+      <text x="210" y="165" font-style="italic" font-family="serif">y</text>
+      <circle cx="${100 * lambda + 200 * (1 - lambda)}" cy="${100 * lambda + 160 * (1 - lambda)}" r="6" fill="#ef4444" />
+    </g>
+  </svg>
+
+  <!-- NON-CONVEX SET (Modify width="450" and height="375" below to match) -->
+  <svg width="450" height="500" viewBox="0 0 300 250" style="background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <text x="15" y="45" font-family="sans-serif" font-weight="bold" fill="#334155">Non-Convex Set</text>
+    <polygon points="80,50 140,50 140,150 220,150 220,210 80,210" fill="#fecaca" opacity="0.7" stroke="#ef4444" stroke-width="2" />
+    <line x1="110" y1="100" x2="180" y2="180" stroke="#64748b" stroke-dasharray="4"/>
+    <circle cx="110" cy="100" r="4" fill="#0f172a" />
+    <text x="95" y="95" font-style="italic" font-family="serif">x</text>
+    <circle cx="180" cy="180" r="4" fill="#0f172a" />
+    <text x="190" y="185" font-style="italic" font-family="serif">y</text>
+    <circle cx="${110 * lambda + 180 * (1 - lambda)}" cy="${100 * lambda + 180 * (1 - lambda)}" r="6" fill="#ef4444" />
+  </svg>
+
+</div>
+`
+
+// 2. The slider is now at the bottom
+viewof lambda = {
+  const slider = Inputs.range([0, 1], {value: 0.5, step: 0.01, label: "λ:"});
+  slider.style.width = "fit-content";
+  slider.style.margin = "0 auto";
+  return slider;
+}
+```
+
+## Convexity
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+::: {#def-convex-function}
+Let  $U \subset \R^n$ be convex. A function $f : U \to \R$ is called:
+
+i. **convex** on $U$, if for all $x, y \in U$ and all $\lambda \in [0,1]$,
+$$f (\lambda x + (1 - \lambda)y) \le \lambda f (x) + (1 - \lambda)f (y)$$
+
+ii. **strictly convex** on $U$, if for all $x, y \in U$ with $x \neq y$ and all $\lambda \in (0,1)$,
+$$f (\lambda x + (1 - \lambda)y) < \lambda f (x) + (1 - \lambda)f (y)$$
+
+iii. **strongly convex** on $U$, if there exists  $\mu > 0$ (called the modulus of convexity) such that for all $x, y \in X$ and all $\lambda \in [0,1]$,
+$$f (\lambda x + (1 - \lambda)y) + \frac{\mu}{2} \lambda(1 - \lambda) \|x - y \|^2 \le \lambda f (x) + (1 - \lambda)f (y).$$
+:::
+
+:::
+
+::: {.column width="50%"}
+{{< include convexity_ojs.qmd >}}
+:::
+
+:::
+
+## Gradient Inequalities {.scrollable}
+
+
+::: {#thm-gradient} 
+
+Let $U \subset \R^n$ be open and convex and let $f:U \to \R$ be smooth (differentiable). Then $f$ is: 
+
+i. **convex** if and only if for all $x,y \in U$,
+$$\langle \nabla f(y), x-y\rangle \leq f(x) - f(y)$$
+ii. **strictly convex** if and only if for all $x,y \in U$ with $x\neq y$ 
+$$\langle \nabla f(y), x-y\rangle < f(x) - f(y)$$
+iii. **strongly convex** if and only if for all $x,y \in U$ we have
+$$\langle \nabla f(y), x-y\rangle+\frac{\mu}{2}\|x-y\|^2 \leq f(x) - f(y),$$
+where $\mu$ is the modulus of convexity
+
+:::
+
+::: {.proofbox}
+
+**Proof of (i): Convexity**
+
+**($\implies$):**
+By convexity, for any $\lambda \in (0, 1]$:
+$$f(y + \lambda(x-y)) \le (1-\lambda)f(y) + \lambda f(x)$$
+Rearranging and dividing by $\lambda$ gives:
+$$\frac{f(y + \lambda(x-y)) - f(y)}{\lambda} \le f(x) - f(y)$$
+Taking the limit as $\lambda \to 0$, the left side becomes the directional derivative, yielding $\langle \nabla f(y), x-y \rangle$.
+
+**($\impliedby$):**
+Let $z = \lambda x + (1-\lambda)y$. Apply the assumption at $z$ for points $x$ and $y$:
+1. $f(x) \ge f(z) + \langle \nabla f(z), x-z \rangle$
+2. $f(y) \ge f(z) + \langle \nabla f(z), y-z \rangle$
+
+Multiply (1) by $\lambda$, (2) by $(1-\lambda)$, and add them. The gradient terms perfectly cancel since $\lambda(x-z) + (1-\lambda)(y-z) = 0$, leaving the definition of convexity.
+
+**Proof of (ii): Strict Convexity**
+
+**($\implies$):**
+Suppose for contradiction that equality holds for $x \neq y$: 
+$$f(x) - f(y) = \langle \nabla f(y), x-y \rangle$$
+Let $z = y + \lambda(x-y)$. Strict convexity requires:
+$$f(z) < f(y) + \lambda(f(x) - f(y))$$
+Substitute our equality assumption into this:
+$$f(z) < f(y) + \lambda\langle \nabla f(y), x-y \rangle = f(y) + \langle \nabla f(y), z-y \rangle$$
+This strictly contradicts part (i), which states $f(z) - f(y) \ge \langle \nabla f(y), z-y \rangle$. 
+
+**($\impliedby$):**
+This follows the exact same steps as the backward proof for (i). Because the assumed gradient inequalities are strict for $x \neq y$, adding them together produces a strictly convex inequality.
+
+
+**Proof of (iii): Strong Convexity**
+
+**Key insight:** A function $f(x)$ is strongly convex if and only if the function $g(x) = f(x) - \frac{\mu}{2}\|x\|^2$ is standardly convex.
+
+Since $g(x)$ is convex, we can directly apply **part (i)** to it:
+$$g(x) - g(y) \ge \langle \nabla g(y), x-y \rangle$$
+
+Substitute $g(x)$ and its gradient $\nabla g(y) = \nabla f(y) - \mu y$:
+$$f(x) - \frac{\mu}{2}\|x\|^2 - \left(f(y) - \frac{\mu}{2}\|y\|^2\right) \ge \langle \nabla f(y) - \mu y, x-y \rangle$$
+
+Rearranging to isolate $f(x) - f(y)$ gives:
+$$f(x) - f(y) \ge \langle \nabla f(y), x-y \rangle + \mu \left( \frac{1}{2}\|x\|^2 - \frac{1}{2}\|y\|^2 - \langle y, x-y \rangle \right)$$
+
+Using the Euclidean expansion $\|x-y\|^2 = \|x\|^2 - 2\langle x, y \rangle + \|y\|^2$, the terms inside the parenthesis perfectly collapse to $\frac{1}{2}\|x-y\|^2$, completing the proof.
+
+:::
+
+
+## Minimisers
+
+::: {#def-minima name="Local and Global Minimum"}
+
+- Let $f:U\subseteq \R^n \to \R$. We say that $x^* \in U$ is a local minumum if there exists a $\varepsilon$ such that
+$$f(x^*) \leq f(x) \text{ for all $x \in B_\varepsilon(x^*) \cap U$}.$$
+
+- A point $x^*\in U$ is a global minumum if 
+$$f(x^*) \leq f(x) \text{ for all $x \in U$} $$
+
+- Analogously, we define **strict** global/local minimum if we replace $\leq$ with $<$.
+
+- We define global/local **maxima** is a similar fashion.
+:::
+
+* In general a local minimum is not a global minimum.
+* In general we don't care about maxima because $\max_{x\in U}f(x)$ is equivalent to find $\min_{x\in U}-f(x)$.
+
+## Convexity and optimization
+
+Convexity is very relevant for optimization due to the following fact.
+
+:::{#thm-uniquemin}
+
+Let $U\subseteq \R^n$ be a convex set and let $f:\R^n\to \R$. If $x^* \in U$ is a local minimum then is a global minimum. Moreover, if $f$ is strictly convex, then $f$ has at most one local minimum.
+
+:::
+
+We have to remember the usual criteria for minimum/maximum in differentiable function
+
+:::{#thm-nablaequal0 name="First order condition"}
+
+Let $f:\R^n \to R$ be differentiable. If $x^*$ is a local minimum or maximum of $f$, then $\nabla f(x^*)=0$
+:::
+
+Points with $\nabla f(x)= 0$ are called stationary or critical points.
+
+# Gradient Descent
+
+## Gradient Descent
+
+To find pointw with $\nabla f(x)=0$ that are local minimum the most well-known idea is the gradient descent algorithm which apply the following recursion
+
+:::{#def-gradientdescent name = "Gradient Descent Iteration"}
+
+$$x^{k+1} = x^k - \gamma_k \nabla f(x)$$
+
+:::
+
+. . .
+
+When performing the update $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$, the step size $\gamma_k$ (also known as learning rate) can be determined using several strategies:
+
+. . .
+
+:::{.box title="Strategies for choosing the step size"}
+**1. Predetermined Sequence**
+The sequence $\{\gamma_k\}_{k=0}^\infty$ is chosen in advance. For example: <p></p>
+
+* **Constant step:** $\gamma_k = \gamma > 0$
+* **Decaying step:** $\gamma_k = \frac{\gamma}{\sqrt{k+1}}$
+
+**2. Full Relaxation (Exact Line Search)**
+Choose the step size that strictly minimizes the function along the search direction: $\gamma_k = \arg\min_{\gamma \ge 0} f(x_k - \gamma \nabla f(x_k))$
+
+**3. The Armijo-Goldstein Rule**
+Find $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$ with $\gamma_k > 0$ such that it satisfies the sufficient decrease conditions:
+
+$$
+f(x_k)-f(x_{k+1})\geq \alpha \langle \nabla f(x_k), x_k - x_{k+1} \rangle
+\qquad \alpha \in [0,1]$$
+
+$$
+f(x_k)-f(x_{k+1})\leq \beta \langle \nabla f(x_k), x_k - x_{k+1} \rangle
+\qquad \beta \in [0,1]
+$$
+
+where $0 < \alpha < \beta < 1$ are fixed parameters.
+
+:::
+
+In practice, options 1 and 3 are fine. Option 2 is too theoretical and essentially involves solving the optimisation problem, which is what we want to do.
+
+
+## Visualization: The Armijo-Goldstein Conditions on $f(x) = ax^3+bx^2+cx+d$
+
+{{< include diag_ag.qmd >}}
+
+## Data Science Application: Constant vs. Armijo-Goldstein Rule {.scrollable}
+
+Let's train a simple Linear Regression model $$y_i = (ax_i+b)$$ based on data $(x_i,y_i)\in \R^2$. We write $\theta = (a,b)$, and we want to minimise the Mean Squared Error (MSE) 
+$$L(\theta) =\frac{1}{2n}\sum_{i=1}^n (y_i-ax_i-b)^2$$
+
+The parameter to optimize is $\theta = (a,b)$. We can write the loss function as:
+$$L(\theta) = \frac{1}{2n}({Y} - X{\theta})^\top ({Y} - X{\theta})$$
+where $X\in \R^{n\times 2}$ represents the design matrix and $Y = [y_1,\ldots, y_n]^\top$ is the vector with all the observations. The gradient is
+
+$$\nabla L(\theta) = \frac{1}{n}X^\top (X{\theta}-{Y}).$$
+
+We will race two strategies:
+
+1. **Constant Step:** $\gamma = 0.05$ (small and safe)
+2. **Armijo-Goldstein Rule:** 
+
+### Let's see the code
+{{< include armijo_code.qmd>}}
+
+# Newton's Method for Optimization
+
+## From step size to direction
+
+Recall the generic update
+
+$$
+x_{k+1} = x_k + \alpha_k p_k.
+$$
+
+We already know how to choose the **step size** $\alpha_k$ using a line search.
+
+Now ask:
+
+> How should we choose the direction $p_k$?
+
+
+## Gradient descent
+
+Gradient descent uses
+
+$$
+p_k = -\nabla f(x_k).
+$$
+
+Why?
+
+Because, whenever $\nabla f(x_k)\neq 0$,
+
+$$
+\nabla f(x_k)^\top p_k
+=
+-\|\nabla f(x_k)\|^2 < 0.
+$$
+
+So $-\nabla f(x_k)$ is always a descent direction.
+
+But it uses only **first-order information**.
+
+## Can we use curvature?
+
+Suppose $f:\mathbb R^d\to\mathbb R$ is twice differentiable.
+
+Near $x_k$, use the second-order Taylor approximation
+
+$$
+f(x_k+p)
+\approx
+f(x_k)
++
+\nabla f(x_k)^\top p
++
+\frac12 p^\top \nabla^2 f(x_k)p.
+$$
+
+Define the local quadratic model
+
+$$
+m_k(p)
+=
+f(x_k)
++
+g_k^\top p
++
+\frac12 p^\top H_kp,
+$$
+
+where
+
+$$
+g_k=\nabla f(x_k),
+\qquad
+H_k=\nabla^2 f(x_k).
+$$
+
+
+
+## The Newton direction
+
+Instead of minimizing $f$ directly, minimize the local quadratic model:
+
+$$
+p_k
+=
+\arg\min_p m_k(p).
+$$
+
+Differentiate with respect to $p$:
+
+$$
+\nabla_p m_k(p)
+=
+g_k + H_kp.
+$$
+
+At its minimum,
+
+$$
+g_k + H_kp_k = 0.
+$$
+
+Therefore,
+
+$$
+\boxed{
+p_k = -H_k^{-1}g_k
+}
+$$
+
+when $H_k$ is invertible.
+
+## Newton's update
+
+With a full Newton step,
+
+$$
+x_{k+1}
+=
+x_k + p_k,
+$$
+
+so
+
+$$
+\boxed{
+x_{k+1}
+=
+x_k
+-
+[\nabla^2f(x_k)]^{-1}\nabla f(x_k)
+}
+$$
+
+This is Newton's method for optimization.
+
+## Another interpretation
+
+At the optimum $x^\star$,
+
+$$
+\nabla f(x^\star)=0.
+$$
+
+So we can think of optimization as solving the nonlinear system
+
+$$
+g(x)=\nabla f(x)=0.
+$$
+
+Apply Newton's root-finding method to $g(x)$:
+
+$$
+x_{k+1}
+=
+x_k
+-
+[J_g(x_k)]^{-1}g(x_k).
+$$
+
+But
+
+$$
+J_g(x)=\nabla^2 f(x).
+$$
+
+Hence
+
+$$
+x_{k+1}
+=
+x_k
+-
+[\nabla^2 f(x_k)]^{-1}\nabla f(x_k).
+$$
+
+[**BE CAREFUL:** from this interpretation we can see that Newton's method can also find local maxima]{.red}
+
+## A one-dimensional example
+
+Consider
+
+$$
+f(x)=x^4-3x^2+2.
+$$
+
+Then
+
+$$
+f'(x)=4x^3-6x,
+$$
+
+and
+
+$$
+f''(x)=12x^2-6.
+$$
+
+The Newton iteration is therefore
+
+$$
+x_{k+1}
+=
+x_k
+-
+\frac{4x_k^3-6x_k}
+     {12x_k^2-6}.
+$$
+
+
+## Newton's method in R
+
+<style>
+.reveal div.sourceCode {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.reveal div.sourceCode pre code {
+  font-size: 32px !important;
+  line-height: 1.25 !important;
+  max-height: 800px !important;
+  display: block !important;
+  white-space: pre !important;
+  overflow: auto !important;
+}
+</style>
+
+```r
+#| echo: true
+
+newton_1d <- function(f, grad, hess, x0,
+                      tol = 1e-8,
+                      max_iter = 100) {
+
+  x <- x0
+
+  history <- data.frame(
+    iter = 0,
+    x = x,
+    fx = f(x)
+  )
+
+  for (k in 1:max_iter) {
+
+    g <- grad(x)
+    H <- hess(x)
+
+    step <- -g / H
+    x_new <- x + step
+
+    history <- rbind(
+      history,
+      data.frame(
+        iter = k,
+        x = x_new,
+        fx = f(x_new)
+      )
+    )
+
+    if (abs(g) < tol)
+      break
+
+    x <- x_new
+  }
+
+  list(
+    par = x,
+    value = f(x),
+    history = history
+  )
+}
+
+f <- function(x) x^4 - 3*x^2 + 2
+grad <- function(x) 4*x^3 - 6*x
+hess <- function(x) 12*x^2 - 6
+
+fit <- newton_1d(
+  f = f,
+  grad = grad,
+  hess = hess,
+  x0 = 2
+)
+
+print(fit$history)
+```
+
+
+## What is the Hessian doing?
+
+For gradient descent,
+
+$$
+p_k=-g_k.
+$$
+
+For Newton,
+
+$$
+p_k=-H_k^{-1}g_k.
+$$
+
+So the Hessian **rescales and rotates the gradient**.
+
+Newton's method adapts the step to the local curvature of the objective.
+
+
+## A quadratic function
+
+Consider
+
+$$
+f(x)
+=
+\frac12 x^\top A x - b^\top x,
+$$
+
+with $A$ positive definite.
+
+Then
+
+$$
+\nabla f(x)=Ax-b
+$$
+
+and
+
+$$
+\nabla^2 f(x)=A.
+$$
+
+The Newton direction is
+
+$$
+p_k
+=
+-A^{-1}(Ax_k-b).
+$$
+
+Therefore
+
+$$
+x_{k+1}
+=
+x_k-A^{-1}(Ax_k-b)
+=
+A^{-1}b.
+$$
+
+. . .
+
+Newton reaches the optimum in **one iteration**, while standard gradient descent would take a few iterations.
+
+
+## Why one iteration?
+
+For a quadratic objective, the second-order Taylor approximation is not an approximation.
+
+It is the function itself.
+
+$$
+f(x_k+p)
+=
+f(x_k)
++
+g_k^\top p
++
+\frac12p^\top H_kp.
+$$
+
+So minimizing the quadratic model is exactly the same as minimizing $f$.
+
+
+## Newton in several dimensions
+
+In practice, do **not** compute
+
+$$
+H_k^{-1}.
+$$
+
+Instead solve
+
+$$
+H_k p_k=-g_k.
+$$
+
+In R:
+
+```r
+p <- solve(H, -g)
+```
+
+rather than
+
+```r
+p <- -solve(H) %*% g #solve(H) gives the inverse
+```
+
+The first formulation is both conceptually and computationally preferable.
+
+## A multivariate implementation
+
+```r
+newton <- function(f, grad, hess, x0,
+                   tol = 1e-8,
+                   max_iter = 100) {
+
+  x <- x0
+
+  history <- data.frame(
+    iter = 0,
+    value = f(x),
+    grad_norm = sqrt(sum(grad(x)^2))
+  )
+
+  for (k in 1:max_iter) {
+
+    g <- grad(x)
+
+    if (sqrt(sum(g^2)) < tol)
+      break
+
+    H <- hess(x)
+
+    p <- solve(H, -g)
+
+    x <- x + p
+
+    history <- rbind(
+      history,
+      data.frame(
+        iter = k,
+        value = f(x),
+        grad_norm = sqrt(sum(grad(x)^2))
+      )
+    )
+  }
+
+  list(
+    par = x,
+    value = f(x),
+    history = history
+  )
+}
+```
+
+## Is the Newton direction a descent direction?
+
+Recall that $p_k$ is a descent direction when
+
+$$
+g_k^\top p_k<0.
+$$
+
+For Newton,
+
+$$
+p_k=-H_k^{-1}g_k.
+$$
+
+Therefore
+
+$$
+g_k^\top p_k
+=
+-g_k^\top H_k^{-1}g_k.
+$$
+
+If $H_k$ is **positive definite**, then
+
+$$
+g_k^\top H_k^{-1}g_k>0
+$$
+
+for every $g_k\neq0$.
+
+Hence
+
+$$
+\boxed{
+g_k^\top p_k<0
+}
+$$
+
+and the Newton direction is a descent direction.
+
+## Connection with convexity
+
+For a twice differentiable function,
+
+$$
+f \text{ convex}
+\quad\Longleftrightarrow\quad
+\nabla^2 f(x)\succeq0.
+$$
+
+If
+
+$$
+\nabla^2f(x)\succ0,
+$$
+
+then the local quadratic approximation is strictly convex.
+
+So the Newton direction points toward the unique minimizer of the local quadratic model.
+
+## But there is a problem
+
+Newton's method naturally proposes
+
+$$
+x_{k+1}=x_k+p_k.
+$$
+
+That corresponds to
+
+$$
+\alpha_k=1.
+$$
+
+But a full Newton step is not necessarily a good step when we are far from the optimum.
+
+In particular:
+
+- the quadratic approximation may be poor;
+- the Hessian may not be positive definite;
+- $p_k$ may not even be a descent direction;
+- the objective may increase.
+
+## We already know how to fix this
+
+Instead of automatically taking
+
+$$
+x_{k+1}=x_k+p_k,
+$$
+
+use
+
+$$
+\boxed{
+x_{k+1}
+=
+x_k+\alpha_kp_k
+}
+$$
+
+with
+
+$$
+p_k=-H_k^{-1}g_k.
+$$
+
+Choose $\alpha_k$ using the **Armijo line search**.
+
+This is called **damped Newton's method**.
+
+## Damped Newton
+
+At iteration $k$:
+
+1. Compute
+
+   $$
+   g_k=\nabla f(x_k),
+   \qquad
+   H_k=\nabla^2f(x_k).
+   $$
+
+2. Solve
+
+   $$
+   H_kp_k=-g_k.
+   $$
+
+3. Use Armijo to find an acceptable $\alpha_k$.
+
+4. Update
+
+   $$
+   x_{k+1}=x_k+\alpha_kp_k.
+   $$
+
+## Newton + Armijo in R
+
+Assume we already have an Armijo routine:
+
+```r
+armijo <- function(f, grad, x, p,
+                   alpha0 = 1,
+                   rho = 0.5,
+                   c = 1e-4) {
+
+  alpha <- alpha0
+  g <- grad(x)
+
+  while (
+    f(x + alpha * p) >
+      f(x) + c * alpha * sum(g * p)
+  ) {
+    alpha <- rho * alpha
+  }
+
+  alpha
+}
+```
+
+## Damped Newton implementation
+
+```r
+newton_armijo <- function(f, grad, hess, x0,
+                          tol = 1e-8,
+                          max_iter = 100) {
+
+  x <- x0
+
+  history <- data.frame(
+    iter = 0,
+    value = f(x),
+    grad_norm = sqrt(sum(grad(x)^2)),
+    alpha = NA
+  )
+
+  for (k in 1:max_iter) {
+
+    g <- grad(x)
+
+    if (sqrt(sum(g^2)) < tol)
+      break
+
+    H <- hess(x)
+
+    p <- solve(H, -g)
+
+    alpha <- armijo(
+      f = f,
+      grad = grad,
+      x = x,
+      p = p
+    )
+
+    x <- x + alpha * p
+
+    history <- rbind(
+      history,
+      data.frame(
+        iter = k,
+        value = f(x),
+        grad_norm = sqrt(sum(grad(x)^2)),
+        alpha = alpha
+      )
+    )
+  }
+
+  list(
+    par = x,
+    value = f(x),
+    history = history
+  )
+}
+```
+
+## The important distinction
+
+We now have two separate decisions:
+
+$$
+\underbrace{p_k}_{\text{where?}}
+\qquad\text{and}\qquad
+\underbrace{\alpha_k}_{\text{how far?}}
+$$
+
+Gradient descent:
+
+$$
+p_k=-g_k.
+$$
+
+Newton:
+
+$$
+p_k=-H_k^{-1}g_k.
+$$
+
+Armijo:
+
+$$
+\alpha_k
+\quad\text{chosen to ensure sufficient decrease.}
+$$
+
+## What have we gained?
+
+Gradient descent uses
+
+$$
+\nabla f(x_k).
+$$
+
+Newton uses
+
+$$
+\nabla f(x_k)
+\quad\text{and}\quad
+\nabla^2f(x_k).
+$$
+
+The extra curvature information can make Newton dramatically faster near the optimum.
+
+But there is a price:
+
+$$
+\text{compute Hessian}
++
+\text{solve a linear system}.
+$$
+
+This tradeoff will become important later.
+
+## Take-away
+
+Newton's method comes from minimizing a local quadratic approximation:
+
+$$
+p_k=-H_k^{-1}g_k.
+$$
+
+If $H_k\succ0$, the Newton direction is a descent direction.
+
+A full Newton step uses
+
+$$
+\alpha_k=1.
+$$
+
+A safer version combines Newton with the line-search machinery we already developed:
+
+$$
+\boxed{
+x_{k+1}
+=
+x_k
++
+\alpha_k
+\left[
+-\nabla^2f(x_k)^{-1}\nabla f(x_k)
+\right]
+}
+$$
+
+This is **damped Newton's method**.

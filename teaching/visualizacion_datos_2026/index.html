@@ -1,0 +1,429 @@
+<!--#1880D1 color boton, --><!--#1880D1 color tabla oscura--><!--#67A8DB color tabla clara-->
+
+<!DOCTYPE html>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']]
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<head>
+   <title>Machine Learning - UV - 2026</title>
+</head>
+
+<p>Bienvenidos a <strong>IECD411 - IMAT514 - IMAT524: Machine
+    Learning </strong>en su versión 2026</p>
+    <p><strong>Usaremos este sitio web de forma oficial hasta que todos los estudiantes tengan acceso al Aula Virtual!</strong></p>
+<p></p>
+<p>En esta página web encontrarán los materiales vistos en clases, además de las
+  tareas, ejercicios, etc.</p>
+<p><h2> Información Básica </h2></p>
+<p><strong>Profesor</strong>: Nicolás Rivera (nombre.apellido@uv.cl, donde nombre = nicolas, apellido = rivera).</p>
+<p>Si escribe un e-mail en el asunto de su e-mail empieze con IECD-411-UV (por
+  ejemplo: IECD-411-UV duda con ejercicio). Así su e-mail irá a una carpeta
+  especial y no me olvidaré de contestarle.</p>
+<p></p>
+<p><strong> Horario </strong></p>
+<ul>
+  <li>Lunes 10:15 a 11:45. Sala 3 Facultad de Ciencias</li>
+  <li>Lunes 12:00 a 13:30. Sala 6 Facultad de Ciencias</li>
+  <li>Miércoles 12:00 a 13:30 hrs. Sala 6 Facultad de Ciencias</li>
+</ul>
+<p></p>
+
+
+
+
+</head>
+
+<body>
+
+<h2>Contenidos del Curso</h2>
+
+<p><strong> Libro guía: </strong> usaremos An Introduction to Statistical Learning (ISL) que puede ser descargado <a href = "https://www.statlearning.com/">acá</a>. Usaremos la versión en Python. Este libro es bastante superficial, pero es muy buena guía. Lo vamos a seguir, pero explorando con un poco más de detalle algunos temas. Otro libro que vale la pena tener en mente es The Elements of Statistical Learning, que puede ser descargado <a href = "https://hastie.su.domains/ElemStatLearn/"> acá <a>. Este último es más profundo que el libro guía.</p>
+
+
+<p><strong>Programa: </strong> el programa original del curso pueden encontrarlo <a href = "IECD_411.pdf"> acá </a>. Sin embargo no lo seguiremos tanto ya que creo que es mejor seguir la estructura del libro guía. El programa tentativo es:</p>
+
+<details>
+<summary><strong>Parte I — Fundamentos</strong> (click para expandir)</summary>
+<p><strong>Objetivo:</strong> Machine Learning = minimización del riesgo estadístico.</p>
+<ul>
+<li>Descripción general del curso</li>
+<li>Predicción vs inferencia</li>
+<li>Funciones de pérdida y riesgo</li>
+<li>Minimización del riesgo empírico</li>
+<li>bias-variance tradeoff</li>
+<li>Set de entranamientos y pruebas, y validación cruzada</li>
+</ul>
+<p><em>(ISL capítulos 1–2)</em></p>
+</details>
+</p>
+
+<details>
+<summary><strong>Parte II — Modelos lineales</strong></summary>
+<ul>
+<li>Repaso de regresión lineal</li>
+<li>Clasificación y regresión logística</li>
+<li>Optimización y Gradient Descent</li>
+<li>Idea de regularización</li>
+<li>Ridge regression</li>
+<li>Lasso</li>
+<li>Elastic net</li>
+<li>Selección de modelos</li>
+<li>Problemas en alta dimensión</li>
+</ul>
+<p><em>(ISL capítulos 3–6)</em></p>
+</details>
+</p>
+
+<details>
+<summary><strong>Parte III — Métodos no lineales </strong></summary>
+<ul>
+<li>Expansiones en bases</li>
+<li>Splines</li>
+<li>Modelos aditivos generalizados (GAM)</li>
+<li>Árboles de decisión</li>
+<li>Random forests</li>
+<li>Boosting</li>
+</ul>
+<p><em>(ISL capítulos 7–8)</em></p>
+</details>
+</p>
+
+<details>
+<summary><strong>Parte IV — Redes neuronales</strong>
+</summary>
+<ul>
+<li>Redes neuronales</li>
+<li>Backpropagation y SGD</li>
+</ul>
+<p><em>(ISL capítulo 10)</em></p>
+</details>
+</p>
+<details>
+
+<summary><strong>Parte V — Métodos de kernels</strong>
+</summary>
+<ul>
+<li>Clasificadores lineales</li>
+<li>Idea de margen máximo</li>
+<li>Support Vector Machines (SVM)</li>
+<li>Kernels y mapas de características</li>
+<li>Regresión con kernels</li>
+<li>Kernels gaussianos</li>
+</ul>
+<p><em>(ISL capítulo 9 + material extra)</em></p>
+</details>
+</p>
+
+
+
+<details>
+<summary><strong>Parte VI — Aprendizaje no supervisado</strong></summary>
+<ul>
+<li>Análisis de Componentes Principales (PCA)</li>
+<li>Clustering</li>
+<li>K-means</li>
+<li>Clustering jerárquico</li>
+</ul>
+<p><em>(ISL capítulo 12)</em></p>
+</details>
+</p>
+
+<p><h2> Evaluaciones </h2></p>
+<p>El curso tendrá 3 pruebas, 3 tareas, y quizás un proyecto final (dependiendo de
+  como vayamos en el tiempo, feriados, paros, etc)</p>
+<p></p>
+<center>
+  <table border="1" cellspacing="0">
+    <colgroup width="135"></colgroup>
+    <colgroup width="260"></colgroup>
+    <colgroup width="260"></colgroup>
+    <tbody>
+      <tr>
+        <td style="text-align: center; border: 1px solid #000000;"
+          bgcolor="#1880D1" height="17"><strong>Evaluación</strong></td>
+        <td style="text-align: center; border: 1px solid #000000;"
+          bgcolor="#1880D1"><strong>Fecha Inicio</strong></td>
+        <td style="text-align: center; border: 1px solid #000000;"
+          bgcolor="#1880D1"><strong>Fecha Entrega</strong></td>
+      </tr>
+      <tr>
+        <td
+          style="text-align: center; border-top: 1px solid rgb(0, 0, 0); border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          height="17"> Prueba 1</td>
+        <td
+          style="text-align: center; border-top: 1px solid rgb(0, 0, 0); border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"> 22 de Abril (horario de clases)
+           </td>
+        <td
+          style="text-align: center; border-top: 1px solid rgb(0, 0, 0); border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);">
+           </td>
+      </tr>
+      <tr>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB" height="17"> Prueba 2</td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> 3 de Junio (horario de clases) </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> </td>
+      </tr>
+      <tr>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          height="17"> Prueba 3</td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"> 8 de Julio (horario de clases)
+           </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);">
+           </td>
+      </tr>
+      <tr>
+        <td
+          style="border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0); text-align: right;"
+          bgcolor="#67A8DB" height="17"> Tarea 1 </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> 8 de Abril </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> 29 de Abril a las 23:59:59.</td>
+      </tr>
+      <tr>
+        <td
+          style="border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0); text-align: right;"
+          height="17">  Tarea 2 </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"> 15 de Mayo
+           </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"> 8 de Junio a las 10:00:00 am
+           </td>
+      </tr>
+      <tr>
+        <td
+          style="border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0); text-align: right;"
+          bgcolor="#67A8DB" height="17"> Tarea 3 </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> 19 de Junio </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);"
+          bgcolor="#67A8DB"> 10 de Julio a las 18:00:00 </td>
+      </tr>
+      <tr>
+        <td
+          style="border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0); text-align: right;"
+          height="17"> </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);">
+           </td>
+        <td
+          style="text-align: center; border-left: 1px solid rgb(0, 0, 0); border-right: 1px solid rgb(0, 0, 0);">
+           </td>
+      </tr>
+    </tbody>
+  </table>
+</center>
+<h2>Noticias</h2>
+<ul>
+<li><strong>24 de Junio: </strong> Están las notas de la prueba 2 en el aula virtual. Las pruebas la pueden retirar en la secretaria del Instituto de Estadística.</li>
+<li><strong>19 de Junio: </strong> Esta la Tarea 3 en el aula virtual. Si alguien tiene problema accediendo por favor avisar!.</li>
+<li><strong>11 de Junio: </strong> Están listas las notas de la Tarea 1. Aún tengo un par de Pruebas 1 que no han retirado.</li>
+<li><strong>17 de Marzo: </strong>Se han cambiado las salas de clases debido a que estabamos un poco apretados.</li>
+  <li><strong>10 de Marzo: </strong>Se levanta sitio web de emergencia. Se recuerda que el Miércoles 11 de Marzo no hay clases debido al cambio de mando.</li>
+</ul>
+
+<h2>Tareas</h2>
+
+<ul>
+  <li> Tarea 1
+    <ul>
+    <li> Fecha de entrega: 29 de Abril de 2026 a las 23:59:59 en el buzón del aula virtual
+    </li>
+    <li> Ver enunciado, base de datos, y buzón de entrega en el aula virtual.
+    </li>
+    </ul>
+  </li>
+  
+  <li> Tarea 2
+    <ul>
+    <li> Fecha de entrega: 8 de Junio de 2026 a las 10:00:00am en el buzón del aula virtual
+    </li>
+    <li> Ver enunciado, base de datos, y buzón de entrega en el aula virtual.
+    </li>
+    </ul>
+  </li>
+  <li> Tarea 3
+    <ul>
+    <li> Fecha de entrega: 10 de Julio a las 18:00:00 en el buzón del aula virtual
+    </li>
+    <li> Ver enunciado, y buzón de entrega en el aula virtual.
+    </li>
+    </ul>
+  </li>
+</ul>
+<h2>Clases</h2>
+
+<ul>
+<li> <strong>Clase 1 y 2 (<a href = notas_clase_1.pdf>Notas de Clase</a>). Introducción a Machine Learning:</strong> 
+<ul><li>Vimos una introducción bastante filosófica y un tanto abstracta de las ideas centrales de los métodos de Machine Learning</li>
+<li> Revisamos los clásicos problemas del análisis de datos: regresión, clasificación, clustering y prueba de hipótesis</li>
+<li>Hablamos de problemas supervisados y no supervisados, y que nos enfocaremos en problemas supervisados</li>
+<li>Introdujimos de problemas de predicción y lo formalizamos matemáticamente a través de funciones de perdida, la función de riesgo, y la función de riesgo empírica. Vimos algunos ejemplos con la regresión lineal</li>
+<li>Hablamos de generalización y overfitting, y también comentamos sobre el famoso bias-variance tradeoff, aunque esto último lo continuaremos la próxima clase ya que fue al final y estabamos cansados</li>
+</ul></li>
+
+<li> <strong>Clase 3 (<a href = notas_clase_3.pdf>Notas de Clase</a>). Regresión Lineal </strong>
+<ul><li>  Vimos Regresión lineal como un ejemplo importante de las ideas usadas en Machine Learning (función de perdida, la familia $\mathcal F$ the funciones de predicción, riesgo empírico, etc)</li>
+<li>Minimizamos la función de riesgo empírica encontrando puntos críticos (usando el clásico "derivar e igualar a 0), encontrando una forma explicita para los coeficientes $\beta \in \mathbb{R}^{d+1}$</li>
+<li><a href = "ejercicios_clase3.pdf">Ejercicios de Regresión Lineal</a></li>
+</ul> 
+</li>
+
+
+<li> <strong>Clase 4 (<a href = notas_clase_4.pdf>Notas de Clase</a>). Regresión Logística </strong>
+<ul><li>  Vimos Regresión logística como un segundo ejemplo importante de las ideas usadas en Machine Learning</li>
+<li> Estudiamos la función de perdida llamada cross-entropy o pérdida logística que viene inspiradas por ideas de física y teoría de información</li>
+<li>Calculamos algunas derivadas útiles para encontrar el gradiente de la cross-entropy</li>
+<li>Empezamos el cálculo del gradiente de la cross-entropy, pero ya estabamos cansados, así que empezaremos con dicho cálculo la clase 5.</li> 
+</ul></li>
+
+<li> <strong>Clase 5 (<a href = notas_clase_5.pdf>Notas de Clase</a>). Regresión Logística II </strong>
+<ul><li>  Continuamos con regresión lineal</li>
+<li> Calculamos el gradiente de la cross-entropy y la función de riesgo empírica</li>
+<li> Vimos que encontrar puntos críticos no es trivial ya que resolver "gradiente igual a 0" no es fácil debido a la no-linealidad de la función $\sigma$</li>
+<li> Introdujimos el método de gradient descent para poder minimizar la función de riesgo empírica</li> 
+<li><a href = "ejercicios_clase5.pdf">Ejercicios de Regresión Logística</a></li>
+</ul></li>
+
+<li> <strong>Clase 6 (<a href = notas_clase_6.pdf>Notas de Clase</a>). Regresión Logística III + Regularización </strong>
+<ul><li>  Implementamos regresión logística sobre algunos datos simulados. Nuestra implementación incliyó el algoritmo de Gradient Descent, y vimos que los resultados son esencialmente los mismos que de las bibliotecas statsmodels y scikit-learn</li>
+<li> Vimos también regularización como una idea para evitar overfitting, en especial cuando hay muchas covariables.</li>
+<li>Introdujimos 3 funciones de regularización: Ridge, Lasso, y Elastic Net</li>
+<li><a href = "codigo_regresion_logistica.py">Código de Regresión Logística:</a> incluye algunas mejoras que hice después de la clase, y comentarios. También agregué un poco sobre overfitting.</li>
+</ul></li>
+
+<li><strong>Clase 7 (<a href = notas_clase_7.pdf>Notas de Clase</a>). Regularización II</strong></li>
+
+<ul><li> Estudiamos la regularización Ridge en el caso particular de la regresión lineal, y encontramos la forma cerrada para el problema de minimizar la función de riesgo empirica regularizada por ridge.</li>
+<li>Conversamos un poco sobre la solución encontrada y potenciales interpretaciones.</li>
+<li>Vimos un poco la geometría de Ridge y Lasso, y vimos porqué, intuitivamente Lasso es mejor para encontrar soluciones $\beta$ con entradas iguales a 0.</li>
+</ul></li>
+
+<li><strong>Clase 8 y 9 (<a href = notas_clase_8.pdf>Notas de Clase</a>). Regularización III</strong></li>
+
+<ul><li> Partimos con una clase express sobre convexidad, vimos la definición y su importancia, además de criterios para identificar cuando una función es convexa </li>
+<li>Vimos subgradientes (también conocidos como subdiferenciales), y vimos la generalización del criterio "derivar e igualar a 0" para funciones no diferenciables pero convexas</li>
+<li>Vimos algunas ideas básicas de cálculo de subgradientes</li>
+<li>Aplicamos estas ideas a Lasso, en particular, estudiamos el algoritmo de coordinate descent, donde optimizamos las coordenas de $\beta$ una a una, iterando muchas veces.</li>
+<li><a href = "ejercicios_clase8.pdf">Ejercicios de Regularización</a></li>
+
+</ul></li>
+
+<li><strong>Clase 10: Regularización IV</strong></li>
+<ul><li>Repasamos las ideas importantes de regularización y la implementamos en el computador</li>
+
+<li><a href = "codigo_regularizacion.py">Código</a>, <a href = "data_regresion.csv">Datos</a>. Ojo que en clases había un typo en el código que no pudimos solucionar, pero ya está listo, era un $-2/n$ perdido :(</li>
+</ul>
+
+<li><strong>Clase 11 (<a href = notas_clase_11.pdf>Notas de Clase</a>) Modelos No-lineales I</strong></li>
+<ul><li> Empezamos el estudio de modelos no-lineales como una forma de extensión de los modelos lineales</li>
+<li> Partimos viendo los Basis Expansion Models o modelos de expansión de bases, donde uno se "fabrica" covariables a partir de las covariables originales, introduciendo relaciones no lineales entre ellas </li>
+</li>Vimos 3 ejemplos de bases: polinomial (para covariables en $\mathbb{R}$), radiales (para covariables en $\mathbb{R}^d$), y splines (para covariables en $\mathbb{R}$)</li>
+<li>Introdujimos la idea de penalizar la segunda derivada, penalizando modelos que se vean más "no-lineales".</li>
+</ul>
+
+<li><strong>Clase 12 (<a href = notas_clase_12.pdf>Notas de Clase</a>). Modelos No-lineales II: Modelo Aditivo Generalizado</strong></li>
+<ul><li> Vimos el modelo aditivo generalizado (Generalized Additive Model) que solo introduce no-linealidad en covariables de forma individual, pero no en forma de interacción</li>
+<li>Esta idea nos permite usar bases especificas para cada covariable (como polinomios o splines) y penalizar</li>
+<li><a href = "ejercicios_clase12.pdf">Ejercicios de Modelos No-lineales</a></li> </ul>
+
+<li><strong>Clase 13 (<a href = notas_clase_13.pdf>Notas de Clase</a>). Modelos No-lineales III: Arboles de Decisión y Random Forest</strong></li>
+<ul><li> Primero vimos el concepto de estimación basado en particionar el espacio de las covariable (usualmente $\mathbb{R}^d$)</li>
+<li> Estudiamos árboles de decisiones como una forma razonable de particionar $\mathbb{R}^d$, y así poder hacer regresión o clasificación</li>
+<li>Vimos que el problema de optimización está mal definido y que es necesario regularizar o restringir los árboles de alguna forma, pero que en general es muy difícil de resolver</li>
+<li>Vimos criterios de partición local que nos permiten dividir una región en dos, y ahí construir un árbol usando el llamado algoritmo CART, y si bien no es óptimo, nos entrega un buen árbol. </li>
+<li>Discutimos problemas de "influencia" y por qué modificar un par de puntos puede cambiar demasiado el estimador (árbol) encontrado, lo que motiva el concepto de Random Forest</li>
+<li>Estudiamos dos conceptos importantes Bagging y Reducción de dimensionalidad para árboles de decisión: Bagging consiste en resamplear una muestra de $n$ datos de los $n$ datos originales, pero permitiendo repeticiones; esto ayuda a quitarle influencia a datos que tienen mucha. La reducción de dimensionalidad simplemente selecciona al azar al las covariables que entrarán al modelo de árbol de decisión (por cada muestra de bagging elegimos un conjunto de covariables). El estimador de Random Forest es el promedio de los estimadores en el caso de regresión, y la moda de los estimadores en el caso de clasificación. </li></ul>
+
+<li><strong>Clase 14. Modelos No-lineales IV: Arboles de Decisión y Random Forest II</strong></li>
+<ul><li>En esta clase solo vimos la implementación computacional de Árboles de Decisión y Random Forest</li>
+<li>Vimos en la práctica todo lo comentado la clase anterior: desde el overfitting hasta el algoritmo CART y sus diversos criterios de parada</li>
+<li><a href = "codigo_decision_tree.py">código del programa revisado en clases</a></li>
+<li><a href = "ejercicios_clase14.pdf">Ejercicios de Árboles de Decisión y Random Forest </a></li></ul>
+
+<li><strong>Clase 15 (<a href = notas_clase_15.pdf>Notas de Clase</a>). Modelos No-lineales V: Boosting </strong></li>
+<ul><li> Empezamos a estudiar boosting: la idea de combinar muchas función de predicción simples y con bajo desempeño en una función de predicción más compleja</li>
+<li>La idea principal, al menos en clasificación, es usar un split de un árbol de decisión, pero en vez de hacer subdivisiones, queremos complejizar el estimador en una forma más "aditiva" y no en "profundidad". La idea es evitar los problemas que tienen los árboles de decisión (que en general se solucionan haciendo random forest), de una forma directa.</li>
+<li>Estudiamos el algoritmo de Adaboost</li>
+<li>Vimos un poco de la teoria de Adaboost y de donde salen los términos que aparecen en el algoritmo</li>
+</ul>
+
+<li><strong>Clase 16 (<a href = notas_clase_16.pdf>Notas de Clase</a>). Modelos No-lineales VI: Boosting II</strong></li>
+<ul><li>Vimos los cálculos de boosting de forma más precisa y vimos de donde salen los pesos y el proceso de optimización completo</li>
+<li>Basados en estos cálculos y la teoría que hay por detras, vimos cuando este tipo de técnicas funciona</li>
+<li>Conversamos de extensiones, en particular vimos que sin la pérdida exponencial las cosas no funcionan bien. Por ejemplo si usamos pérdida logística entonces tendremos que hacer un método de gradiente para optimizar en cada paso. En este caso el método tiene el nombre de Gradient Boosting.</li>
+</ul>
+
+<li><strong>Clase 17. Modelos No-lineales VII: Boosting III</strong></li>
+<ul><li>Vimos código de adaboost, gradient boosting y random forest, y comparamos como se van estabilizando/mejorando a medida que más predictores se van combinando</li>
+<li>Basados en estos cálculos y la teoría que hay por detras, vimos cuando este tipo de técnicas funciona</li>
+<a href = "ejercicios_clase17.pdf"> Ejercicio Boosting </a>
+<a href = "codigo_ensembles_1.py"> Código Ensembles Datos Sintétitocs </a>, <a href = "codigo_ensembles_2.py"> Código Ensembles en Datos Reales </a>, <a href = "spambase.data"> Base de datos spam </a>, <a href = "spambase.names"> Base de datos (nombre de las columnas)</a>
+
+</ul>
+
+<li><strong>Clase 18 (<a href = notas_clase_18.pdf>Notas de Clase</a>). Redes Neuronales I: Introducción</strong></li>
+<ul><li> Primero repasamos un poco de la historia de las redes neuronales solo para entender el contexto y el por qué son tan populares</li>
+<li>Vimos la idea de la red neuronal, usando como base un modelo no-lineal en el cual la base tiene una forma especifica.</li>
+<li>Vimos por qué es una "red"</li>
+<li>Calculamos el gradiente de una red con una capa oculta, y escribimos el algoritmo de gradient descent, que en el caso de redes se conoce como back propagation</li>
+</ul>
+
+<li><strong>Clase 19 (<a href = notas_clase_19.pdf>Notas de Clase</a>). Redes Neuronales II: Por qué sobreparametrizar no es tan malo?</strong></li>
+<ul><li> La idea de esta clase es entender porque la sobreparametrización no es necesariamente un problema</li>
+<li> Estudiamos un problema de regresión lineal usual sobreparametrizado (dimensión de covariable mucho mayor que el número de datos).</li>
+<li> Vimos que el problema de optimización, si es que tiene solución, tiene infinitas soluciones</li>
+<li>Vimos que naturalmente gradient descent encuentra soluciones con menor norma $\|\beta\|_2^2$, es decir, una suerte de regularización ridge natural. Para lo anterior usamos harta algebra lineal</li>
+<a href = "ejercicios_clase19.pdf"> Ejercicios Redes Neuronales </a>
+</ul>
+
+<li><strong>Clase 20 (<a href = notas_clase_20.pdf>Métodos de Kernel I</a>). Empezamos a ver métodos de kernel</strong></li>
+<ul><li>La idea es que muchos algoritmos están basados en calcular productos puntos. Podemos reemplazar el producto punto por un Kernel</li>
+<li> Si un producto punto "compara" o "proyecta" información de un vector sobre el otro, entonces la idea es hacer regresión basada en comparaciones (y no basada en aprender características, como en la regresión tradicional).</li>
+<li>Por eso vimos que la regresión con kernels tiene $n$ parametros, uno por cada dato que tenemos.</li>
+<li>Vimos la definición de Kernel como una función bivariada simétrica y definida positiva</li>
+<li>Introdujimos los Espacios de Hilbert con Kernel Reproductor o en ingles Reproducing Kernel Hilbert Spaces (RKHS) que representan el espacio de todos los predictores posibles</li>
+</ul>
+
+<li><strong>Clase 21 (<a href = notas_clase_21.pdf>Métodos de Kernel II</a>). Empezamos a ver métodos de kernel</strong></li>
+<ul><li>Vimos un Ejemplo de un RKHS con todos los detalles</li>
+<li> Estudiamos propiedades de Kernels</li>
+<li>Vimos el teorema de Moore–Aronszajn theorem que dice que cada RKHS tiene un único kernel, y para cada kernel $K$ hay un RKHS cuyo kernel es K. (el nombre Aronszajn fue terriblemente mal escrito en la clase.)</li>
+</ul>
+
+
+<li><strong>Clase 22 (<a href = notas_clase_22.pdf>Métodos de Kernel III</a>). Algebra de kernels</strong></li>
+<ul><li>Vimos un poquito más de Moore–Aronszajn</li>
+<li> Estudiamos algebra de kernels: operaciones que permiten construir kerneles a partir de otros. Quedaron algunas pendientes que veremos en la siguiente clase.</li>
+</ul>
+
+<li><strong>Clase 23 (<a href = notas_clase_23.pdf>Métodos de Kernel IV</a>). Kernel Ridge Regression</strong></li>
+<ul><li>Vimos un par de propiedades extras de kerneles (que quedaron en las notas de la clase 22)</li>
+<li> Estudiamos Regresión con kerneles, de nuevo, pero entendiendo un poco mejor que hay detras de esto. Además le pusimos regularización que es muy importante.</li>
+<a href = "ejercicios_clase23.pdf"> Ejercicios Métodos de Kernel </a>
+</ul>
+
+</ul>
+
+

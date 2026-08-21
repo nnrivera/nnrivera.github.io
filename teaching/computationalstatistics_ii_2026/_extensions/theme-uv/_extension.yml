@@ -1,0 +1,17 @@
+title: UV theme
+author: Nicolás Rivera
+version: 1.0.0
+contributes:
+  formats:
+    revealjs:
+       theme: [default, theme.scss]
+       footer: |
+        <span class="footer-left">{{< meta author >}}</span><span class="footer-center">{{< meta title >}}</span>
+       
+       preview-links: auto
+       slide-number: true
+       show-slide-number: all
+       template-partials:
+        - title-slide.html
+       filters:
+        - beamer-blocks.lua

@@ -1,0 +1,585 @@
+/*-- scss:defaults --*/
+$uv-dark-blue: #232754;
+$uv-blue: #0F4494;
+$uv-light-blue: #009FE3;
+$dark-blue-uv: #232754;
+$blue-uv: #0F4494;
+$light-blue-uv: #009FE3;
+
+/*-- scss:rules --*/
+
+/*---- INDICE -----
+0. Reveal STUFF
+1. Footer
+2. Title Slide
+3. Theorem boxes and proofs
+4. itemizes
+5. Font size
+6. Colours
+
+
+*/
+/*--------- PARTE 0---------------
+  REVEAL STUFF
+------------------------------------*/
+          
+//esto cambia la posición de la ubicación del menú
+.slide-menu-button {
+  bottom: auto !important; /* Kills the default bottom positioning */
+  top: 30px !important;    /* Pins it to the top */
+  left: 30px !important;   /* Pins it to the left */
+  z-index: 100 !important; /* Ensures it stays above your slide content */
+}
+
+/*--------- PARTE I---------------
+  Footer
+------------------------------------*/
+           
+
+/* 1. Solid Block Beamer Footer */
+.reveal .footer {
+  display: block !important;      /* Kills Reveal's flexbox squish */
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 45px !important;
+  margin: 0 !important;
+  padding: 0 !important;          /* Removed padding so spans can position themselves */
+  background: linear-gradient(to right, $uv-dark-blue, $uv-blue, $uv-light-blue) !important;
+  z-index: 100;
+}
+
+/* 2. Author Name (Left) */
+.reveal .footer .footer-left {
+  position: absolute;
+  left: 1.5rem;                   /* Adjust this to push it further left or right */
+  top: 50%;
+  transform: translateY(-50%);    /* Perfectly vertically centers the text */
+  color: #FFFFFF;
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+
+
+/* 3. Course Title (Center) */
+.reveal .footer .footer-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Perfectly centers it both horizontally and vertically */
+  color: #FFFFFF;
+  font-weight: 500;
+  font-size: 1.2em;
+}
+
+
+/* 4. Slide Number (Right) */
+.reveal .slide-number {
+  position: absolute !important;
+  top: auto !important;          /* CRUCIAL: Forces the browser to ignore Reveal's native 'top' setting */
+  bottom: 0 !important;
+  right: 1.5rem !important;
+  height: 45px !important;
+  line-height: 45px !important;
+  color: #FFFFFF !important; 
+  background-color: transparent !important;
+  font-size: 0.6em !important;
+  font-weight: 500 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  z-index: 101 !important; 
+}
+
+/* Forces the link inside the slide number to stay white */
+.reveal .slide-number a {
+  color: #FFFFFF !important;
+}
+/* 5. Hide Footer & Slide Number on Title Slide */
+.reveal:has(#title-slide.present) .footer,
+.reveal:has(#title-slide.present) .slide-number {
+  display: none !important;
+}
+
+
+/*--------- PARTE II---------------
+  Página del título
+------------------------------------*/
+/*Title page*/
+.reveal .slides section.uv-title-slide {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;  /* CRITICAL: 100% of the slide canvas, NOT 100vh */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-end !important; 
+  padding: 0 !important;    /* Remove master padding so the gradient can touch edges */
+  box-sizing: border-box !important;
+  text-align: left;
+  transform: none !important;
+  height: calc(100% + 45px) !important; 
+}
+
+.uv-title-text {
+  flex: 1; /* Takes up all available top space, pushing logos/gradient down */
+  display: flex;             /* REQUIRED for justify-content to work */
+  flex-direction: column;    /* REQUIRED for justify-content to work */
+  justify-content: flex-end; /* Aligns the text inside to the bottom */
+  text-align: left;
+  padding: 0 0% 0 0%;       /* Use % instead of vw/vh so it scales with the slide */
+      margin-top: 0 !important;
+    margin-bottom: 0 !important; 
+}
+
+.uv-course {
+  color: $uv-blue;
+  font-size: 0.9em !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+h1.title {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important; 
+    line-height: 1.1 !important; /* Tightens the spacing if the title wraps to two lines */
+  }
+
+.uv-title {
+  color: $uv-dark-blue;
+  font-size: 1em !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important; 
+  text-align: left !important;
+  font-weight: bold !important;
+}
+
+.uv-subtitle {
+  color: $uv-blue;
+  font-weight: normal;
+}
+
+.uv-author {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+.uv-gradient {
+  width: 100%;
+  height: 3cm;
+  background: linear-gradient(
+      to right,
+      $uv-dark-blue,
+      $uv-blue,
+      $uv-light-blue
+  );
+  flex-shrink: 0; /* Prevents the bar from getting squished if the slide gets crowded */
+}
+
+.uv-logos {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.uv-logo {
+  height: 90px;
+}
+
+.uv-imagotipo {
+  height: 110px;
+}
+
+/* 2. Remove the HTML "ghost gap" beneath your logos */
+.uv-logo, .uv-imagotipo {
+  display: block !important;
+  margin-bottom: 15px !important;
+}
+
+/* 1. Stop Quarto from reserving footer space on the title slide */
+.reveal.hide-footer .slides {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100% !important;
+}
+
+//Slides especiales
+.reveal .slides section#TOC {
+  top: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 20px !important; /* A little breathing room from the very top */
+  transform: none !important;
+  
+  /* Break it out of Reveal's centering flexbox */
+  display: block !important; 
+  height: 100% !important;
+}
+
+/* Ensure nothing inside the TOC pushes it down */
+.reveal .slides section#TOC > * {
+  margin-top: 0 !important;
+}
+
+
+/*---------------------- PART III ----------------------------------------------- 
+THis makes # -> \section, ##-> \begin{frame}[title]. No hay subsecciones, pero se hace
+un pequeño hack para tener ### como una suerte de divisor
+-------------------------------------------------------------------------------*/ 
+.reveal h1 {
+  color: $uv-blue !important;
+  font-weight: bold !important;
+  text-align: center !important;
+}
+
+/* -------------------------------------------
+   2. FRAME TITLES ( ## )
+------------------------------------------- */
+/* Perfectly styled Beamer-style top-left headers */
+.reveal h2 {
+  color: $uv-dark-blue !important;
+  font-size: 1em !important; /* Slightly larger to command the slide */
+  font-weight: bold !important;
+  text-align: left !important;
+  margin-top: 0 !important;    /* Keeps it pinned to the top */
+  margin-bottom: 0.8em !important;
+  padding-bottom: 0.2em !important;
+  border-bottom: 2px solid $uv-light-blue !important; /* The Beamer line */
+} 
+
+/* -------------------------------------------
+   3. IN-SLIDE SUBHEADINGS ( ### ) - Mid-Slide Sections
+------------------------------------------- */
+.reveal h3 {
+  color: $uv-blue !important;  /* Lighter blue to show it is secondary */
+  font-size: 1.1em !important; /* Smaller than the frame title */
+  font-weight: 600 !important; 
+  text-align: left !important;
+  
+  /* CRITICAL: It needs space ABOVE it, since it lives inside the slide body */
+  margin-top: 1em !important;  
+  margin-bottom: 0.4em !important;
+  
+  padding-bottom: 0 !important;
+  border-bottom: none !important; /* Remove the underline so it doesn't compete with the Frame Title */
+}
+
+
+/*---------------------- PART IV ----------------------------------------------- 
+Theorems, lemmas, boxes in general
+-------------------------------------------------------------------------------*/ 
+
+/* -------------------------------------------
+   CUSTOM COLLAPSIBLE BEAMER BOXES
+------------------------------------------- */
+details.beamer-box {
+  border: none !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2) !important;
+  margin: 1em 0 !important;
+  overflow: hidden !important;
+}
+
+/* The clickable header */
+details.beamer-box summary {
+  padding: 0.4em 0.8em !important;
+  font-weight: bold !important;
+  color: white !important;
+  cursor: pointer !important;
+  list-style: none !important; 
+  position: relative !important;
+}
+
+/* Custom Beamer-style arrow */
+details.beamer-box summary::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 0.5em;
+  font-size: 0.8em;
+  transition: transform 0.2s; 
+}
+
+/* Rotate arrow when open */
+details.beamer-box[open] summary::before {
+  transform: rotate(90deg);
+}
+details.beamer-box summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Padding for the text inside the box */
+details.beamer-box > :not(summary) {
+  padding-left: 0.8em !important;
+  padding-right: 0.8em !important;
+}
+details.beamer-box > :last-child {
+  padding-bottom: 0.8em !important;
+}
+
+/* -------------------------------------------
+   THE ENVIRONMENTS (Colors & Tombstones)
+------------------------------------------- */
+details.beamer-box {
+  border: none !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2) !important;
+  margin: 1em 0 !important;
+  overflow: hidden !important;
+}
+
+/* The clickable header */
+details.beamer-box summary {
+  padding: 0.4em 0.8em !important;
+  font-weight: bold !important;
+  color: white !important;
+  cursor: pointer !important;
+  list-style: none !important; 
+  position: relative !important;
+}
+
+/* Custom Beamer-style arrow */
+details.beamer-box summary::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 0.5em;
+  font-size: 0.8em;
+  transition: transform 0.2s; 
+}
+
+/* Rotate arrow when open */
+details.beamer-box[open] summary::before {
+  transform: rotate(90deg);
+}
+details.beamer-box summary::-webkit-details-marker {
+  display: none !important;
+}
+
+/* Padding for internal content */
+details.beamer-box > :not(summary) {
+  padding-left: 0.8em !important;
+  padding-right: 0.8em !important;
+}
+details.beamer-box > :last-child {
+  padding-bottom: 0.8em !important;
+}
+
+/* -------------------------------------------
+   THE ENVIRONMENTS (Colors & Tombstones)
+------------------------------------------- */
+/* PROOF IDEA (Purple) */
+details.idea summary { background-color: #7d3c98 !important; }
+details.idea { background-color: rgba(125, 60, 152, 0.1) !important; }
+
+/* PROOF (Slate) */
+details.proof summary { background-color: #5d6d7e !important; }
+details.proof { background-color: rgba(93, 109, 126, 0.1) !important; }
+
+/* Auto-Tombstone on open proof */
+details.proof[open]::after {
+  content: "■";
+  display: block;
+  text-align: right;
+  color: #5d6d7e;
+  padding: 0 0.8em 0.8em 0;
+  margin-top: -1em;
+}
+
+div.box {
+  background-color: rgba(0, 60, 88, 0.05); /* Light UV Blue tint */
+  border: 1px solid rgba(0, 60, 88, 0.15);  /* Subtle border */
+  border-left: 5px solid $uv-blue;          /* Thick UV Accent on left */
+  border-radius: 6px;
+  padding: 0.8em 1.2em;
+  margin: 1em 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure headings inside .box look nice */
+div.box > h3,
+div.box > h4,
+div.box > .box-title {
+  color: $uv-blue;
+  margin-top: 0 !important;
+  margin-bottom: 0.4em !important;
+  font-weight: bold;
+  font-size: 1.05em;
+}
+
+/* Secondary Turquoise Variant */
+div.box.turquoise {
+  background-color: rgba(6, 113, 126, 0.05);
+  border-left-color: $uv-light-blue;
+  border-color: rgba(6, 113, 126, 0.15);
+
+  > h3, > h4, > .box-title {
+    color: $uv-light-blue;
+  }
+}
+
+div.box {
+  background-color: rgba(0, 60, 88, 0.05); /* Light UV Blue tint */
+  border-left: 5px solid $uv-blue;          /* UV Blue border */
+  border-radius: 4px;
+  padding: 0.8em 1.2em;
+  margin: 1em 0;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.04);
+}
+
+/* Title bar inside generic box */
+div.box .box-title {
+  color: $uv-blue;
+  font-weight: bold;
+  font-size: 1.05em;
+  padding-bottom: 0.4em;
+  margin-bottom: 0.6em;
+border-bottom: 3px solid rgba(0, 60, 88, 0.25); /* Thicker line with slightly more opacity */
+}
+
+//Box around standard definitions
+
+div[class*="theorem"], 
+div[class*="lemma"], 
+div[class*="definition"], 
+div[class*="proposition"], 
+div[class*="corollary"],
+div[class*="example"] {
+  background-color: rgba(15, 68, 148, 0.05); /* Soft tint of $uv-blue */
+  border-left: 5px solid $uv-blue;
+  border-radius: 4px;
+  padding: 0.8em 1.2em;
+  margin: 1em 0;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.04);
+}
+
+.theorem-title,
+.lemma-title,
+.definition-title,
+.proposition-title,
+.corollary-title,
+.example-title {
+  color: $uv-dark-blue;
+  font-weight: bold;
+  font-size: 1.05em;
+  padding-bottom: 0.4em;
+  margin-bottom: 0.6em;
+  border-bottom: 2px solid rgba(15, 68, 148, 0.25);
+  display: block;
+}
+
+/* Special accent border for Definitions */
+div[class*="definition"] {
+  border-left-color: $uv-light-blue;
+  
+  .definition-title {
+    color: $uv-blue;
+    border-bottom-color: rgba(0, 159, 227, 0.3);
+  }
+}
+
+
+
+/*---------------------- PART IV ----------------------------------------------- 
+Itemizes
+
+$uv-dark-blue: #232754;
+$uv-blue: #0F4494;
+$uv-light-blue: #009FE3;
+-------------------------------------------------------------------------------------------*/
+
+
+/* Hide the default web bullets */
+.reveal ul {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+
+/* Base spacing for all list items */
+.reveal ul li {
+  position: relative;
+  padding-left: 1em;
+  margin-bottom: 0.5em; /* Gives the list room to breathe */
+}
+
+/* -------------------------------------------
+   Level 1: Solid Triangle
+------------------------------------------- */
+.reveal ul > li::before {
+  content: "▶";
+  position: absolute;
+  left: 0;
+  top: -0.05em; /* Adjusts vertical alignment with the text */
+  font-size: 1em;
+  color: $uv-light-blue; /* Replace with your chosen color variable */
+}
+
+/* -------------------------------------------
+   Level 2: Hollow Triangle
+------------------------------------------- */
+.reveal ul > li > ul > li::before {
+  content: "▶"; 
+  color: $uv-blue; 
+  font-size: 0.8em;
+  top: 0.1em;
+}
+
+/* -------------------------------------------
+   Level 3: Solid Square
+------------------------------------------- */
+.reveal ul > li > ul > li > ul > li::before {
+  content: "▶";
+  color: $uv-dark-blue;
+  font-size: 0.6em;
+  top: 0.35em;
+}
+
+.reveal ul ul {
+  margin-left: -0.5em !important; /* Reduces the horizontal gap (default is much larger) */
+  margin-top: 0.0em !important;  /* Keeps the vertical spacing tight between sub-items */
+}
+
+.reveal ul ul ul {
+  margin-left: -0.5em !important; /* Same tight gap for the 3rd level */
+}
+
+/* Ensure ordered lists (1. 2. 3.) aren't broken by this */
+.reveal ol {
+  padding-left: 1.5em;
+}
+.reveal ol li {
+  padding-left: 0.2em;
+}
+future {
+  justify-content: flex-start !important;
+}
+
+
+/*---------------------- PART V ----------------------------------------------- 
+Font Size
+-------------------------------------------------------------------------------------------*/
+
+//tamaño general de la slide
+.reveal {
+  font-size: 24px;
+}
+
+//proporciones para titulos h1, h2 y h3
+/* Adjust headings relative to the base size (e.g., 2.0 = 200% of base size) */
+$presentation-h1-font-size: 2.5em;
+$presentation-h2-font-size: 1.6em;
+$presentation-h3-font-size: 1.3em;
+
+/*---------------------- PART VI ----------------------------------------------- 
+Colours
+
+-------------------------------------------------------------------------------------------*/
+
+.red {
+  color: red;
+}
+
+.blue {
+  color: blue;
+}
