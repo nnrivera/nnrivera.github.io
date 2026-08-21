@@ -759,8 +759,9 @@ We will race two strategies:
 1. **Constant Step:** $\gamma = 0.05$ (small and safe)
 2. **Armijo-Goldstein Rule:** 
 
-### Let's see the code
-{{< include armijo_code.qmd>}}
+## Let's see the code
+
+{{< include armijo_code.qmd >}}
 
 # Newton's Method for Optimization
 

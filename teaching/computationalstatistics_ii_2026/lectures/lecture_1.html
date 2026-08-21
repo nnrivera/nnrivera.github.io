@@ -2557,8 +2557,114 @@ f(x_k)-f(x_{k+1})\leq \beta \langle \nabla f(x_k), x_k - x_{k+1} \rangle
 <li><strong>Constant Step:</strong> <span class="math inline">\(\gamma = 0.05\)</span> (small and safe)</li>
 <li><strong>Armijo-Goldstein Rule:</strong></li>
 </ol>
-<h3 id="lets-see-the-code">Let’s see the code</h3>
-{{&lt; include armijo_code.qmd&gt;}}
+</section>
+<section id="lets-see-the-code" class="slide level2">
+<h2>Let’s see the code</h2>
+<style>
+/* 1. Force the container to take up the full slide width */
+.reveal div.sourceCode {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* 2. Set an explicit, large font size */
+.reveal pre code {
+  /* tamaño de letra*/
+  font-size: 32px !important; 
+  
+  /* este es el tamaño máximo que tiene el frame, si hay más contenido se pone una barrita para moverse*/
+  max-height: 800px !important; 
+  
+  /* Ensure long lines create a horizontal scrollbar instead of wrapping */
+  white-space: pre !important; 
+  overflow-x: auto !important;
+}
+</style>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href=""></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-3"><a href=""></a><span class="im">from</span> plotnine <span class="im">import</span> ggplot, aes, geom_line, theme_minimal, labs, scale_color_manual</span>
+<span id="cb9-4"><a href=""></a></span>
+<span id="cb9-5"><a href=""></a>np.random.seed(<span class="dv">2026</span>)</span>
+<span id="cb9-6"><a href=""></a>X <span class="op">=</span> np.c_[np.ones((<span class="dv">100</span>, <span class="dv">1</span>)), <span class="dv">2</span> <span class="op">*</span> np.random.rand(<span class="dv">100</span>, <span class="dv">1</span>)]</span>
+<span id="cb9-7"><a href=""></a><span class="co"># a simple Model!</span></span>
+<span id="cb9-8"><a href=""></a>Y <span class="op">=</span> <span class="dv">4</span> <span class="op">+</span> <span class="dv">3</span> <span class="op">*</span> X[:, <span class="dv">1</span>:] <span class="op">+</span> np.random.randn(<span class="dv">100</span>, <span class="dv">1</span>) </span>
+<span id="cb9-9"><a href=""></a>n <span class="op">=</span> <span class="bu">len</span>(Y)</span>
+<span id="cb9-10"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-11"><a href=""></a><span class="co"># 2. Define Cost and Gradient</span></span>
+<span id="cb9-12"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-13"><a href=""></a><span class="kw">def</span> cost(theta):</span>
+<span id="cb9-14"><a href=""></a>    residuals <span class="op">=</span> Y <span class="op">-</span> X.dot(theta)</span>
+<span id="cb9-15"><a href=""></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">/</span> (<span class="dv">2</span> <span class="op">*</span> n)) <span class="op">*</span> np.<span class="bu">sum</span>(residuals<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb9-16"><a href=""></a></span>
+<span id="cb9-17"><a href=""></a><span class="kw">def</span> gradient(theta):</span>
+<span id="cb9-18"><a href=""></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">/</span> n) <span class="op">*</span> X.T.dot(X.dot(theta) <span class="op">-</span> Y)</span>
+<span id="cb9-19"><a href=""></a></span>
+<span id="cb9-20"><a href=""></a><span class="co"># theta_init[0] is b (intercept), theta_init[1] is a (slope)</span></span>
+<span id="cb9-21"><a href=""></a>theta_init <span class="op">=</span> np.random.randn(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb9-22"><a href=""></a>n_iterations <span class="op">=</span> <span class="dv">25</span></span>
+<span id="cb9-23"><a href=""></a></span>
+<span id="cb9-24"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-25"><a href=""></a><span class="co"># Strategy 1: Constant Step (gamma = 0.05)</span></span>
+<span id="cb9-26"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-27"><a href=""></a>theta_c <span class="op">=</span> theta_init.copy()</span>
+<span id="cb9-28"><a href=""></a>cost_c <span class="op">=</span> [cost(theta_c)]</span>
+<span id="cb9-29"><a href=""></a></span>
+<span id="cb9-30"><a href=""></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_iterations):</span>
+<span id="cb9-31"><a href=""></a>    theta_c <span class="op">=</span> theta_c <span class="op">-</span> <span class="fl">0.05</span> <span class="op">*</span> gradient(theta_c)</span>
+<span id="cb9-32"><a href=""></a>    cost_c.append(cost(theta_c))</span>
+<span id="cb9-33"><a href=""></a></span>
+<span id="cb9-34"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-35"><a href=""></a><span class="co"># Strategy 2: Armijo-Goldstein Rule</span></span>
+<span id="cb9-36"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-37"><a href=""></a>alpha <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb9-38"><a href=""></a>beta <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb9-39"><a href=""></a></span>
+<span id="cb9-40"><a href=""></a>theta_g <span class="op">=</span> theta_init.copy()</span>
+<span id="cb9-41"><a href=""></a>cost_g <span class="op">=</span> [cost(theta_g)]</span>
+<span id="cb9-42"><a href=""></a></span>
+<span id="cb9-43"><a href=""></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_iterations):</span>
+<span id="cb9-44"><a href=""></a>    g <span class="op">=</span> gradient(theta_g)</span>
+<span id="cb9-45"><a href=""></a>    c <span class="op">=</span> cost(theta_g)</span>
+<span id="cb9-46"><a href=""></a>    </span>
+<span id="cb9-47"><a href=""></a>    gamma <span class="op">=</span> <span class="fl">1.0</span></span>
+<span id="cb9-48"><a href=""></a>    low <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb9-49"><a href=""></a>    high <span class="op">=</span> <span class="bu">float</span>(<span class="st">'inf'</span>) </span>
+<span id="cb9-50"><a href=""></a>    </span>
+<span id="cb9-51"><a href=""></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb9-52"><a href=""></a>        theta_new <span class="op">=</span> theta_g <span class="op">-</span> gamma <span class="op">*</span> g</span>
+<span id="cb9-53"><a href=""></a>        c_new <span class="op">=</span> cost(theta_new)</span>
+<span id="cb9-54"><a href=""></a>        </span>
+<span id="cb9-55"><a href=""></a>        actual_drop <span class="op">=</span> c <span class="op">-</span> c_new</span>
+<span id="cb9-56"><a href=""></a>        predicted_drop <span class="op">=</span> gamma <span class="op">*</span> np.<span class="bu">sum</span>(g<span class="op">**</span><span class="dv">2</span>)</span>
+<span id="cb9-57"><a href=""></a>        </span>
+<span id="cb9-58"><a href=""></a>        <span class="cf">if</span> actual_drop <span class="op">&lt;</span> alpha <span class="op">*</span> predicted_drop:</span>
+<span id="cb9-59"><a href=""></a>            high <span class="op">=</span> gamma                   </span>
+<span id="cb9-60"><a href=""></a>            gamma <span class="op">=</span> (low <span class="op">+</span> high) <span class="op">/</span> <span class="fl">2.0</span>     </span>
+<span id="cb9-61"><a href=""></a>        <span class="cf">elif</span> actual_drop <span class="op">&gt;</span> beta <span class="op">*</span> predicted_drop:</span>
+<span id="cb9-62"><a href=""></a>            low <span class="op">=</span> gamma                    </span>
+<span id="cb9-63"><a href=""></a>            <span class="cf">if</span> high <span class="op">==</span> <span class="bu">float</span>(<span class="st">'inf'</span>):</span>
+<span id="cb9-64"><a href=""></a>                gamma <span class="op">*=</span> <span class="fl">2.0</span>               </span>
+<span id="cb9-65"><a href=""></a>            <span class="cf">else</span>:</span>
+<span id="cb9-66"><a href=""></a>                gamma <span class="op">=</span> (low <span class="op">+</span> high) <span class="op">/</span> <span class="fl">2.0</span> </span>
+<span id="cb9-67"><a href=""></a>        <span class="cf">else</span>:</span>
+<span id="cb9-68"><a href=""></a>            <span class="cf">break</span></span>
+<span id="cb9-69"><a href=""></a>            </span>
+<span id="cb9-70"><a href=""></a>    theta_g <span class="op">=</span> theta_g <span class="op">-</span> gamma <span class="op">*</span> g</span>
+<span id="cb9-71"><a href=""></a>    cost_g.append(cost(theta_g))</span>
+<span id="cb9-72"><a href=""></a></span>
+<span id="cb9-73"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-74"><a href=""></a><span class="co"># 3. Print Comparison</span></span>
+<span id="cb9-75"><a href=""></a><span class="co"># ==========================================</span></span>
+<span id="cb9-76"><a href=""></a><span class="bu">print</span>(<span class="st">"--- Gradient Descent Race (25 Iterations) ---"</span>)</span>
+<span id="cb9-77"><a href=""></a><span class="bu">print</span>(<span class="ss">f"Initial Cost:             </span><span class="sc">{</span>cost_c[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb9-78"><a href=""></a><span class="bu">print</span>(<span class="ss">f"Final Cost (Constant):    </span><span class="sc">{</span>cost_c[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb9-79"><a href=""></a><span class="bu">print</span>(<span class="ss">f"Final Cost (Goldstein):   </span><span class="sc">{</span>cost_g[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb9-80"><a href=""></a></span>
+<span id="cb9-81"><a href=""></a><span class="bu">print</span>(<span class="st">"--- Final Model Parameters ---"</span>)</span>
+<span id="cb9-82"><a href=""></a><span class="bu">print</span>(<span class="st">"True Parameters:   b (intercept) = 4.00, a (slope) = 3.00"</span>)</span>
+<span id="cb9-83"><a href=""></a><span class="bu">print</span>(<span class="ss">f"Constant Step:     b = </span><span class="sc">{</span>theta_c[<span class="dv">0</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, a = </span><span class="sc">{</span>theta_c[<span class="dv">1</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)</span>
+<span id="cb9-84"><a href=""></a><span class="bu">print</span>(<span class="ss">f"Goldstein Step:    b = </span><span class="sc">{</span>theta_g[<span class="dv">0</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, a = </span><span class="sc">{</span>theta_g[<span class="dv">1</span>][<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">"</span>)    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section></section>
 <section>
 <section id="newtons-method-for-optimization" class="title-slide slide level1 center">
@@ -2743,62 +2849,62 @@ x_k
   overflow: auto !important;
 }
 </style>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="co">#| echo: true</span></span>
-<span id="cb9-2"><a href=""></a></span>
-<span id="cb9-3"><a href=""></a>newton_1d <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
-<span id="cb9-4"><a href=""></a>                      <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
-<span id="cb9-5"><a href=""></a>                      <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
-<span id="cb9-6"><a href=""></a></span>
-<span id="cb9-7"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
-<span id="cb9-8"><a href=""></a></span>
-<span id="cb9-9"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb9-10"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
-<span id="cb9-11"><a href=""></a>    <span class="at">x =</span> x,</span>
-<span id="cb9-12"><a href=""></a>    <span class="at">fx =</span> <span class="fu">f</span>(x)</span>
-<span id="cb9-13"><a href=""></a>  )</span>
-<span id="cb9-14"><a href=""></a></span>
-<span id="cb9-15"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb9-16"><a href=""></a></span>
-<span id="cb9-17"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
-<span id="cb9-18"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
-<span id="cb9-19"><a href=""></a></span>
-<span id="cb9-20"><a href=""></a>    step <span class="ot">&lt;-</span> <span class="sc">-</span>g <span class="sc">/</span> H</span>
-<span id="cb9-21"><a href=""></a>    x_new <span class="ot">&lt;-</span> x <span class="sc">+</span> step</span>
-<span id="cb9-22"><a href=""></a></span>
-<span id="cb9-23"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb9-24"><a href=""></a>      history,</span>
-<span id="cb9-25"><a href=""></a>      <span class="fu">data.frame</span>(</span>
-<span id="cb9-26"><a href=""></a>        <span class="at">iter =</span> k,</span>
-<span id="cb9-27"><a href=""></a>        <span class="at">x =</span> x_new,</span>
-<span id="cb9-28"><a href=""></a>        <span class="at">fx =</span> <span class="fu">f</span>(x_new)</span>
-<span id="cb9-29"><a href=""></a>      )</span>
-<span id="cb9-30"><a href=""></a>    )</span>
-<span id="cb9-31"><a href=""></a></span>
-<span id="cb9-32"><a href=""></a>    <span class="cf">if</span> (<span class="fu">abs</span>(g) <span class="sc">&lt;</span> tol)</span>
-<span id="cb9-33"><a href=""></a>      <span class="cf">break</span></span>
-<span id="cb9-34"><a href=""></a></span>
-<span id="cb9-35"><a href=""></a>    x <span class="ot">&lt;-</span> x_new</span>
-<span id="cb9-36"><a href=""></a>  }</span>
-<span id="cb9-37"><a href=""></a></span>
-<span id="cb9-38"><a href=""></a>  <span class="fu">list</span>(</span>
-<span id="cb9-39"><a href=""></a>    <span class="at">par =</span> x,</span>
-<span id="cb9-40"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb9-41"><a href=""></a>    <span class="at">history =</span> history</span>
-<span id="cb9-42"><a href=""></a>  )</span>
-<span id="cb9-43"><a href=""></a>}</span>
-<span id="cb9-44"><a href=""></a></span>
-<span id="cb9-45"><a href=""></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span>
-<span id="cb9-46"><a href=""></a>grad <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">4</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span> <span class="sc">-</span> <span class="dv">6</span><span class="sc">*</span>x</span>
-<span id="cb9-47"><a href=""></a>hess <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">12</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">6</span></span>
-<span id="cb9-48"><a href=""></a></span>
-<span id="cb9-49"><a href=""></a>fit <span class="ot">&lt;-</span> <span class="fu">newton_1d</span>(</span>
-<span id="cb9-50"><a href=""></a>  <span class="at">f =</span> f,</span>
-<span id="cb9-51"><a href=""></a>  <span class="at">grad =</span> grad,</span>
-<span id="cb9-52"><a href=""></a>  <span class="at">hess =</span> hess,</span>
-<span id="cb9-53"><a href=""></a>  <span class="at">x0 =</span> <span class="dv">2</span></span>
-<span id="cb9-54"><a href=""></a>)</span>
-<span id="cb9-55"><a href=""></a></span>
-<span id="cb9-56"><a href=""></a><span class="fu">print</span>(fit<span class="sc">$</span>history)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="co">#| echo: true</span></span>
+<span id="cb10-2"><a href=""></a></span>
+<span id="cb10-3"><a href=""></a>newton_1d <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
+<span id="cb10-4"><a href=""></a>                      <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb10-5"><a href=""></a>                      <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb10-6"><a href=""></a></span>
+<span id="cb10-7"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
+<span id="cb10-8"><a href=""></a></span>
+<span id="cb10-9"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-10"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
+<span id="cb10-11"><a href=""></a>    <span class="at">x =</span> x,</span>
+<span id="cb10-12"><a href=""></a>    <span class="at">fx =</span> <span class="fu">f</span>(x)</span>
+<span id="cb10-13"><a href=""></a>  )</span>
+<span id="cb10-14"><a href=""></a></span>
+<span id="cb10-15"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb10-16"><a href=""></a></span>
+<span id="cb10-17"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
+<span id="cb10-18"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
+<span id="cb10-19"><a href=""></a></span>
+<span id="cb10-20"><a href=""></a>    step <span class="ot">&lt;-</span> <span class="sc">-</span>g <span class="sc">/</span> H</span>
+<span id="cb10-21"><a href=""></a>    x_new <span class="ot">&lt;-</span> x <span class="sc">+</span> step</span>
+<span id="cb10-22"><a href=""></a></span>
+<span id="cb10-23"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb10-24"><a href=""></a>      history,</span>
+<span id="cb10-25"><a href=""></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb10-26"><a href=""></a>        <span class="at">iter =</span> k,</span>
+<span id="cb10-27"><a href=""></a>        <span class="at">x =</span> x_new,</span>
+<span id="cb10-28"><a href=""></a>        <span class="at">fx =</span> <span class="fu">f</span>(x_new)</span>
+<span id="cb10-29"><a href=""></a>      )</span>
+<span id="cb10-30"><a href=""></a>    )</span>
+<span id="cb10-31"><a href=""></a></span>
+<span id="cb10-32"><a href=""></a>    <span class="cf">if</span> (<span class="fu">abs</span>(g) <span class="sc">&lt;</span> tol)</span>
+<span id="cb10-33"><a href=""></a>      <span class="cf">break</span></span>
+<span id="cb10-34"><a href=""></a></span>
+<span id="cb10-35"><a href=""></a>    x <span class="ot">&lt;-</span> x_new</span>
+<span id="cb10-36"><a href=""></a>  }</span>
+<span id="cb10-37"><a href=""></a></span>
+<span id="cb10-38"><a href=""></a>  <span class="fu">list</span>(</span>
+<span id="cb10-39"><a href=""></a>    <span class="at">par =</span> x,</span>
+<span id="cb10-40"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb10-41"><a href=""></a>    <span class="at">history =</span> history</span>
+<span id="cb10-42"><a href=""></a>  )</span>
+<span id="cb10-43"><a href=""></a>}</span>
+<span id="cb10-44"><a href=""></a></span>
+<span id="cb10-45"><a href=""></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">^</span><span class="dv">4</span> <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span>
+<span id="cb10-46"><a href=""></a>grad <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">4</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span> <span class="sc">-</span> <span class="dv">6</span><span class="sc">*</span>x</span>
+<span id="cb10-47"><a href=""></a>hess <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">12</span><span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">6</span></span>
+<span id="cb10-48"><a href=""></a></span>
+<span id="cb10-49"><a href=""></a>fit <span class="ot">&lt;-</span> <span class="fu">newton_1d</span>(</span>
+<span id="cb10-50"><a href=""></a>  <span class="at">f =</span> f,</span>
+<span id="cb10-51"><a href=""></a>  <span class="at">grad =</span> grad,</span>
+<span id="cb10-52"><a href=""></a>  <span class="at">hess =</span> hess,</span>
+<span id="cb10-53"><a href=""></a>  <span class="at">x0 =</span> <span class="dv">2</span></span>
+<span id="cb10-54"><a href=""></a>)</span>
+<span id="cb10-55"><a href=""></a></span>
+<span id="cb10-56"><a href=""></a><span class="fu">print</span>(fit<span class="sc">$</span>history)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="what-is-the-hessian-doing" class="slide level2">
 <h2>What is the Hessian doing?</h2>
@@ -2874,54 +2980,54 @@ H_k^{-1}.
 H_k p_k=-g_k.
 \]</span></p>
 <p>In R:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>rather than</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">solve</span>(H) <span class="sc">%*%</span> g <span class="co">#solve(H) gives the inverse</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>p <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">solve</span>(H) <span class="sc">%*%</span> g <span class="co">#solve(H) gives the inverse</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The first formulation is both conceptually and computationally preferable.</p>
 </section>
 <section id="a-multivariate-implementation" class="slide level2">
 <h2>A multivariate implementation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
-<span id="cb12-2"><a href=""></a>                   <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
-<span id="cb12-3"><a href=""></a>                   <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
-<span id="cb12-4"><a href=""></a></span>
-<span id="cb12-5"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
-<span id="cb12-6"><a href=""></a></span>
-<span id="cb12-7"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb12-8"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
-<span id="cb12-9"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb12-10"><a href=""></a>    <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb12-11"><a href=""></a>  )</span>
-<span id="cb12-12"><a href=""></a></span>
-<span id="cb12-13"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb12-14"><a href=""></a></span>
-<span id="cb12-15"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
-<span id="cb12-16"><a href=""></a></span>
-<span id="cb12-17"><a href=""></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>(g<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> tol)</span>
-<span id="cb12-18"><a href=""></a>      <span class="cf">break</span></span>
-<span id="cb12-19"><a href=""></a></span>
-<span id="cb12-20"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
-<span id="cb12-21"><a href=""></a></span>
-<span id="cb12-22"><a href=""></a>    p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span>
-<span id="cb12-23"><a href=""></a></span>
-<span id="cb12-24"><a href=""></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> p</span>
-<span id="cb12-25"><a href=""></a></span>
-<span id="cb12-26"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb12-27"><a href=""></a>      history,</span>
-<span id="cb12-28"><a href=""></a>      <span class="fu">data.frame</span>(</span>
-<span id="cb12-29"><a href=""></a>        <span class="at">iter =</span> k,</span>
-<span id="cb12-30"><a href=""></a>        <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb12-31"><a href=""></a>        <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb12-32"><a href=""></a>      )</span>
-<span id="cb12-33"><a href=""></a>    )</span>
-<span id="cb12-34"><a href=""></a>  }</span>
-<span id="cb12-35"><a href=""></a></span>
-<span id="cb12-36"><a href=""></a>  <span class="fu">list</span>(</span>
-<span id="cb12-37"><a href=""></a>    <span class="at">par =</span> x,</span>
-<span id="cb12-38"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb12-39"><a href=""></a>    <span class="at">history =</span> history</span>
-<span id="cb12-40"><a href=""></a>  )</span>
-<span id="cb12-41"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>newton <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
+<span id="cb13-2"><a href=""></a>                   <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb13-3"><a href=""></a>                   <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb13-4"><a href=""></a></span>
+<span id="cb13-5"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
+<span id="cb13-6"><a href=""></a></span>
+<span id="cb13-7"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-8"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
+<span id="cb13-9"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb13-10"><a href=""></a>    <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb13-11"><a href=""></a>  )</span>
+<span id="cb13-12"><a href=""></a></span>
+<span id="cb13-13"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb13-14"><a href=""></a></span>
+<span id="cb13-15"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
+<span id="cb13-16"><a href=""></a></span>
+<span id="cb13-17"><a href=""></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>(g<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> tol)</span>
+<span id="cb13-18"><a href=""></a>      <span class="cf">break</span></span>
+<span id="cb13-19"><a href=""></a></span>
+<span id="cb13-20"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
+<span id="cb13-21"><a href=""></a></span>
+<span id="cb13-22"><a href=""></a>    p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span>
+<span id="cb13-23"><a href=""></a></span>
+<span id="cb13-24"><a href=""></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> p</span>
+<span id="cb13-25"><a href=""></a></span>
+<span id="cb13-26"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb13-27"><a href=""></a>      history,</span>
+<span id="cb13-28"><a href=""></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb13-29"><a href=""></a>        <span class="at">iter =</span> k,</span>
+<span id="cb13-30"><a href=""></a>        <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb13-31"><a href=""></a>        <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb13-32"><a href=""></a>      )</span>
+<span id="cb13-33"><a href=""></a>    )</span>
+<span id="cb13-34"><a href=""></a>  }</span>
+<span id="cb13-35"><a href=""></a></span>
+<span id="cb13-36"><a href=""></a>  <span class="fu">list</span>(</span>
+<span id="cb13-37"><a href=""></a>    <span class="at">par =</span> x,</span>
+<span id="cb13-38"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb13-39"><a href=""></a>    <span class="at">history =</span> history</span>
+<span id="cb13-40"><a href=""></a>  )</span>
+<span id="cb13-41"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="is-the-newton-direction-a-descent-direction" class="slide level2">
 <h2>Is the Newton direction a descent direction?</h2>
@@ -3031,76 +3137,76 @@ x_{k+1}=x_k+\alpha_kp_k.
 <section id="newton-armijo-in-r" class="slide level2">
 <h2>Newton + Armijo in R</h2>
 <p>Assume we already have an Armijo routine:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>armijo <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, x, p,</span>
-<span id="cb13-2"><a href=""></a>                   <span class="at">alpha0 =</span> <span class="dv">1</span>,</span>
-<span id="cb13-3"><a href=""></a>                   <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
-<span id="cb13-4"><a href=""></a>                   <span class="at">c =</span> <span class="fl">1e-4</span>) {</span>
-<span id="cb13-5"><a href=""></a></span>
-<span id="cb13-6"><a href=""></a>  alpha <span class="ot">&lt;-</span> alpha0</span>
-<span id="cb13-7"><a href=""></a>  g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
-<span id="cb13-8"><a href=""></a></span>
-<span id="cb13-9"><a href=""></a>  <span class="cf">while</span> (</span>
-<span id="cb13-10"><a href=""></a>    <span class="fu">f</span>(x <span class="sc">+</span> alpha <span class="sc">*</span> p) <span class="sc">&gt;</span></span>
-<span id="cb13-11"><a href=""></a>      <span class="fu">f</span>(x) <span class="sc">+</span> c <span class="sc">*</span> alpha <span class="sc">*</span> <span class="fu">sum</span>(g <span class="sc">*</span> p)</span>
-<span id="cb13-12"><a href=""></a>  ) {</span>
-<span id="cb13-13"><a href=""></a>    alpha <span class="ot">&lt;-</span> rho <span class="sc">*</span> alpha</span>
-<span id="cb13-14"><a href=""></a>  }</span>
-<span id="cb13-15"><a href=""></a></span>
-<span id="cb13-16"><a href=""></a>  alpha</span>
-<span id="cb13-17"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>armijo <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, x, p,</span>
+<span id="cb14-2"><a href=""></a>                   <span class="at">alpha0 =</span> <span class="dv">1</span>,</span>
+<span id="cb14-3"><a href=""></a>                   <span class="at">rho =</span> <span class="fl">0.5</span>,</span>
+<span id="cb14-4"><a href=""></a>                   <span class="at">c =</span> <span class="fl">1e-4</span>) {</span>
+<span id="cb14-5"><a href=""></a></span>
+<span id="cb14-6"><a href=""></a>  alpha <span class="ot">&lt;-</span> alpha0</span>
+<span id="cb14-7"><a href=""></a>  g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
+<span id="cb14-8"><a href=""></a></span>
+<span id="cb14-9"><a href=""></a>  <span class="cf">while</span> (</span>
+<span id="cb14-10"><a href=""></a>    <span class="fu">f</span>(x <span class="sc">+</span> alpha <span class="sc">*</span> p) <span class="sc">&gt;</span></span>
+<span id="cb14-11"><a href=""></a>      <span class="fu">f</span>(x) <span class="sc">+</span> c <span class="sc">*</span> alpha <span class="sc">*</span> <span class="fu">sum</span>(g <span class="sc">*</span> p)</span>
+<span id="cb14-12"><a href=""></a>  ) {</span>
+<span id="cb14-13"><a href=""></a>    alpha <span class="ot">&lt;-</span> rho <span class="sc">*</span> alpha</span>
+<span id="cb14-14"><a href=""></a>  }</span>
+<span id="cb14-15"><a href=""></a></span>
+<span id="cb14-16"><a href=""></a>  alpha</span>
+<span id="cb14-17"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="damped-newton-implementation" class="slide level2">
 <h2>Damped Newton implementation</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>newton_armijo <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
-<span id="cb14-2"><a href=""></a>                          <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
-<span id="cb14-3"><a href=""></a>                          <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
-<span id="cb14-4"><a href=""></a></span>
-<span id="cb14-5"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
-<span id="cb14-6"><a href=""></a></span>
-<span id="cb14-7"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb14-8"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
-<span id="cb14-9"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb14-10"><a href=""></a>    <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb14-11"><a href=""></a>    <span class="at">alpha =</span> <span class="cn">NA</span></span>
-<span id="cb14-12"><a href=""></a>  )</span>
-<span id="cb14-13"><a href=""></a></span>
-<span id="cb14-14"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
-<span id="cb14-15"><a href=""></a></span>
-<span id="cb14-16"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
-<span id="cb14-17"><a href=""></a></span>
-<span id="cb14-18"><a href=""></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>(g<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> tol)</span>
-<span id="cb14-19"><a href=""></a>      <span class="cf">break</span></span>
-<span id="cb14-20"><a href=""></a></span>
-<span id="cb14-21"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
-<span id="cb14-22"><a href=""></a></span>
-<span id="cb14-23"><a href=""></a>    p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span>
-<span id="cb14-24"><a href=""></a></span>
-<span id="cb14-25"><a href=""></a>    alpha <span class="ot">&lt;-</span> <span class="fu">armijo</span>(</span>
-<span id="cb14-26"><a href=""></a>      <span class="at">f =</span> f,</span>
-<span id="cb14-27"><a href=""></a>      <span class="at">grad =</span> grad,</span>
-<span id="cb14-28"><a href=""></a>      <span class="at">x =</span> x,</span>
-<span id="cb14-29"><a href=""></a>      <span class="at">p =</span> p</span>
-<span id="cb14-30"><a href=""></a>    )</span>
-<span id="cb14-31"><a href=""></a></span>
-<span id="cb14-32"><a href=""></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> alpha <span class="sc">*</span> p</span>
-<span id="cb14-33"><a href=""></a></span>
-<span id="cb14-34"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
-<span id="cb14-35"><a href=""></a>      history,</span>
-<span id="cb14-36"><a href=""></a>      <span class="fu">data.frame</span>(</span>
-<span id="cb14-37"><a href=""></a>        <span class="at">iter =</span> k,</span>
-<span id="cb14-38"><a href=""></a>        <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb14-39"><a href=""></a>        <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>)),</span>
-<span id="cb14-40"><a href=""></a>        <span class="at">alpha =</span> alpha</span>
-<span id="cb14-41"><a href=""></a>      )</span>
-<span id="cb14-42"><a href=""></a>    )</span>
-<span id="cb14-43"><a href=""></a>  }</span>
-<span id="cb14-44"><a href=""></a></span>
-<span id="cb14-45"><a href=""></a>  <span class="fu">list</span>(</span>
-<span id="cb14-46"><a href=""></a>    <span class="at">par =</span> x,</span>
-<span id="cb14-47"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
-<span id="cb14-48"><a href=""></a>    <span class="at">history =</span> history</span>
-<span id="cb14-49"><a href=""></a>  )</span>
-<span id="cb14-50"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>newton_armijo <span class="ot">&lt;-</span> <span class="cf">function</span>(f, grad, hess, x0,</span>
+<span id="cb15-2"><a href=""></a>                          <span class="at">tol =</span> <span class="fl">1e-8</span>,</span>
+<span id="cb15-3"><a href=""></a>                          <span class="at">max_iter =</span> <span class="dv">100</span>) {</span>
+<span id="cb15-4"><a href=""></a></span>
+<span id="cb15-5"><a href=""></a>  x <span class="ot">&lt;-</span> x0</span>
+<span id="cb15-6"><a href=""></a></span>
+<span id="cb15-7"><a href=""></a>  history <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-8"><a href=""></a>    <span class="at">iter =</span> <span class="dv">0</span>,</span>
+<span id="cb15-9"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb15-10"><a href=""></a>    <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb15-11"><a href=""></a>    <span class="at">alpha =</span> <span class="cn">NA</span></span>
+<span id="cb15-12"><a href=""></a>  )</span>
+<span id="cb15-13"><a href=""></a></span>
+<span id="cb15-14"><a href=""></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>max_iter) {</span>
+<span id="cb15-15"><a href=""></a></span>
+<span id="cb15-16"><a href=""></a>    g <span class="ot">&lt;-</span> <span class="fu">grad</span>(x)</span>
+<span id="cb15-17"><a href=""></a></span>
+<span id="cb15-18"><a href=""></a>    <span class="cf">if</span> (<span class="fu">sqrt</span>(<span class="fu">sum</span>(g<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">&lt;</span> tol)</span>
+<span id="cb15-19"><a href=""></a>      <span class="cf">break</span></span>
+<span id="cb15-20"><a href=""></a></span>
+<span id="cb15-21"><a href=""></a>    H <span class="ot">&lt;-</span> <span class="fu">hess</span>(x)</span>
+<span id="cb15-22"><a href=""></a></span>
+<span id="cb15-23"><a href=""></a>    p <span class="ot">&lt;-</span> <span class="fu">solve</span>(H, <span class="sc">-</span>g)</span>
+<span id="cb15-24"><a href=""></a></span>
+<span id="cb15-25"><a href=""></a>    alpha <span class="ot">&lt;-</span> <span class="fu">armijo</span>(</span>
+<span id="cb15-26"><a href=""></a>      <span class="at">f =</span> f,</span>
+<span id="cb15-27"><a href=""></a>      <span class="at">grad =</span> grad,</span>
+<span id="cb15-28"><a href=""></a>      <span class="at">x =</span> x,</span>
+<span id="cb15-29"><a href=""></a>      <span class="at">p =</span> p</span>
+<span id="cb15-30"><a href=""></a>    )</span>
+<span id="cb15-31"><a href=""></a></span>
+<span id="cb15-32"><a href=""></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> alpha <span class="sc">*</span> p</span>
+<span id="cb15-33"><a href=""></a></span>
+<span id="cb15-34"><a href=""></a>    history <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb15-35"><a href=""></a>      history,</span>
+<span id="cb15-36"><a href=""></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb15-37"><a href=""></a>        <span class="at">iter =</span> k,</span>
+<span id="cb15-38"><a href=""></a>        <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb15-39"><a href=""></a>        <span class="at">grad_norm =</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="fu">grad</span>(x)<span class="sc">^</span><span class="dv">2</span>)),</span>
+<span id="cb15-40"><a href=""></a>        <span class="at">alpha =</span> alpha</span>
+<span id="cb15-41"><a href=""></a>      )</span>
+<span id="cb15-42"><a href=""></a>    )</span>
+<span id="cb15-43"><a href=""></a>  }</span>
+<span id="cb15-44"><a href=""></a></span>
+<span id="cb15-45"><a href=""></a>  <span class="fu">list</span>(</span>
+<span id="cb15-46"><a href=""></a>    <span class="at">par =</span> x,</span>
+<span id="cb15-47"><a href=""></a>    <span class="at">value =</span> <span class="fu">f</span>(x),</span>
+<span id="cb15-48"><a href=""></a>    <span class="at">history =</span> history</span>
+<span id="cb15-49"><a href=""></a>  )</span>
+<span id="cb15-50"><a href=""></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="the-important-distinction" class="slide level2">
 <h2>The important distinction</h2>
