@@ -992,7 +992,6 @@ $$
 </style>
 
 ```r
-#| echo: true
 
 newton_1d <- function(f, grad, hess, x0,
                       tol = 1e-8,
