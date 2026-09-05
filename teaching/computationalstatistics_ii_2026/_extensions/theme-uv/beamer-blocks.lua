@@ -1,4 +1,13 @@
 function Div(el)
+  if el.classes:includes('exercise') then
+    local title = el.attributes['title'] or 'Exercise'
+    el.content:insert(1, pandoc.Div(
+      {pandoc.Plain({pandoc.Str(title)})},
+      pandoc.Attr('', {'exercise-title'})
+    ))
+    return el
+  end
+
   if el.classes:includes('proof_idea') or el.classes:includes('proofbox') then
     
     local box_type = 'proof'

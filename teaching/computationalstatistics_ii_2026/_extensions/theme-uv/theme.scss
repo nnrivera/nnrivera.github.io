@@ -438,6 +438,27 @@ div.box .box-title {
 border-bottom: 3px solid rgba(0, 60, 88, 0.25); /* Thicker line with slightly more opacity */
 }
 
+/* Exercise boxes use the institutional palette. */
+.reveal div.exercise {
+  margin: 1em 0;
+  padding: 0 1em 0.6em;
+  border: 1px solid rgba($uv-blue, 0.2);
+  border-left: 5px solid $uv-light-blue;
+  border-radius: 6px;
+  background: rgba($uv-blue, 0.04);
+  overflow: hidden;
+}
+
+.reveal div.exercise > .exercise-title {
+  margin: 0 -1em 0.6em;
+  padding: 0.4em 1em;
+  background: linear-gradient(110deg, $uv-dark-blue, $uv-blue);
+  color: #fff;
+  font-weight: 600;
+}
+
+.reveal div.exercise > :last-child { margin-bottom: 0; }
+
 //Box around standard definitions
 
 div[class*="theorem"], 
@@ -582,4 +603,120 @@ Colours
 
 .blue {
   color: blue;
+}
+
+
+/* Link to a bubble with [Explain](#my-explanation){.explanation-link}. */
+.reveal a.explanation-link {
+  display: inline-block;
+  padding: 0.05em 0.4em;
+  border-radius: 0.4em;
+  color: $uv-blue;
+  font-size: 0.75em;
+  white-space: nowrap;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.reveal a.explanation-link:hover,
+.reveal a.explanation-link[aria-expanded="true"] {
+  background: #fff2bf;
+  color: $uv-dark-blue;
+}
+
+.reveal a.explanation-link:focus-visible {
+  outline: 2px solid $uv-light-blue;
+  outline-offset: 2px;
+}
+
+/* Keep the link beside a display equation. */
+.reveal .explained-equation > p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  flex-wrap: wrap;
+}
+
+.reveal .explanation-dock {
+  position: fixed;
+  z-index: 110;
+  box-sizing: border-box;
+  font-size: clamp(18px, 1.5vw, 24px);
+  line-height: 1.4;
+  text-align: left;
+}
+
+.reveal .explanation-dock[hidden],
+.reveal details.explanation[hidden] { display: none; }
+
+.reveal details.explanation {
+  position: relative;
+  margin: 0;
+  border: 2px solid $uv-dark-blue;
+  border-radius: 20px;
+  background: #fffdf3;
+  color: $uv-dark-blue;
+  box-shadow: 4px 5px 0 rgba(35, 39, 84, 0.18);
+  text-align: left;
+}
+
+.reveal .explanation-dock details.explanation::after {
+  content: "";
+  position: absolute;
+  left: var(--explanation-tail-left, 32px);
+  width: 20px;
+  height: 20px;
+  background: #fffdf3;
+  border-right: 2px solid $uv-dark-blue;
+  border-bottom: 2px solid $uv-dark-blue;
+}
+
+.reveal .explanation-dock[data-placement="above"] details.explanation::after {
+  bottom: -12px;
+  transform: rotate(45deg);
+}
+
+.reveal .explanation-dock[data-placement="below"] details.explanation::after {
+  top: -12px;
+  transform: rotate(225deg);
+}
+
+.reveal details.explanation summary {
+  padding: 0.55em 0.8em;
+  border-radius: 18px;
+  background: #fffdf3;
+  color: $uv-blue;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reveal details.explanation summary:focus-visible {
+  outline: 3px solid $uv-light-blue;
+  outline-offset: -3px;
+}
+
+.reveal .explanation-content {
+  box-sizing: border-box;
+  padding: 0.25em 0.9em 0.5em;
+  overflow: auto;
+}
+
+.reveal .explanation-content p { margin: 0.6em 0; }
+
+@media print {
+  .reveal details.explanation {
+    margin-top: 0.6em;
+    box-shadow: none;
+    break-inside: avoid;
+    font-size: 0.8em;
+  }
+  .reveal details.explanation summary {
+    background: white;
+    color: $uv-blue;
+  }
+  .reveal .explanation-content { max-height: none !important; overflow: visible; }
+  .reveal .explanation-dock,
+  .reveal a.explanation-link { display: none; }
 }

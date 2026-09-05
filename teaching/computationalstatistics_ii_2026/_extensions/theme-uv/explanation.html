@@ -1,0 +1,176 @@
+<script>
+(() => {
+  function initializeExplanations() {
+    const reveal = window.Reveal;
+    if (!reveal) return;
+    if (!reveal.isReady()) {
+      reveal.on('ready', initializeExplanations);
+      return;
+    }
+    const panels = [...document.querySelectorAll('.reveal .slides details.explanation')];
+    if (!panels.length) return;
+    if (new URLSearchParams(location.search).has('print-pdf')) {
+      panels.forEach(panel => { panel.open = true; });
+      return;
+    }
+
+    const dock = document.createElement('aside');
+    dock.className = 'explanation-dock';
+    dock.setAttribute('aria-label', 'Explanation');
+    dock.hidden = true;
+    reveal.getRevealElement().append(dock);
+    let active = null;
+    const entries = panels.map((panel, index) => {
+      if (!panel.id) {
+        let id = `explanation-${index + 1}`;
+        while (document.getElementById(id)) id += '-box';
+        panel.id = id;
+      }
+      const home = document.createElement('span');
+      home.id = `${panel.id}-home`;
+      while (document.getElementById(home.id)) home.id += '-box';
+      home.hidden = true;
+      panel.before(home);
+      const links = [...document.querySelectorAll('a.explanation-link')]
+        // Quarto rewrites Reveal fragment links from #id to #/id.
+        .filter(link => [`#${panel.id}`, `#/${panel.id}`].includes(link.getAttribute('href')));
+      // Without an explicit link, place a trigger at the box's source position.
+      if (!links.length) {
+        const link = document.createElement('a');
+        link.className = 'explanation-link';
+        link.href = `#${panel.id}`;
+        link.textContent = panel.querySelector('summary').textContent;
+        home.before(link);
+        links.push(link);
+      }
+      panel.hidden = true;
+      dock.append(panel);
+      return { panel, home, links };
+    });
+
+    function closePanel(returnFocus = false) {
+      if (!active) return;
+      const { entry, trigger } = active;
+      active = null;
+      entry.panel.open = false;
+      entry.panel.hidden = true;
+      liveLinks(entry).forEach(link => link.setAttribute('aria-expanded', 'false'));
+      dock.hidden = true;
+      if (returnFocus) trigger.focus({ preventScroll: true });
+    }
+
+    function positionPanel() {
+      if (!active) return;
+      const { entry, trigger } = active;
+      if (!trigger.isConnected) { closePanel(); return; }
+      const anchor = trigger.getBoundingClientRect();
+      const panel = entry.panel;
+      const content = panel.querySelector('.explanation-content');
+      const margin = 16;
+      const gap = 14;
+      const width = Math.min(520, window.innerWidth - margin * 2);
+      dock.style.width = `${width}px`;
+      const left = Math.max(margin, Math.min(anchor.left, window.innerWidth - width - margin));
+      dock.style.left = `${left}px`;
+      const headerHeight = panel.querySelector('summary').getBoundingClientRect().height + 4;
+      const naturalHeight = content.scrollHeight + headerHeight;
+      const below = Math.max(0, window.innerHeight - 60 - anchor.bottom - gap);
+      const above = Math.max(0, anchor.top - margin - gap);
+      const placeBelow = below >= naturalHeight || below >= above;
+      content.style.maxHeight = `${Math.max(40, (placeBelow ? below : above) - headerHeight)}px`;
+      const height = panel.getBoundingClientRect().height;
+      dock.style.top = `${Math.max(margin, placeBelow ? anchor.bottom + gap : anchor.top - gap - height)}px`;
+      dock.dataset.placement = placeBelow ? 'below' : 'above';
+      dock.style.setProperty('--explanation-tail-left', `${Math.max(24, Math.min(width - 40, anchor.left + anchor.width / 2 - left - 10))}px`);
+    }
+
+    function linkedEntry(link) {
+      const href = link.getAttribute('href');
+      return entries.find(({ panel }) => [`#${panel.id}`, `#/${panel.id}`].includes(href));
+    }
+    function liveLinks(entry) {
+      return [...document.querySelectorAll('a.explanation-link')]
+        .filter(link => linkedEntry(link) === entry);
+    }
+    entries.forEach(entry => {
+      entry.links.forEach(link => {
+        link.setAttribute('role', 'button');
+        link.setAttribute('aria-controls', entry.panel.id);
+        link.setAttribute('aria-expanded', 'false');
+      });
+      entry.panel.addEventListener('toggle', () => {
+        if (active && active.entry === entry && !entry.panel.open) closePanel(true);
+      });
+    });
+
+    // Delegation survives Reveal rebuilding slide HTML when leaving scroll view.
+    document.addEventListener('click', event => {
+      const link = event.target.closest('a.explanation-link');
+      const entry = link && linkedEntry(link);
+      if (!entry) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const sameTrigger = active && active.trigger === link;
+      closePanel();
+      if (sameTrigger) return;
+      active = { entry, trigger: link };
+      entry.panel.hidden = false;
+      entry.panel.open = true;
+      liveLinks(entry).forEach(item => item.setAttribute('aria-expanded', 'true'));
+      dock.hidden = false;
+      positionPanel();
+      requestAnimationFrame(positionPanel);
+    }, true);
+    document.addEventListener('keydown', event => {
+      const link = event.target.closest('a.explanation-link');
+      if (!link || !linkedEntry(link)) return;
+      event.stopPropagation();
+      if (event.key === ' ') {
+        event.preventDefault();
+        link.click();
+      }
+    }, true);
+
+    window.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !active) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closePanel(true);
+    }, true);
+    dock.addEventListener('keydown', event => event.stopPropagation());
+    document.addEventListener('click', event => {
+      if (active && !dock.contains(event.target) && !active.trigger.contains(event.target)) closePanel();
+    });
+    reveal.on('slidechanged', () => closePanel());
+    reveal.on('overviewshown', () => closePanel());
+    window.addEventListener('resize', positionPanel);
+    document.addEventListener('scroll', positionPanel, true);
+    const observer = new ResizeObserver(positionPanel);
+    entries.forEach(({ panel, links }) => {
+      observer.observe(panel.querySelector('.explanation-content'));
+      links.forEach(link => {
+        observer.observe(link);
+        observer.observe(link.closest('section'));
+      });
+    });
+    window.addEventListener('beforeprint', () => {
+      closePanel();
+      entries.forEach(({ panel, home }) => {
+        panel.hidden = false;
+        panel.open = true;
+        panel.querySelector('.explanation-content').style.maxHeight = '';
+        document.getElementById(home.id).after(panel);
+      });
+    });
+    window.addEventListener('afterprint', () => {
+      entries.forEach(({ panel }) => {
+        panel.open = false;
+        panel.hidden = true;
+        dock.append(panel);
+      });
+    });
+  }
+  if (document.readyState === 'complete') initializeExplanations();
+  else window.addEventListener('load', initializeExplanations, { once: true });
+})();
+</script>

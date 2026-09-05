@@ -13,5 +13,8 @@ contributes:
        show-slide-number: all
        template-partials:
         - title-slide.html
+       include-after-body:
+        - explanation.html
        filters:
+        - explanation.lua
         - beamer-blocks.lua
