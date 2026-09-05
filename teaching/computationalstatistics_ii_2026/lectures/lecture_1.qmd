@@ -10,98 +10,78 @@ format:
         width: 1600    # Default is 1050. Larger width = smaller text (1600,900), (1760,990),(1920,1080) (2240,1260), (1840, 1035), (2400, 1350)
         height: 900 # Default is 700. Larger height = smaller text
         #center: true #this is buggy because I overwrite a lot of reveal stuff.. I'll have to redesign this. 
-
-
 ---
 
 $\newcommand{\R}{\mathbb{R}}$
 
 # Fundamentals of Nonlinear Optimization I: Basic Multivariate Calculus
 
-
 ## Euclidian Norm
 
-::: {#def-euclidean-norm name="Euclidean Norm -$L_2$ Norm"}
+:::: {#def-euclidean-norm name="Euclidean Norm -$L_2$ Norm"}
 For a vector ${x} = (x_1, x_2, \dots, x_n) \in \R^n$, the **Euclidean norm** (or $2$-norm) is defined as:
 
-::: {.eqbox}
+::: eqbox
 $$ \|{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2} = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2} $$
 :::
 
 Some people writes $\| \cdot \|$ if it is clear from the context that we are using the Euclidean norm
-:::
+::::
 
+::: {.box title = "Properties"} For any ${x}, {y} \in \R^n$ and scalar $\alpha \in \R$:
 
-::: {.box title = "Properties"}
-For any ${x}, {y} \in \R^n$ and scalar $\alpha \in \R$:
-
-1. **Non-negativity:** $\|{x}\|_2 \ge 0$, and $\|{x}\|_2 = 0 \iff {x} = \mathbf{0}$.
-2. **Absolute Homogeneity:** $\|\alpha {x}\|_2 = |\alpha| \|{x}\|_2$.
-3. **Triangle Inequality:** $\|{x} + {y}\|_2 \le \|{x}\|_2 + \|\mathbf{y}\|_2$.
-:::
+1.  **Non-negativity:** $\|{x}\|_2 \ge 0$, and $\|{x}\|_2 = 0 \iff {x} = \mathbf{0}$.
+2.  **Absolute Homogeneity:** $\|\alpha {x}\|_2 = |\alpha| \|{x}\|_2$.
+3.  **Triangle Inequality:** $\|{x} + {y}\|_2 \le \|{x}\|_2 + \|\mathbf{y}\|_2$. :::
 
 ## Inner Product
 
-::: {#def-inner-product name="Inner Product (Dot Product)"}
+::::: {#def-inner-product name="Inner Product (Dot Product)"}
+For two vectors ${x} = (x_1, x_2, \dots, x_n)$ and ${y} = (y_1, y_2, \dots, y_n)$ in $\R^n$, the **inner product** (or **dot product**) is defined as:
 
-For two vectors ${x} = (x_1, x_2, \dots, x_n)$ and
-${y} = (y_1, y_2, \dots, y_n)$ in $\R^n$, the **inner product** (or **dot product**) is defined as:
-
-::: {.eqbox}
-$$
-\langle {x}, {y} \rangle
+::: eqbox
+$$\langle {x}, {y} \rangle
 =
 \sum_{i=1}^{n} x_i y_i
 =
-x_1y_1 + x_2y_2 + \cdots + x_ny_n.
-$$
+x_1y_1 + x_2y_2 + \cdots + x_ny_n.$$
 :::
 
 The Euclidean norm is induced by the inner product:
 
-::: {.eqbox}
-$$
-\|{x}\|_2 = \sqrt{\langle {x}, {x}\rangle }.
-$$
+::: eqbox
+$$\|{x}\|_2 = \sqrt{\langle {x}, {x}\rangle }.$$
 :::
-:::
+:::::
 
 ::: {.box title="Properties"}
 For any ${x}, {y}, {z} \in \R^n$ and scalar $\alpha \in \R$:
 
-1. **Symmetry:** $\langle {x}, {y} \rangle = \langle {y}, {x} \rangle$.
-2. **Linearity:** $\langle \alpha {x} + {y}, {z} \rangle = \alpha \langle {x}, {z} \rangle + \langle {y}, {z} \rangle$.
-3. **Positive Definiteness:** $\langle {x}, {x} \rangle \ge 0$, and $\langle {x}, {x} \rangle = 0 \iff {x} = \mathbf{0}$.
-4. **Cauchy--Schwarz Inequality:** $|\langle {x}, {y} \rangle| \le \|{x}\|_2 \|{y}\|_2$.
+1.  **Symmetry:** $\langle {x}, {y} \rangle = \langle {y}, {x} \rangle$.
+2.  **Linearity:** $\langle \alpha {x} + {y}, {z} \rangle = \alpha \langle {x}, {z} \rangle + \langle {y}, {z} \rangle$.
+3.  **Positive Definiteness:** $\langle {x}, {x} \rangle \ge 0$, and $\langle {x}, {x} \rangle = 0 \iff {x} = \mathbf{0}$.
+4.  **Cauchy--Schwarz Inequality:** $|\langle {x}, {y} \rangle| \le \|{x}\|_2 \|{y}\|_2$.
 :::
 
 ## Smoothness: Continuity
 
-
 ::: {#def-Continuity name="Continuity"}
-A function $F:U\subseteq \R^n \to \R^m$ is called continuous in $x$ if for every sequence $x_k\in \R^n$ wuch that $\lim_{k\to \infty}\|x_k-x\|= 0$, then
-$$\lim_{k\to \infty} \|F(X_k)- F(x)\|=0$$
+A function $F:U\subseteq \R^n \to \R^m$ is called continuous in $x$ if for every sequence $x_k\in \R^n$ wuch that $\lim_{k\to \infty}\|x_k-x\|= 0$, then $$\lim_{k\to \infty} \|F(X_k)- F(x)\|=0$$
 :::
 
 A stronger notion is being Lipschitz continuous
 
 ::: {#def-Lipschitz-Continuity name="Lipschitz Continuity"}
-A function $F:U\subseteq \R^n \to \R^m$ is called Lispchitz continuous if there exists $L>0$ such that
-$$ \|F(x_k)- F(x)\|\leq L \|x_k-x\|$$
+A function $F:U\subseteq \R^n \to \R^m$ is called Lispchitz continuous if there exists $L>0$ such that $$ \|F(x_k)- F(x)\|\leq L \|x_k-x\|$$
 :::
 
 The notion of Lipschitz continuity is a sort of **practical continuity**: while nobody discuss that jumps are clear discontinuities, there are other type of discontinuities
 
 ## 2. The Pathological Case
 
-Consider the function $f(t) = \sin\left(\frac{1}{1-t}\right)$ on $[0,1)$. 
-Define $f(1) = 0$. 
+Consider the function $f(t) = \sin\left(\frac{1}{1-t}\right)$ on $[0,1)$. Define $f(1) = 0$.
 
-Even without a jump, as $t \to 1$, the function compresses an infinite number of waves into a finite space. It lacks a limit at $1$.
-<br>
-<br>
-<br>
-<br>
+Even without a jump, as $t \to 1$, the function compresses an infinite number of waves into a finite space. It lacks a limit at $1$. <br> <br> <br> <br>
 
 ```{ojs}
 //| echo: false
@@ -127,7 +107,7 @@ In practice, we won't find functions as bad as the previous one, but still funct
 
 ## Intuition for Lipschitz continuity
 
- Consider the function $t\to \sin(ct)$
+Consider the function $t\to \sin(ct)$
 
 ```{ojs}
 //| echo: false
@@ -224,41 +204,31 @@ $$J_F = \begin{bmatrix}
 
 Then $F'_x = J_F(x)$.
 
-
 ## Smoothness: Gradient and Hessian
 
 In the particular case that $m=1$, the transpose of the Jacobian is the so-called **gradient** $\nabla$:
 
-::: {.box title = "Gradient"}
-$$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\[1ex] \frac{\partial f}{\partial x_2} \\[1ex] \vdots \\[1ex] \frac{\partial f}{\partial x_n} \end{bmatrix}$$
-:::
+::: {.box title = "Gradient"} $$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\[1ex] \frac{\partial f}{\partial x_2} \\[1ex] \vdots \\[1ex] \frac{\partial f}{\partial x_n} \end{bmatrix}$$ :::
 
-but in general writting gradient as a row or column has little importance. 
+but in general writting gradient as a row or column has little importance.
 
-* We say that $f$ is continuously differentiable if $\nabla f$ is a continuous function
-* We say that $f$ is $L$-smooth if $\nabla f$ is Lipschitz continuous with constant $L$
+- We say that $f$ is continuously differentiable if $\nabla f$ is a continuous function
+- We say that $f$ is $L$-smooth if $\nabla f$ is Lipschitz continuous with constant $L$
 
-##  Smoothness: Directional Derivative
+## Smoothness: Directional Derivative
 
 Another important concept is the **Directional Derivative**
 
+:::{.box title = "Directional Derivative"} Given a vector $v\in \R^n$ we can show that $$\lim_{\lambda\to 0} \frac{f(x+\lambda v)-f(x)}{\lambda} = \langle \nabla f(x) , v\rangle$$
 
-:::{.box title = "Directional Derivative"}
- Given a vector $v\in \R^n$ we can show that
-$$\lim_{\lambda\to 0} \frac{f(x+\lambda v)-f(x)}{\lambda} = \langle \nabla f(x) , v\rangle$$
-
-which is called the **directional derivative** in the direction of $v$.
-:::
-
+which is called the **directional derivative** in the direction of $v$. :::
 
 ## Smoothness: Gradient and Hessian
 
-
 Let $f:\R^n \to\R$. The **Hessian** of $f$ is the matrix of second-order partial derivatives. Equivalently, it is the **Jacobian of the gradient**:
 
-::: {.eqbox}
-$$
-(Hf)(x)=J(\nabla f)(x)=
+::: eqbox
+$$(Hf)(x)=J(\nabla f)(x)=
 \begin{bmatrix}
 \frac{\partial^2 f}{\partial x_1^2} &
 \frac{\partial^2 f}{\partial x_1\partial x_2} &
@@ -273,22 +243,20 @@ $$
 \frac{\partial^2 f}{\partial x_n\partial x_2} &
 \cdots &
 \frac{\partial^2 f}{\partial x_n^2}
-\end{bmatrix}.
-$$
+\end{bmatrix}.$$
 :::
 
 ::: {.box title="Remark"}
-
-1. Some people writes $\nabla^2$ instead of $H$.
-2. If $f$ has **continuous** second-order partial derivatives, then the Hessian is **symmetric**:
+1.  Some people writes $\nabla^2$ instead of $H$.
+2.  If $f$ has **continuous** second-order partial derivatives, then the Hessian is **symmetric**:
 
 $$H f(x)=\big(Hf(x)\big)^\top,$$
 
 i.e.,
 
 $$\frac{\partial^2 f}{\partial x_i\partial x_j}=\frac{\partial^2 f}{\partial x_j\partial x_i}.$$
-
 :::
+
 ## Smoothness: Key Results
 
 ::: {#thm-mvt-1 name="Mean Value Theorem I"}
@@ -296,7 +264,6 @@ Let $f : \R^n \to \R$ be smooth. Then for any $x, y \in \R^n$, there exists a $\
 
 $$ f(y) = f(x) + \langle \nabla f(\xi), y - x \rangle $$
 :::
-
 
 ::: {#thm-mvt-2 name="Mean Value Theorem II: Integral Form"}
 Let $F : \R^n \to \R^m$ be continuously differentiable. Then for any $x, y \in \R^n$:
@@ -316,51 +283,39 @@ Let $f : \R^n \to \R$ be $L$-smooth. Then for any $x, y \in \R^n$,
 $$ f(x) \le f(y) + \langle \nabla f(y), x - y \rangle + \frac{L}{2} \|x - y\|^2 $$
 :::
 
-::: {.proofbox}
-By the mean value theorem II (exchaing the role of $x$ and $y$), we can write the exact difference as an integral:
-$$ f(x) - f(y) = \int_0^1 \langle \nabla f(y + t(x-y)), x-y \rangle \, dt $$
+::: proofbox
+By the mean value theorem II (exchaing the role of $x$ and $y$), we can write the exact difference as an integral: $$ f(x) - f(y) = \int_0^1 \langle \nabla f(y + t(x-y)), x-y \rangle \, dt $$
 
-We can subtract and add $\langle \nabla f(y), x-y \rangle$ inside the integral:
-$$ f(x) - f(y) = \langle \nabla f(y), x-y \rangle + \int_0^1 \langle \nabla f(y + t(x-y)) - \nabla f(y), x-y \rangle \, dt $$
+We can subtract and add $\langle \nabla f(y), x-y \rangle$ inside the integral: $$ f(x) - f(y) = \langle \nabla f(y), x-y \rangle + \int_0^1 \langle \nabla f(y + t(x-y)) - \nabla f(y), x-y \rangle \, dt $$
 
-Applying the Cauchy-Schwarz inequality to the integral term gives:
-$$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \int_0^1 \|\nabla f(y + t(x-y)) - \nabla f(y)\| \|x-y\| \, dt $$
+Applying the Cauchy-Schwarz inequality to the integral term gives: $$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \int_0^1 \|\nabla f(y + t(x-y)) - \nabla f(y)\| \|x-y\| \, dt $$
 
-By the definition of $L$-smoothness, the gradient is $L$-Lipschitz continuous, meaning:
-$$ \|\nabla f(y + t(x-y)) - \nabla f(y)\| \le L \|t(x-y)\| = Lt \|x-y\| $$
+By the definition of $L$-smoothness, the gradient is $L$-Lipschitz continuous, meaning: $$ \|\nabla f(y + t(x-y)) - \nabla f(y)\| \le L \|t(x-y)\| = Lt \|x-y\| $$
 
-Substituting this upper bound into our integral:
-$$ \dots \le \int_0^1 Lt \|x-y\|^2 \, dt = L \|x-y\|^2 \int_0^1 t \, dt $$
+Substituting this upper bound into our integral: $$ \dots \le \int_0^1 Lt \|x-y\|^2 \, dt = L \|x-y\|^2 \int_0^1 t \, dt $$
 
-Finally, evaluating the integral $\int_0^1 t \, dt = \frac{1}{2}$ yields the required result:
-$$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \frac{L}{2} \|x-y\|^2 $$
+Finally, evaluating the integral $\int_0^1 t \, dt = \frac{1}{2}$ yields the required result: $$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \frac{L}{2} \|x-y\|^2 $$
 :::
-
-
 
 # Fundamentals of Nonlinear Optimization II: Convex Analysis
 
 ## Open Set
 
-:::: {.columns}
-
-::: {.column width="50%"}
+:::::: columns
+:::: {.column width="50%"}
 We define the $\varepsilon$-ball around the point $x\in \R^n$ by
 
 $$B_\varepsilon(x) = \{y\in \R^n: \|x-y\|\leq \varepsilon\}$$
 
 ::: {#def-open-set name="Open Sets"}
+1.  We say that a point $x \in U\subseteq \R^n$ is an **interior point of** $U$ if there exists $\varepsilon > 0$ such that $B_{\varepsilon}(x) \subseteq U$
 
-1. We say that a point $x \in U\subseteq \R^n$ is an **interior point of $U$** if there exists $\varepsilon > 0$ such that $B_{\varepsilon}(x) \subseteq U$
-
-2. We say $U\subseteq \R^n$ is an **open set** if every $x\in U$ is an interior point of $U$.
+2.  We say $U\subseteq \R^n$ is an **open set** if every $x\in U$ is an interior point of $U$.
 :::
+::::
 
-:::
-
-::: {.column width="50%" .fragment}
-
-``` {ojs}
+::: {.column .fragment width="50%"}
+```{ojs}
 //| echo: false
 
 viewof openSetDemo = {
@@ -493,27 +448,19 @@ viewof openSetDemo = {
 }
 ```
 :::
-
-:::
-
+::::::
 
 ## Convex Sets
 
-::: {#def-convex-set name="Convex Sets"}
+:::: {#def-convex-set name="Convex Sets"}
+A set $C \subseteq \R^n$ is **convex** if, for every $x, y \in C$ and every $\lambda \in [0,1]$,
 
-A set $C \subseteq \R^n$ is **convex** if, for every
-$x, y \in C$ and every $\lambda \in [0,1]$,
-
-::: {.eqbox}
-$$
-\lambda x + (1-\lambda)y \in C.
-$$
+::: eqbox
+$$\lambda x + (1-\lambda)y \in C.$$
 :::
 
-Equivalently, the line segment joining any two points of the set
-lies entirely inside the set.
-:::
-
+Equivalently, the line segment joining any two points of the set lies entirely inside the set.
+::::
 
 ```{ojs}
 //| echo: false
@@ -562,131 +509,88 @@ viewof lambda = {
 
 ## Convexity
 
-:::: {.columns}
-
-::: {.column width="50%"}
-
+:::::: columns
+:::: {.column width="50%"}
 ::: {#def-convex-function}
-Let  $U \subset \R^n$ be convex. A function $f : U \to \R$ is called:
+Let $U \subset \R^n$ be convex. A function $f : U \to \R$ is called:
 
-i. **convex** on $U$, if for all $x, y \in U$ and all $\lambda \in [0,1]$,
-$$f (\lambda x + (1 - \lambda)y) \le \lambda f (x) + (1 - \lambda)f (y)$$
+i.  **convex** on $U$, if for all $x, y \in U$ and all $\lambda \in [0,1]$, $$f (\lambda x + (1 - \lambda)y) \le \lambda f (x) + (1 - \lambda)f (y)$$
 
-ii. **strictly convex** on $U$, if for all $x, y \in U$ with $x \neq y$ and all $\lambda \in (0,1)$,
-$$f (\lambda x + (1 - \lambda)y) < \lambda f (x) + (1 - \lambda)f (y)$$
+ii. **strictly convex** on $U$, if for all $x, y \in U$ with $x \neq y$ and all $\lambda \in (0,1)$, $$f (\lambda x + (1 - \lambda)y) < \lambda f (x) + (1 - \lambda)f (y)$$
 
-iii. **strongly convex** on $U$, if there exists  $\mu > 0$ (called the modulus of convexity) such that for all $x, y \in X$ and all $\lambda \in [0,1]$,
-$$f (\lambda x + (1 - \lambda)y) + \frac{\mu}{2} \lambda(1 - \lambda) \|x - y \|^2 \le \lambda f (x) + (1 - \lambda)f (y).$$
+iii. **strongly convex** on $U$, if there exists $\mu > 0$ (called the modulus of convexity) such that for all $x, y \in X$ and all $\lambda \in [0,1]$, $$f (\lambda x + (1 - \lambda)y) + \frac{\mu}{2} \lambda(1 - \lambda) \|x - y \|^2 \le \lambda f (x) + (1 - \lambda)f (y).$$
 :::
-
-:::
+::::
 
 ::: {.column width="50%"}
 {{< include convexity_ojs.qmd >}}
 :::
-
-:::
+::::::
 
 ## Gradient Inequalities {.scrollable}
 
+::: {#thm-gradient}
+Let $U \subset \R^n$ be open and convex and let $f:U \to \R$ be smooth (differentiable). Then $f$ is:
 
-::: {#thm-gradient} 
-
-Let $U \subset \R^n$ be open and convex and let $f:U \to \R$ be smooth (differentiable). Then $f$ is: 
-
-i. **convex** if and only if for all $x,y \in U$,
-$$\langle \nabla f(y), x-y\rangle \leq f(x) - f(y)$$
-ii. **strictly convex** if and only if for all $x,y \in U$ with $x\neq y$ 
-$$\langle \nabla f(y), x-y\rangle < f(x) - f(y)$$
-iii. **strongly convex** if and only if for all $x,y \in U$ we have
-$$\langle \nabla f(y), x-y\rangle+\frac{\mu}{2}\|x-y\|^2 \leq f(x) - f(y),$$
-where $\mu$ is the modulus of convexity
-
+i.  **convex** if and only if for all $x,y \in U$, $$\langle \nabla f(y), x-y\rangle \leq f(x) - f(y)$$
+ii. **strictly convex** if and only if for all $x,y \in U$ with $x\neq y$ $$\langle \nabla f(y), x-y\rangle < f(x) - f(y)$$
+iii. **strongly convex** if and only if for all $x,y \in U$ we have $$\langle \nabla f(y), x-y\rangle+\frac{\mu}{2}\|x-y\|^2 \leq f(x) - f(y),$$ where $\mu$ is the modulus of convexity
 :::
 
-::: {.proofbox}
-
+::: proofbox
 **Proof of (i): Convexity**
 
-**($\implies$):**
-By convexity, for any $\lambda \in (0, 1]$:
-$$f(y + \lambda(x-y)) \le (1-\lambda)f(y) + \lambda f(x)$$
-Rearranging and dividing by $\lambda$ gives:
-$$\frac{f(y + \lambda(x-y)) - f(y)}{\lambda} \le f(x) - f(y)$$
-Taking the limit as $\lambda \to 0$, the left side becomes the directional derivative, yielding $\langle \nabla f(y), x-y \rangle$.
+**(**$\implies$): By convexity, for any $\lambda \in (0, 1]$: $$f(y + \lambda(x-y)) \le (1-\lambda)f(y) + \lambda f(x)$$ Rearranging and dividing by $\lambda$ gives: $$\frac{f(y + \lambda(x-y)) - f(y)}{\lambda} \le f(x) - f(y)$$ Taking the limit as $\lambda \to 0$, the left side becomes the directional derivative, yielding $\langle \nabla f(y), x-y \rangle$.
 
-**($\impliedby$):**
-Let $z = \lambda x + (1-\lambda)y$. Apply the assumption at $z$ for points $x$ and $y$:
-1. $f(x) \ge f(z) + \langle \nabla f(z), x-z \rangle$
-2. $f(y) \ge f(z) + \langle \nabla f(z), y-z \rangle$
+**(**$\impliedby$): Let $z = \lambda x + (1-\lambda)y$. Apply the assumption at $z$ for points $x$ and $y$: 1. $f(x) \ge f(z) + \langle \nabla f(z), x-z \rangle$ 2. $f(y) \ge f(z) + \langle \nabla f(z), y-z \rangle$
 
 Multiply (1) by $\lambda$, (2) by $(1-\lambda)$, and add them. The gradient terms perfectly cancel since $\lambda(x-z) + (1-\lambda)(y-z) = 0$, leaving the definition of convexity.
 
 **Proof of (ii): Strict Convexity**
 
-**($\implies$):**
-Suppose for contradiction that equality holds for $x \neq y$: 
-$$f(x) - f(y) = \langle \nabla f(y), x-y \rangle$$
-Let $z = y + \lambda(x-y)$. Strict convexity requires:
-$$f(z) < f(y) + \lambda(f(x) - f(y))$$
-Substitute our equality assumption into this:
-$$f(z) < f(y) + \lambda\langle \nabla f(y), x-y \rangle = f(y) + \langle \nabla f(y), z-y \rangle$$
-This strictly contradicts part (i), which states $f(z) - f(y) \ge \langle \nabla f(y), z-y \rangle$. 
+**(**$\implies$): Suppose for contradiction that equality holds for $x \neq y$: $$f(x) - f(y) = \langle \nabla f(y), x-y \rangle$$ Let $z = y + \lambda(x-y)$. Strict convexity requires: $$f(z) < f(y) + \lambda(f(x) - f(y))$$ Substitute our equality assumption into this: $$f(z) < f(y) + \lambda\langle \nabla f(y), x-y \rangle = f(y) + \langle \nabla f(y), z-y \rangle$$ This strictly contradicts part (i), which states $f(z) - f(y) \ge \langle \nabla f(y), z-y \rangle$.
 
-**($\impliedby$):**
-This follows the exact same steps as the backward proof for (i). Because the assumed gradient inequalities are strict for $x \neq y$, adding them together produces a strictly convex inequality.
-
+**(**$\impliedby$): This follows the exact same steps as the backward proof for (i). Because the assumed gradient inequalities are strict for $x \neq y$, adding them together produces a strictly convex inequality.
 
 **Proof of (iii): Strong Convexity**
 
 **Key insight:** A function $f(x)$ is strongly convex if and only if the function $g(x) = f(x) - \frac{\mu}{2}\|x\|^2$ is standardly convex.
 
-Since $g(x)$ is convex, we can directly apply **part (i)** to it:
-$$g(x) - g(y) \ge \langle \nabla g(y), x-y \rangle$$
+Since $g(x)$ is convex, we can directly apply **part (i)** to it: $$g(x) - g(y) \ge \langle \nabla g(y), x-y \rangle$$
 
-Substitute $g(x)$ and its gradient $\nabla g(y) = \nabla f(y) - \mu y$:
-$$f(x) - \frac{\mu}{2}\|x\|^2 - \left(f(y) - \frac{\mu}{2}\|y\|^2\right) \ge \langle \nabla f(y) - \mu y, x-y \rangle$$
+Substitute $g(x)$ and its gradient $\nabla g(y) = \nabla f(y) - \mu y$: $$f(x) - \frac{\mu}{2}\|x\|^2 - \left(f(y) - \frac{\mu}{2}\|y\|^2\right) \ge \langle \nabla f(y) - \mu y, x-y \rangle$$
 
-Rearranging to isolate $f(x) - f(y)$ gives:
-$$f(x) - f(y) \ge \langle \nabla f(y), x-y \rangle + \mu \left( \frac{1}{2}\|x\|^2 - \frac{1}{2}\|y\|^2 - \langle y, x-y \rangle \right)$$
+Rearranging to isolate $f(x) - f(y)$ gives: $$f(x) - f(y) \ge \langle \nabla f(y), x-y \rangle + \mu \left( \frac{1}{2}\|x\|^2 - \frac{1}{2}\|y\|^2 - \langle y, x-y \rangle \right)$$
 
 Using the Euclidean expansion $\|x-y\|^2 = \|x\|^2 - 2\langle x, y \rangle + \|y\|^2$, the terms inside the parenthesis perfectly collapse to $\frac{1}{2}\|x-y\|^2$, completing the proof.
-
 :::
-
 
 ## Minimisers
 
 ::: {#def-minima name="Local and Global Minimum"}
+- Let $f:U\subseteq \R^n \to \R$. We say that $x^* \in U$ is a local minumum if there exists a $\varepsilon$ such that $$f(x^*) \leq f(x) \text{ for all $x \in B_\varepsilon(x^*) \cap U$}.$$
 
-- Let $f:U\subseteq \R^n \to \R$. We say that $x^* \in U$ is a local minumum if there exists a $\varepsilon$ such that
-$$f(x^*) \leq f(x) \text{ for all $x \in B_\varepsilon(x^*) \cap U$}.$$
-
-- A point $x^*\in U$ is a global minumum if 
-$$f(x^*) \leq f(x) \text{ for all $x \in U$} $$
+- A point $x^*\in U$ is a global minumum if $$f(x^*) \leq f(x) \text{ for all $x \in U$} $$
 
 - Analogously, we define **strict** global/local minimum if we replace $\leq$ with $<$.
 
 - We define global/local **maxima** is a similar fashion.
 :::
 
-* In general a local minimum is not a global minimum.
-* In general we don't care about maxima because $\max_{x\in U}f(x)$ is equivalent to find $\min_{x\in U}-f(x)$.
+- In general a local minimum is not a global minimum.
+- In general we don't care about maxima because $\max_{x\in U}f(x)$ is equivalent to find $\min_{x\in U}-f(x)$.
 
 ## Convexity and optimization
 
 Convexity is very relevant for optimization due to the following fact.
 
-:::{#thm-uniquemin}
-
+::: {#thm-uniquemin}
 Let $U\subseteq \R^n$ be a convex set and let $f:\R^n\to \R$. If $x^* \in U$ is a local minimum then is a global minimum. Moreover, if $f$ is strictly convex, then $f$ has at most one local minimum.
-
 :::
 
 We have to remember the usual criteria for minimum/maximum in differentiable function
 
-:::{#thm-nablaequal0 name="First order condition"}
-
+::: {#thm-nablaequal0 name="First order condition"}
 Let $f:\R^n \to R$ be differentiable. If $x^*$ is a local minimum or maximum of $f$, then $\nabla f(x^*)=0$
 :::
 
@@ -710,34 +614,30 @@ When performing the update $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$, the step si
 
 . . .
 
-:::{.box title="Strategies for choosing the step size"}
-**1. Predetermined Sequence**
-The sequence $\{\gamma_k\}_{k=0}^\infty$ is chosen in advance. For example: <p></p>
+::: {.box title="Strategies for choosing the step size"}
+**1. Predetermined Sequence** The sequence $\{\gamma_k\}_{k=0}^\infty$ is chosen in advance. For example:
 
-* **Constant step:** $\gamma_k = \gamma > 0$
-* **Decaying step:** $\gamma_k = \frac{\gamma}{\sqrt{k+1}}$
+<p>
 
-**2. Full Relaxation (Exact Line Search)**
-Choose the step size that strictly minimizes the function along the search direction: $\gamma_k = \arg\min_{\gamma \ge 0} f(x_k - \gamma \nabla f(x_k))$
+</p>
 
-**3. The Armijo-Goldstein Rule**
-Find $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$ with $\gamma_k > 0$ such that it satisfies the sufficient decrease conditions:
+- **Constant step:** $\gamma_k = \gamma > 0$
+- **Decaying step:** $\gamma_k = \frac{\gamma}{\sqrt{k+1}}$
 
-$$
-f(x_k)-f(x_{k+1})\geq \alpha \langle \nabla f(x_k), x_k - x_{k+1} \rangle
+**2. Full Relaxation (Exact Line Search)** Choose the step size that strictly minimizes the function along the search direction: $\gamma_k = \arg\min_{\gamma \ge 0} f(x_k - \gamma \nabla f(x_k))$
+
+**3. The Armijo-Goldstein Rule** Find $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$ with $\gamma_k > 0$ such that it satisfies the sufficient decrease conditions:
+
+$$f(x_k)-f(x_{k+1})\geq \alpha \langle \nabla f(x_k), x_k - x_{k+1} \rangle
 \qquad \alpha \in [0,1]$$
 
-$$
-f(x_k)-f(x_{k+1})\leq \beta \langle \nabla f(x_k), x_k - x_{k+1} \rangle
-\qquad \beta \in [0,1]
-$$
+$$f(x_k)-f(x_{k+1})\leq \beta \langle \nabla f(x_k), x_k - x_{k+1} \rangle
+\qquad \beta \in [0,1]$$
 
 where $0 < \alpha < \beta < 1$ are fixed parameters.
-
 :::
 
 In practice, options 1 and 3 are fine. Option 2 is too theoretical and essentially involves solving the optimisation problem, which is what we want to do.
-
 
 ## Visualization: The Armijo-Goldstein Conditions on $f(x) = ax^3+bx^2+cx+d$
 
@@ -745,21 +645,18 @@ In practice, options 1 and 3 are fine. Option 2 is too theoretical and essential
 
 ## Data Science Application: Constant vs. Armijo-Goldstein Rule {.scrollable}
 
-Let's train a simple Linear Regression model $$y_i = (ax_i+b)$$ based on data $(x_i,y_i)\in \R^2$. We write $\theta = (a,b)$, and we want to minimise the Mean Squared Error (MSE) 
-$$L(\theta) =\frac{1}{2n}\sum_{i=1}^n (y_i-ax_i-b)^2$$
+Let's train a simple Linear Regression model $$y_i = (ax_i+b)$$ based on data $(x_i,y_i)\in \R^2$. We write $\theta = (a,b)$, and we want to minimise the Mean Squared Error (MSE) $$L(\theta) =\frac{1}{2n}\sum_{i=1}^n (y_i-ax_i-b)^2$$
 
-The parameter to optimize is $\theta = (a,b)$. We can write the loss function as:
-$$L(\theta) = \frac{1}{2n}({Y} - X{\theta})^\top ({Y} - X{\theta})$$
-where $X\in \R^{n\times 2}$ represents the design matrix and $Y = [y_1,\ldots, y_n]^\top$ is the vector with all the observations. The gradient is
+The parameter to optimize is $\theta = (a,b)$. We can write the loss function as: $$L(\theta) = \frac{1}{2n}({Y} - X{\theta})^\top ({Y} - X{\theta})$$ where $X\in \R^{n\times 2}$ represents the design matrix and $Y = [y_1,\ldots, y_n]^\top$ is the vector with all the observations. The gradient is
 
 $$\nabla L(\theta) = \frac{1}{n}X^\top (X{\theta}-{Y}).$$
 
 We will race two strategies:
 
-1. **Constant Step:** $\gamma = 0.05$ (small and safe)
-2. **Armijo-Goldstein Rule:** 
+1.  **Constant Step:** $\gamma = 0.05$ (small and safe)
+2.  **Armijo-Goldstein Rule:**
 
-## Let's see the code
+### Let's see the code
 
 {{< include armijo_code.qmd >}}
 
@@ -769,9 +666,7 @@ We will race two strategies:
 
 Recall the generic update
 
-$$
-x_{k+1} = x_k + \alpha_k p_k.
-$$
+$$x_{k+1} = x_k + \alpha_k p_k.$$
 
 We already know how to choose the **step size** $\alpha_k$ using a line search.
 
@@ -779,24 +674,19 @@ Now ask:
 
 > How should we choose the direction $p_k$?
 
-
 ## Gradient descent
 
 Gradient descent uses
 
-$$
-p_k = -\nabla f(x_k).
-$$
+$$p_k = -\nabla f(x_k).$$
 
 Why?
 
 Because, whenever $\nabla f(x_k)\neq 0$,
 
-$$
-\nabla f(x_k)^\top p_k
+$$\nabla f(x_k)^\top p_k
 =
--\|\nabla f(x_k)\|^2 < 0.
-$$
+-\|\nabla f(x_k)\|^2 < 0.$$
 
 So $-\nabla f(x_k)$ is always a descent direction.
 
@@ -808,69 +698,53 @@ Suppose $f:\mathbb R^d\to\mathbb R$ is twice differentiable.
 
 Near $x_k$, use the second-order Taylor approximation
 
-$$
-f(x_k+p)
+$$f(x_k+p)
 \approx
 f(x_k)
 +
 \nabla f(x_k)^\top p
 +
-\frac12 p^\top \nabla^2 f(x_k)p.
-$$
+\frac12 p^\top \nabla^2 f(x_k)p.$$
 
 Define the local quadratic model
 
-$$
-m_k(p)
+$$m_k(p)
 =
 f(x_k)
 +
 g_k^\top p
 +
-\frac12 p^\top H_kp,
-$$
+\frac12 p^\top H_kp,$$
 
 where
 
-$$
-g_k=\nabla f(x_k),
+$$g_k=\nabla f(x_k),
 \qquad
-H_k=\nabla^2 f(x_k).
-$$
-
-
+H_k=\nabla^2 f(x_k).$$
 
 ## The Newton direction
 
 Instead of minimizing $f$ directly, minimize the local quadratic model:
 
-$$
-p_k
+$$p_k
 =
-\arg\min_p m_k(p).
-$$
+\arg\min_p m_k(p).$$
 
 Differentiate with respect to $p$:
 
-$$
-\nabla_p m_k(p)
+$$\nabla_p m_k(p)
 =
-g_k + H_kp.
-$$
+g_k + H_kp.$$
 
 At its minimum,
 
-$$
-g_k + H_kp_k = 0.
-$$
+$$g_k + H_kp_k = 0.$$
 
 Therefore,
 
-$$
-\boxed{
+$$\boxed{
 p_k = -H_k^{-1}g_k
-}
-$$
+}$$
 
 when $H_k$ is invertible.
 
@@ -878,23 +752,19 @@ when $H_k$ is invertible.
 
 With a full Newton step,
 
-$$
-x_{k+1}
+$$x_{k+1}
 =
-x_k + p_k,
-$$
+x_k + p_k,$$
 
 so
 
-$$
-\boxed{
+$$\boxed{
 x_{k+1}
 =
 x_k
 -
 [\nabla^2f(x_k)]^{-1}\nabla f(x_k)
-}
-$$
+}$$
 
 This is Newton's method for optimization.
 
@@ -902,41 +772,31 @@ This is Newton's method for optimization.
 
 At the optimum $x^\star$,
 
-$$
-\nabla f(x^\star)=0.
-$$
+$$\nabla f(x^\star)=0.$$
 
 So we can think of optimization as solving the nonlinear system
 
-$$
-g(x)=\nabla f(x)=0.
-$$
+$$g(x)=\nabla f(x)=0.$$
 
 Apply Newton's root-finding method to $g(x)$:
 
-$$
-x_{k+1}
+$$x_{k+1}
 =
 x_k
 -
-[J_g(x_k)]^{-1}g(x_k).
-$$
+[J_g(x_k)]^{-1}g(x_k).$$
 
 But
 
-$$
-J_g(x)=\nabla^2 f(x).
-$$
+$$J_g(x)=\nabla^2 f(x).$$
 
 Hence
 
-$$
-x_{k+1}
+$$x_{k+1}
 =
 x_k
 -
-[\nabla^2 f(x_k)]^{-1}\nabla f(x_k).
-$$
+[\nabla^2 f(x_k)]^{-1}\nabla f(x_k).$$
 
 [**BE CAREFUL:** from this interpretation we can see that Newton's method can also find local maxima]{.red}
 
@@ -944,36 +804,28 @@ $$
 
 Consider
 
-$$
-f(x)=x^4-3x^2+2.
-$$
+$$f(x)=x^4-3x^2+2.$$
 
 Then
 
-$$
-f'(x)=4x^3-6x,
-$$
+$$f'(x)=4x^3-6x,$$
 
 and
 
-$$
-f''(x)=12x^2-6.
-$$
+$$f''(x)=12x^2-6.$$
 
 The Newton iteration is therefore
 
-$$
-x_{k+1}
+$$x_{k+1}
 =
 x_k
 -
 \frac{4x_k^3-6x_k}
-     {12x_k^2-6}.
-$$
-
+     {12x_k^2-6}.$$
 
 ## Newton's method in R
 
+```{=html}
 <style>
 .reveal div.sourceCode {
   width: 100% !important;
@@ -990,8 +842,10 @@ $$
   overflow: auto !important;
 }
 </style>
+```
 
-```r
+``` r
+#| echo: true
 
 newton_1d <- function(f, grad, hess, x0,
                       tol = 1e-8,
@@ -1049,72 +903,55 @@ fit <- newton_1d(
 print(fit$history)
 ```
 
-
 ## What is the Hessian doing?
 
 For gradient descent,
 
-$$
-p_k=-g_k.
-$$
+$$p_k=-g_k.$$
 
 For Newton,
 
-$$
-p_k=-H_k^{-1}g_k.
-$$
+$$p_k=-H_k^{-1}g_k.$$
 
 So the Hessian **rescales and rotates the gradient**.
 
 Newton's method adapts the step to the local curvature of the objective.
 
-
 ## A quadratic function
 
 Consider
 
-$$
-f(x)
+$$f(x)
 =
-\frac12 x^\top A x - b^\top x,
-$$
+\frac12 x^\top A x - b^\top x,$$
 
 with $A$ positive definite.
 
 Then
 
-$$
-\nabla f(x)=Ax-b
-$$
+$$\nabla f(x)=Ax-b$$
 
 and
 
-$$
-\nabla^2 f(x)=A.
-$$
+$$\nabla^2 f(x)=A.$$
 
 The Newton direction is
 
-$$
-p_k
+$$p_k
 =
--A^{-1}(Ax_k-b).
-$$
+-A^{-1}(Ax_k-b).$$
 
 Therefore
 
-$$
-x_{k+1}
+$$x_{k+1}
 =
 x_k-A^{-1}(Ax_k-b)
 =
-A^{-1}b.
-$$
+A^{-1}b.$$
 
 . . .
 
 Newton reaches the optimum in **one iteration**, while standard gradient descent would take a few iterations.
-
 
 ## Why one iteration?
 
@@ -1122,42 +959,35 @@ For a quadratic objective, the second-order Taylor approximation is not an appro
 
 It is the function itself.
 
-$$
-f(x_k+p)
+$$f(x_k+p)
 =
 f(x_k)
 +
 g_k^\top p
 +
-\frac12p^\top H_kp.
-$$
+\frac12p^\top H_kp.$$
 
 So minimizing the quadratic model is exactly the same as minimizing $f$.
-
 
 ## Newton in several dimensions
 
 In practice, do **not** compute
 
-$$
-H_k^{-1}.
-$$
+$$H_k^{-1}.$$
 
 Instead solve
 
-$$
-H_k p_k=-g_k.
-$$
+$$H_k p_k=-g_k.$$
 
 In R:
 
-```r
+``` r
 p <- solve(H, -g)
 ```
 
 rather than
 
-```r
+``` r
 p <- -solve(H) %*% g #solve(H) gives the inverse
 ```
 
@@ -1165,7 +995,7 @@ The first formulation is both conceptually and computationally preferable.
 
 ## A multivariate implementation
 
-```r
+``` r
 newton <- function(f, grad, hess, x0,
                    tol = 1e-8,
                    max_iter = 100) {
@@ -1213,39 +1043,29 @@ newton <- function(f, grad, hess, x0,
 
 Recall that $p_k$ is a descent direction when
 
-$$
-g_k^\top p_k<0.
-$$
+$$g_k^\top p_k<0.$$
 
 For Newton,
 
-$$
-p_k=-H_k^{-1}g_k.
-$$
+$$p_k=-H_k^{-1}g_k.$$
 
 Therefore
 
-$$
-g_k^\top p_k
+$$g_k^\top p_k
 =
--g_k^\top H_k^{-1}g_k.
-$$
+-g_k^\top H_k^{-1}g_k.$$
 
 If $H_k$ is **positive definite**, then
 
-$$
-g_k^\top H_k^{-1}g_k>0
-$$
+$$g_k^\top H_k^{-1}g_k>0$$
 
 for every $g_k\neq0$.
 
 Hence
 
-$$
-\boxed{
+$$\boxed{
 g_k^\top p_k<0
-}
-$$
+}$$
 
 and the Newton direction is a descent direction.
 
@@ -1253,17 +1073,13 @@ and the Newton direction is a descent direction.
 
 For a twice differentiable function,
 
-$$
-f \text{ convex}
+$$f \text{ convex}
 \quad\Longleftrightarrow\quad
-\nabla^2 f(x)\succeq0.
-$$
+\nabla^2 f(x)\succeq0.$$
 
 If
 
-$$
-\nabla^2f(x)\succ0,
-$$
+$$\nabla^2f(x)\succ0,$$
 
 then the local quadratic approximation is strictly convex.
 
@@ -1273,15 +1089,11 @@ So the Newton direction points toward the unique minimizer of the local quadrati
 
 Newton's method naturally proposes
 
-$$
-x_{k+1}=x_k+p_k.
-$$
+$$x_{k+1}=x_k+p_k.$$
 
 That corresponds to
 
-$$
-\alpha_k=1.
-$$
+$$\alpha_k=1.$$
 
 But a full Newton step is not necessarily a good step when we are far from the optimum.
 
@@ -1296,25 +1108,19 @@ In particular:
 
 Instead of automatically taking
 
-$$
-x_{k+1}=x_k+p_k,
-$$
+$$x_{k+1}=x_k+p_k,$$
 
 use
 
-$$
-\boxed{
+$$\boxed{
 x_{k+1}
 =
 x_k+\alpha_kp_k
-}
-$$
+}$$
 
 with
 
-$$
-p_k=-H_k^{-1}g_k.
-$$
+$$p_k=-H_k^{-1}g_k.$$
 
 Choose $\alpha_k$ using the **Armijo line search**.
 
@@ -1324,33 +1130,27 @@ This is called **damped Newton's method**.
 
 At iteration $k$:
 
-1. Compute
+1.  Compute
 
-   $$
-   g_k=\nabla f(x_k),
-   \qquad
-   H_k=\nabla^2f(x_k).
-   $$
+    $$g_k=\nabla f(x_k),
+    \qquad
+    H_k=\nabla^2f(x_k).$$
 
-2. Solve
+2.  Solve
 
-   $$
-   H_kp_k=-g_k.
-   $$
+    $$H_kp_k=-g_k.$$
 
-3. Use Armijo to find an acceptable $\alpha_k$.
+3.  Use Armijo to find an acceptable $\alpha_k$.
 
-4. Update
+4.  Update
 
-   $$
-   x_{k+1}=x_k+\alpha_kp_k.
-   $$
+    $$x_{k+1}=x_k+\alpha_kp_k.$$
 
 ## Newton + Armijo in R
 
 Assume we already have an Armijo routine:
 
-```r
+``` r
 armijo <- function(f, grad, x, p,
                    alpha0 = 1,
                    rho = 0.5,
@@ -1372,7 +1172,7 @@ armijo <- function(f, grad, x, p,
 
 ## Damped Newton implementation
 
-```r
+``` r
 newton_armijo <- function(f, grad, hess, x0,
                           tol = 1e-8,
                           max_iter = 100) {
@@ -1429,56 +1229,42 @@ newton_armijo <- function(f, grad, hess, x0,
 
 We now have two separate decisions:
 
-$$
-\underbrace{p_k}_{\text{where?}}
+$$\underbrace{p_k}_{\text{where?}}
 \qquad\text{and}\qquad
-\underbrace{\alpha_k}_{\text{how far?}}
-$$
+\underbrace{\alpha_k}_{\text{how far?}}$$
 
 Gradient descent:
 
-$$
-p_k=-g_k.
-$$
+$$p_k=-g_k.$$
 
 Newton:
 
-$$
-p_k=-H_k^{-1}g_k.
-$$
+$$p_k=-H_k^{-1}g_k.$$
 
 Armijo:
 
-$$
-\alpha_k
-\quad\text{chosen to ensure sufficient decrease.}
-$$
+$$\alpha_k
+\quad\text{chosen to ensure sufficient decrease.}$$
 
 ## What have we gained?
 
 Gradient descent uses
 
-$$
-\nabla f(x_k).
-$$
+$$\nabla f(x_k).$$
 
 Newton uses
 
-$$
-\nabla f(x_k)
+$$\nabla f(x_k)
 \quad\text{and}\quad
-\nabla^2f(x_k).
-$$
+\nabla^2f(x_k).$$
 
 The extra curvature information can make Newton dramatically faster near the optimum.
 
 But there is a price:
 
-$$
-\text{compute Hessian}
+$$\text{compute Hessian}
 +
-\text{solve a linear system}.
-$$
+\text{solve a linear system}.$$
 
 This tradeoff will become important later.
 
@@ -1486,22 +1272,17 @@ This tradeoff will become important later.
 
 Newton's method comes from minimizing a local quadratic approximation:
 
-$$
-p_k=-H_k^{-1}g_k.
-$$
+$$p_k=-H_k^{-1}g_k.$$
 
 If $H_k\succ0$, the Newton direction is a descent direction.
 
 A full Newton step uses
 
-$$
-\alpha_k=1.
-$$
+$$\alpha_k=1.$$
 
 A safer version combines Newton with the line-search machinery we already developed:
 
-$$
-\boxed{
+$$\boxed{
 x_{k+1}
 =
 x_k
@@ -1510,7 +1291,1286 @@ x_k
 \left[
 -\nabla^2f(x_k)^{-1}\nabla f(x_k)
 \right]
-}
-$$
+}$$
 
 This is **damped Newton's method**.
+
+# Logistic Regression
+
+## The binary-response model
+
+For independent observations $(y_i,x_i)$, let
+
+$$y_i\in\{0,1\},\qquad x_i\in\mathbb R^p,
+\qquad
+y_i\mid x_i\sim\operatorname{Bernoulli}(p_i).$$
+
+Logistic regression relates $p_i$ to a linear predictor:
+
+$$\eta_i=x_i^\top\beta,
+\qquad
+p_i=\sigma(\eta_i)=\frac{1}{1+e^{-\eta_i}}.$$
+
+Equivalently, the log-odds are linear:
+
+$$\boxed{
+\log\left(\frac{p_i}{1-p_i}\right)=x_i^\top\beta
+}$$
+
+An intercept is included by making the first component of every $x_i$ equal to $1$.
+
+## Maximum likelihood estimation
+
+The likelihood and log-likelihood are
+
+$$L(\beta)=\prod_{i=1}^n
+p_i^{y_i}(1-p_i)^{1-y_i},$$
+
+$$\ell(\beta)
+=\sum_{i=1}^n\left[y_i\log p_i+(1-y_i)\log(1-p_i)\right]
+=\sum_{i=1}^n\left[y_i x_i^\top\beta-
+\log(1+e^{x_i^\top\beta})\right].$$
+
+Therefore,
+
+$$\widehat\beta_{\mathrm{MLE}}
+=\arg\max_\beta \ell(\beta)
+=\arg\min_\beta f(\beta),
+\qquad
+f(\beta)=-\frac{1}{n}\ell(\beta).$$
+
+Unlike ordinary least squares, there is generally **no closed-form solution**.
+
+## Score, gradient, and Hessian
+
+Let $X\in\mathbb R^{n\times p}$, $y=(y_1,\ldots,y_n)^\top$, and $p(\beta)=\sigma(X\beta)$, with the sigmoid applied componentwise. Then
+
+$$\nabla f(\beta)=\frac{1}{n}X^\top\{p(\beta)-y\},$$
+
+$$\nabla^2f(\beta)=\frac{1}{n}X^\top W(\beta)X,
+\qquad
+W(\beta)=\operatorname{diag}\{p_i(1-p_i)\}.$$
+
+Because $W(\beta)\succeq0$ [Explain](#matrix-order){.explanation-link},
+
+::: {#matrix-order .explanation title="Matrix inequality"}
+For symmetric matrices, $A\preceq B$ means that $B-A$ is **positive semidefinite**. Equivalently,
+
+$$v^\top A v\leq v^\top B v\quad\text{for every }v.$$
+
+This is the **Loewner order**: it compares quadratic forms, not individual entries. In particular, $W(\beta)\succeq0$ means $v^\top W(\beta)v\geq0$ for every $v$.
+
+One important consequence is that the larger eigenvalue of $B$ is larger of equal to the larger eigenvalue of $A$
+:::
+
+$$v^\top\nabla^2f(\beta)v
+=\frac{1}{n}(Xv)^\top W(\beta)(Xv)\geq0.$$
+
+Thus the negative log-likelihood is **convex**. If the design has enough rank and the data are not separated, its minimizer is unique.
+
+## Logistic regression by gradient descent
+
+Substituting the logistic gradient into the usual update gives
+
+$$\boxed{
+\beta^{(k+1)}
+=\beta^{(k)}-\frac{\gamma_k}{n}
+X^\top\left\{\sigma(X\beta^{(k)})-y\right\}
+}$$
+
+Since $0<p_i(1-p_i)\leq1/4$,
+
+::: {.explained-equation}
+$$\nabla^2f(\beta)\preceq\frac{1}{4n}X^\top X.$$
+[Explain](#curvature-bound){.explanation-link}
+:::
+
+::: {#curvature-bound .explanation title="Curvature bound"}
+The matrix inequality means that, for **every direction** $v$,
+
+$$v^\top\nabla^2f(\beta)v\leq\frac{1}{4n} v^{\top}X^\top X v.$$
+
+Indeed, writing $z=Xv$,
+
+$$\frac{1}{n}\sum_i p_i(1-p_i)z_i^2
+\leq\frac{1}{4n}\sum_i z_i^2.$$
+
+This means that we can bound the larger eigenvalue of $\nabla^2f(\beta)$ by the larger eigenvalue of $X^\top X$ which does not change with $\beta$
+
+:::
+
+Consequently, the gradient is Lipschitz with
+
+$$L\leq\frac{\lambda_{\max}(X^\top X)}{4n}.$$
+
+A convenient constant step is $\gamma=1/L$; feature scaling usually makes the iterations much better conditioned.
+
+## Logistic regression by Newton's method
+
+At iteration $k$, compute $p_k=\sigma(X\beta^{(k)})$ and $W_k=\operatorname{diag}\{p_{ki}(1-p_{ki})\}$. The Newton step solves
+
+$$\left(X^\top W_kX\right)d_k=X^\top(p_k-y),$$
+
+and updates
+
+$$\boxed{\beta^{(k+1)}=\beta^{(k)}-d_k.}$$
+
+The factors $1/n$ cancel. We solve the linear system; we do **not** form a matrix inverse.
+
+. . .
+
+This is also called **Fisher scoring** or **iteratively reweighted least squares (IRLS)** for logistic regression. A damped step can be used if a full Newton step does not decrease $f$.
+
+
+## Vanilla gradient descent in Python {.scrollable}
+
+::: logistic-code
+``` python
+import numpy as np
+
+
+def sigmoid(z):
+    """Numerically stable logistic sigmoid."""
+    out = np.empty_like(z, dtype=float)
+    positive = z >= 0
+    out[positive] = 1.0 / (1.0 + np.exp(-z[positive]))
+    ez = np.exp(z[~positive])
+    out[~positive] = ez / (1.0 + ez)
+    return out
+
+
+def logistic_nll(beta, X, y):
+    """Average negative log-likelihood."""
+    eta = X @ beta
+    return np.mean(np.logaddexp(0.0, eta) - y * eta)
+
+
+def logistic_gradient_descent(X, y, beta0=None,
+                              learning_rate=None,
+                              tol=1e-8, max_iter=100_000):
+    n, p = X.shape
+    beta = np.zeros(p) if beta0 is None else np.array(beta0, dtype=float)
+
+    # Hessian <= X.T @ X / (4n), so 1/L is a safe constant step.
+    if learning_rate is None:
+        L = 0.25 * np.linalg.eigvalsh(X.T @ X / n).max()
+        learning_rate = 1.0 / L
+
+    history = []
+    for iteration in range(max_iter):
+        probabilities = sigmoid(X @ beta)
+        gradient = X.T @ (probabilities - y) / n
+        history.append(logistic_nll(beta, X, y))
+
+        if np.linalg.norm(gradient, ord=2) < tol:
+            break
+
+        beta = beta - learning_rate * gradient
+    else:
+        raise RuntimeError("Gradient descent did not converge")
+
+    return beta, np.asarray(history), iteration + 1
+```
+:::
+
+## Full comparison in Python {.scrollable}
+
+All three fits below use an intercept and the **same unregularized likelihood**. The predictors are standardized once, before fitting any of the methods.
+
+::: logistic-code
+``` python
+import numpy as np
+import pandas as pd
+import statsmodels.api as sm
+from sklearn.linear_model import LogisticRegression
+
+rng = np.random.default_rng(2026)
+n = 2_000
+
+# ----- Simulate data from a correctly specified logistic model -----
+features = rng.normal(size=(n, 3))
+features = (features - features.mean(axis=0)) / features.std(axis=0)
+X = np.column_stack((np.ones(n), features))       # explicit intercept
+beta_true = np.array([-0.40, 1.25, -0.80, 0.55])
+y = rng.binomial(1, sigmoid(X @ beta_true))
+
+# ----- 1. Our gradient-descent estimator -----
+beta_gd, loss_history, gd_iterations = logistic_gradient_descent(
+    X, y, tol=1e-10, max_iter=200_000
+)
+
+# ----- 2. scikit-learn: explicitly turn regularization off -----
+sk_fit = LogisticRegression(
+    C=np.inf,              # zero penalty in current scikit-learn
+    solver="lbfgs",
+    fit_intercept=False,     # X already contains the intercept column
+    tol=1e-12,
+    max_iter=10_000,
+)
+sk_fit.fit(X, y)
+beta_sklearn = sk_fit.coef_.ravel()
+
+# ----- 3. statsmodels: Logit is unregularized by default -----
+sm_fit = sm.Logit(y, X).fit(
+    method="newton", disp=False, maxiter=200, tol=1e-12
+)
+beta_statsmodels = np.asarray(sm_fit.params)
+
+# ----- Compare coefficients and fitted objectives -----
+estimates = pd.DataFrame(
+    {
+        "truth": beta_true,
+        "our_GD": beta_gd,
+        "sklearn": beta_sklearn,
+        "statsmodels": beta_statsmodels,
+    },
+    index=["intercept", "x1", "x2", "x3"],
+)
+
+def accuracy(beta):
+    predictions = (sigmoid(X @ beta) >= 0.5).astype(int)
+    return np.mean(predictions == y)
+
+diagnostics = pd.DataFrame(
+    {
+        "average_NLL": [
+            logistic_nll(beta_gd, X, y),
+            logistic_nll(beta_sklearn, X, y),
+            logistic_nll(beta_statsmodels, X, y),
+        ],
+        "accuracy": [
+            accuracy(beta_gd),
+            accuracy(beta_sklearn),
+            accuracy(beta_statsmodels),
+        ],
+    },
+    index=["our_GD", "sklearn", "statsmodels"],
+)
+
+print(estimates.round(6))
+print(diagnostics.round(8))
+print("GD iterations:", gd_iterations)
+print(
+    "largest coefficient difference:",
+    np.ptp(
+        estimates[["our_GD", "sklearn", "statsmodels"]].to_numpy(),
+        axis=1,
+    ).max(),
+)
+print(sm_fit.summary())
+```
+:::
+
+## What should the comparison show?
+
+Up to numerical tolerances, the three estimated coefficient vectors and negative log-likelihoods should agree:
+
+$$\widehat\beta_{\mathrm{GD}}
+\approx
+\widehat\beta_{\texttt{sklearn}}
+\approx
+\widehat\beta_{\texttt{statsmodels}}.$$
+
+- Our routine exposes every gradient-descent operation.
+- `scikit-learn` emphasizes prediction and provides an estimator API.
+- `statsmodels` emphasizes statistical inference and reports standard errors, tests, and confidence intervals.
+
+The comparison is meaningful only because regularization is disabled with `C=np.inf` in `scikit-learn`; its default is regularized.
+
+```{=html}
+<style>
+.reveal .logistic-code div.sourceCode pre code {
+  font-size: 22px !important;
+  line-height: 1.15 !important;
+  max-height: 650px !important;
+}
+</style>
+```
+
+# Regularization
+
+## Regularization
+
+Consider the linear model
+
+$$y = X\beta + \varepsilon,$$
+
+with $X \in \mathbb{R}^{n\times p}$ and $\beta\in\mathbb{R}^p$.
+
+Ordinary least squares solves
+
+$$\min_{\beta}
+\frac{1}{2n}\|y-X\beta\|_2^2.$$
+
+This is an **optimization problem**, and
+
+:::{.exercise}
+Show that the minimiser $\beta_{\text{OLS}}$ of the minimisation problem 
+\frac{1}{2n}\|y-X\beta\|_2^2$ satisfies:
+
+$$X^\top X\hat\beta_{\text{OLS}} = X^\top y.$$
+
+and If $X^\top X$ is invertible,
+
+then the solution $\beta_{\text{OLS}}$ is  $$\hat\beta_{\text{OLS}}
+=
+(X^\top X)^{-1}X^\top y.$$
+:::
+
+
+## Ordinary least squares
+
+Define
+
+$$f(\beta)
+=
+\frac{1}{2n}\|y-X\beta\|_2^2.$$
+
+Its gradient is
+
+$$\nabla f(\beta)
+=
+-\frac{1}{n}X^\top(y-X\beta).$$
+
+At the optimum,
+
+$$X^\top X\hat\beta = X^\top y.$$
+
+
+
+## So why not just use least squares?
+
+Least squares can behave poorly when
+
+- predictors are strongly correlated;
+- $p$ is large relative to $n$;
+- $p > n$;
+- many predictors contain little useful information;
+- we care more about prediction than unbiased estimation.
+
+A common solution is to deliberately introduce **bias**.
+
+------------------------------------------------------------------------
+
+## Regularization
+
+Instead of minimizing only the data-fitting term,
+
+$$\frac{1}{2n}\|y-X\beta\|_2^2,$$
+
+we solve
+
+$$\min_\beta
+\left\{
+\frac{1}{2n}\|y-X\beta\|_2^2
++
+\lambda P(\beta)
+\right\}.$$
+
+The first term asks:
+
+> How well do we fit the observations?
+
+The second asks:
+
+> How complicated a model are we willing to accept?
+
+------------------------------------------------------------------------
+
+## The regularization parameter
+
+The parameter $\lambda\geq 0$ determines the tradeoff.
+
+When
+
+$$\lambda = 0,$$
+
+we recover ordinary least squares.
+
+As $\lambda$ increases, the penalty becomes increasingly important.
+
+Thus,
+
+$$\text{fit}
+\quad\longleftrightarrow\quad
+\text{complexity}.$$
+
+------------------------------------------------------------------------
+
+## Two important penalties
+
+Two particularly important choices are
+
+$$P(\beta)
+=
+\frac12\|\beta\|_2^2
+=
+\frac12\sum_{j=1}^p \beta_j^2,$$
+
+and
+
+$$P(\beta)
+=
+\|\beta\|_1
+=
+\sum_{j=1}^p |\beta_j|.$$
+
+They lead to
+
+- **Ridge regression**: $L_2$ regularization;
+- **Lasso**: $L_1$ regularization.
+
+------------------------------------------------------------------------
+
+## Ridge regression
+
+Ridge solves
+
+$$\min_\beta
+\left\{
+\frac{1}{2n}\|y-X\beta\|_2^2
++
+\frac{\lambda}{2}\|\beta\|_2^2
+\right\}.$$
+
+Unlike ordinary least squares, large coefficients are explicitly penalized.
+
+------------------------------------------------------------------------
+
+## Ridge is still a smooth problem
+
+The objective is
+
+$$f(\beta)
+=
+\frac{1}{2n}\|y-X\beta\|_2^2
++
+\frac{\lambda}{2}\beta^\top\beta.$$
+
+Therefore
+
+$$\nabla f(\beta)
+=
+-\frac1nX^\top(y-X\beta)
++
+\lambda\beta.$$
+
+Setting the gradient equal to zero gives
+
+$$(X^\top X+n\lambda I)\beta
+=
+X^\top y.$$
+
+Hence
+
+$$\boxed{
+\hat\beta_{\text{ridge}}
+=
+(X^\top X+n\lambda I)^{-1}X^\top y
+}$$
+
+------------------------------------------------------------------------
+
+## What did regularization do?
+
+Compare
+
+$$\hat\beta_{\text{OLS}}
+=
+(X^\top X)^{-1}X^\top y$$
+
+with
+
+$$\hat\beta_{\text{ridge}}
+=
+(X^\top X+n\lambda I)^{-1}X^\top y.$$
+
+Ridge replaces
+
+$$X^\top X$$
+
+by
+
+$$X^\top X+n\lambda I.$$
+
+This makes the problem numerically more stable.
+
+------------------------------------------------------------------------
+
+## An optimization interpretation
+
+Ridge can equivalently be written as
+
+$$\min_\beta
+\frac{1}{2n}\|y-X\beta\|_2^2$$
+
+subject to
+
+$$\|\beta\|_2^2 \leq t.$$
+
+So instead of adding a penalty, we can constrain $\beta$ to lie inside an $L_2$ ball.
+
+The values of $t$ and $\lambda$ correspond to one another.
+
+------------------------------------------------------------------------
+
+## Ridge shrinks
+
+Suppose, for simplicity, that
+
+$$\frac1nX^\top X = I.$$
+
+Then
+
+$$\hat\beta_{\text{OLS}}
+=
+\frac1nX^\top y,$$
+
+while
+
+$$\hat\beta_{\text{ridge}}
+=
+\frac{1}{1+\lambda}
+\hat\beta_{\text{OLS}}.$$
+
+Every coefficient is multiplied by the same shrinkage factor.
+
+------------------------------------------------------------------------
+
+## But Ridge does not select variables
+
+If
+
+$$\hat\beta_j^{\text{OLS}} \neq 0,$$
+
+then typically
+
+$$\hat\beta_j^{\text{ridge}} \neq 0.$$
+
+Ridge makes coefficients smaller...
+
+but does not normally make them **exactly zero**.
+
+To obtain exact zeros, we need a different geometry.
+
+------------------------------------------------------------------------
+
+# Lasso
+
+## The Lasso
+
+The Lasso solves
+
+$$\boxed{
+\min_\beta
+\left\{
+\frac{1}{2n}\|y-X\beta\|_2^2
++
+\lambda\|\beta\|_1
+\right\}.
+}$$
+
+That is,
+
+$$\min_\beta
+\left\{
+\frac{1}{2n}\|y-X\beta\|_2^2
++
+\lambda\sum_{j=1}^p|\beta_j|
+\right\}.$$
+
+------------------------------------------------------------------------
+
+## Something important just happened
+
+For Ridge,
+
+$$\beta_j^2$$
+
+is differentiable everywhere.
+
+For Lasso,
+
+$$|\beta_j|$$
+
+is **not differentiable at** $\beta_j=0$.
+
+Therefore the Lasso objective is convex...
+
+but not smooth.
+
+------------------------------------------------------------------------
+
+## Why this matters computationally
+
+Our previous algorithms assumed that we could compute
+
+$$\nabla f(\beta).$$
+
+But
+
+$$\frac{d}{d\beta}|\beta|$$
+
+does not exist at $\beta=0$.
+
+So we cannot simply apply the usual smooth optimization machinery without modification.
+
+This leads us to **nonsmooth optimization**.
+
+------------------------------------------------------------------------
+
+## What is special about zero?
+
+For $\beta\neq0$,
+
+$$\frac{d}{d\beta}|\beta|
+=
+\begin{cases}
+1, & \beta>0,\\
+-1, & \beta<0.
+\end{cases}$$
+
+At zero, instead of a derivative, we use the **subgradient**
+
+$$\partial|\beta|
+=
+[-1,1].$$
+
+That interval is precisely what allows the Lasso solution to remain at zero.
+
+------------------------------------------------------------------------
+
+## Optimality conditions
+
+For the Lasso,
+
+$$0
+\in
+-\frac1nX^\top(y-X\hat\beta)
++
+\lambda\partial\|\hat\beta\|_1.$$
+
+For an individual coefficient,
+
+$$\frac1n x_j^\top(y-X\hat\beta)
+=
+\begin{cases}
+\lambda, & \hat\beta_j>0,\\
+-\lambda, & \hat\beta_j<0,\\
+\text{something in }[-\lambda,\lambda],
+& \hat\beta_j=0.
+\end{cases}$$
+
+The last case is the interesting one.
+
+------------------------------------------------------------------------
+
+## When is a coefficient zero?
+
+A coefficient can remain exactly zero whenever
+
+$$\left|
+\frac1n x_j^\top
+(y-X\hat\beta)
+\right|
+\leq
+\lambda.$$
+
+So the Lasso contains an implicit decision rule:
+
+$$\text{signal too weak}
+\quad\Longrightarrow\quad
+\hat\beta_j=0.$$
+
+This is why Lasso performs variable selection.
+
+------------------------------------------------------------------------
+
+## The one-dimensional problem
+
+Consider
+
+$$\min_\beta
+\left\{
+\frac12(\beta-z)^2
++
+\lambda|\beta|
+\right\}.$$
+
+Without the penalty, the answer is simply
+
+$$\beta=z.$$
+
+What does the $L_1$ penalty do?
+
+------------------------------------------------------------------------
+
+## Soft thresholding
+
+The solution is
+
+$$\boxed{
+S_\lambda(z)
+=
+\operatorname{sign}(z)
+\left(|z|-\lambda\right)_+
+}$$
+
+where
+
+$$(a)_+ = \max(a,0).$$
+
+Equivalently,
+
+## $$S_\lambda(z)
+=
+\begin{cases}
+z-\lambda, & z>\lambda,\\
+0, & |z|\leq\lambda,\\
+z+\lambda, & z<-\lambda.
+\end{cases}$$
+
+## Visualizing soft thresholding
+
+```{r}
+#| echo: true
+
+soft_threshold <- function(z, lambda) {
+  sign(z) * pmax(abs(z) - lambda, 0)
+}
+
+z <- seq(-4, 4, length.out = 500)
+
+plot(
+  z,
+  soft_threshold(z, lambda = 1),
+  type = "l",
+  lwd = 3,
+  xlab = "z",
+  ylab = expression(S[lambda](z))
+)
+
+abline(h = 0, v = 0, lty = 2)
+abline(a = 0, b = 1, lty = 3)
+```
+
+------------------------------------------------------------------------
+
+## Compare Ridge and Lasso
+
+Again suppose that
+
+$$\frac1nX^\top X=I.$$
+
+For Ridge,
+
+$$\hat\beta_j^{\text{ridge}}
+=
+\frac{\hat\beta_j^{\text{OLS}}}{1+\lambda}.$$
+
+For Lasso,
+
+$$\boxed{
+\hat\beta_j^{\text{lasso}}
+=
+S_\lambda
+\left(
+\hat\beta_j^{\text{OLS}}
+\right).
+}$$
+
+Ridge **shrinks**.
+
+Lasso **shrinks and thresholds**.
+
+------------------------------------------------------------------------
+
+## Example
+
+Suppose
+
+$$\hat\beta^{\text{OLS}}
+=
+\begin{pmatrix}
+3\\
+1.2\\
+0.7\\
+-0.3
+\end{pmatrix}$$
+
+and $\lambda=1$.
+
+Then
+
+$$\hat\beta^{\text{lasso}}
+=
+\begin{pmatrix}
+2\\
+0.2\\
+0\\
+0
+\end{pmatrix}.$$
+
+The penalty has automatically removed two variables.
+
+------------------------------------------------------------------------
+
+## Can we solve the Lasso analytically?
+
+In general,
+
+$$X^\top X \neq nI.$$
+
+The predictors interact.
+
+There is no formula analogous to
+
+$$(X^\top X+n\lambda I)^{-1}X^\top y.$$
+
+We need an algorithm.
+
+------------------------------------------------------------------------
+
+## Coordinate descent
+
+A simple idea:
+
+> Optimize one coefficient at a time.
+
+Starting from some $\beta$,
+
+1.  fix $\beta_2,\ldots,\beta_p$ and optimize $\beta_1$;
+2.  fix everything except $\beta_2$;
+3.  continue through all coordinates;
+4.  repeat until convergence.
+
+For Lasso, each one-dimensional optimization problem has a very simple solution.
+
+------------------------------------------------------------------------
+
+## Partial residuals
+
+When updating $\beta_j$, define the partial residual
+
+$$r^{(j)}
+=
+y-\sum_{k\neq j}x_k\beta_k.$$
+
+We solve
+
+$$\min_{\beta_j}
+\left\{
+\frac{1}{2n}
+\|r^{(j)}-x_j\beta_j\|_2^2
++
+\lambda|\beta_j|
+\right\}.$$
+
+Define
+
+$$z_j
+=
+\frac1n x_j^\top r^{(j)}$$
+
+and
+
+## $$a_j
+=
+\frac1n x_j^\top x_j.$$
+
+## The coordinate update
+
+The solution is
+
+$$\boxed{
+\beta_j
+\leftarrow
+\frac{
+S_\lambda(z_j)
+}{
+a_j
+}.
+}$$
+
+If the predictors have been standardized so that
+
+$$\frac1n x_j^\top x_j=1,$$
+
+this becomes simply
+
+$$\boxed{
+\beta_j
+\leftarrow
+S_\lambda(z_j).
+}$$
+
+------------------------------------------------------------------------
+
+## Coordinate descent for Lasso
+
+```{r}
+#| echo: true
+
+soft_threshold <- function(z, lambda) {
+  sign(z) * pmax(abs(z) - lambda, 0)
+}
+
+lasso_cd <- function(X, y, lambda,
+                     beta = rep(0, ncol(X)),
+                     tol = 1e-8,
+                     maxit = 1000) {
+
+  n <- nrow(X)
+  p <- ncol(X)
+
+  a <- colSums(X^2) / n
+
+  # Current residual
+  r <- as.numeric(y - X %*% beta)
+
+  for (iter in seq_len(maxit)) {
+
+    beta_old <- beta
+
+    for (j in seq_len(p)) {
+
+      # Put contribution of variable j back
+      r <- r + X[, j] * beta[j]
+
+      z <- sum(X[, j] * r) / n
+
+      beta[j] <- soft_threshold(z, lambda) / a[j]
+
+      # Remove its new contribution
+      r <- r - X[, j] * beta[j]
+    }
+
+    if (max(abs(beta - beta_old)) < tol)
+      break
+  }
+
+  list(
+    beta = beta,
+    iterations = iter
+  )
+}
+```
+
+------------------------------------------------------------------------
+
+## Let's generate some data
+
+```{r}
+#| echo: true
+
+set.seed(123)
+
+n <- 100
+p <- 20
+
+X <- matrix(rnorm(n * p), n, p)
+X <- scale(X)
+
+beta_true <- c(
+  3, -2, 1.5,
+  rep(0, p - 3)
+)
+
+y <- as.numeric(
+  X %*% beta_true +
+  rnorm(n, sd = 1.5)
+)
+
+y <- y - mean(y)
+```
+
+Only three variables actually matter.
+
+------------------------------------------------------------------------
+
+## Fit one Lasso model
+
+```{r}
+#| echo: true
+
+fit <- lasso_cd(
+  X,
+  y,
+  lambda = 0.25
+)
+
+round(fit$beta, 3)
+```
+
+What should we expect?
+
+- a few nonzero coefficients;
+- many coefficients exactly equal to zero.
+
+------------------------------------------------------------------------
+
+## How large can $\lambda$ be?
+
+Suppose we start at
+
+$$\beta=0.$$
+
+The Lasso solution remains identically zero when
+
+$$\left|
+\frac1n x_j^\top y
+\right|
+\leq\lambda$$
+
+for every $j$.
+
+Therefore
+
+$$\boxed{
+\lambda_{\max}
+=
+\max_j
+\left|
+\frac1n x_j^\top y
+\right|.
+}$$
+
+This gives us a natural starting point for computing an entire solution path.
+
+------------------------------------------------------------------------
+
+## The regularization path
+
+Instead of choosing one $\lambda$, solve the problem for
+
+$$\lambda_1 >
+\lambda_2 >
+\cdots >
+\lambda_m.$$
+
+At $\lambda_{\max}$,
+
+$$\hat\beta=0.$$
+
+As $\lambda$ decreases, variables progressively enter the model.
+
+------------------------------------------------------------------------
+
+## Warm starts
+
+There is no reason to restart the optimization from zero for every $\lambda$.
+
+If
+
+$$\lambda_{k+1}
+\approx
+\lambda_k,$$
+
+then
+
+$$\hat\beta(\lambda_{k+1})
+\approx
+\hat\beta(\lambda_k).$$
+
+So use
+
+$$\hat\beta(\lambda_k)$$
+
+as the initial value for the next optimization.
+
+This is called a **warm start**.
+
+------------------------------------------------------------------------
+
+## Computing the Lasso path
+
+```{r}
+#| echo: true
+
+n <- nrow(X)
+p <- ncol(X)
+
+lambda_max <-
+  max(abs(crossprod(X, y))) / n
+
+lambda_grid <- exp(
+  seq(
+    log(lambda_max),
+    log(0.03 * lambda_max),
+    length.out = 100
+  )
+)
+
+B <- matrix(
+  0,
+  nrow = p,
+  ncol = length(lambda_grid)
+)
+
+beta <- rep(0, p)
+
+for (k in seq_along(lambda_grid)) {
+
+  fit <- lasso_cd(
+    X,
+    y,
+    lambda = lambda_grid[k],
+    beta = beta
+  )
+
+  beta <- fit$beta
+  B[, k] <- beta
+}
+```
+
+------------------------------------------------------------------------
+
+## The Lasso path
+
+```{r}
+#| echo: true
+
+matplot(
+  log(lambda_grid),
+  t(B),
+  type = "l",
+  lty = 1,
+  lwd = 2,
+  xlab = expression(log(lambda)),
+  ylab = expression(hat(beta)[j])
+)
+```
+
+Each curve corresponds to one coefficient.
+
+As $\lambda$ decreases, variables enter the model.
+
+------------------------------------------------------------------------
+
+## An important computational lesson
+
+The Lasso path combines several useful ideas:
+
+$$\boxed{
+\text{convexity}
++
+\text{coordinate descent}
++
+\text{closed-form coordinate updates}
++
+\text{warm starts}
+}$$
+
+A seemingly difficult nonsmooth optimization problem becomes computationally cheap.
+
+------------------------------------------------------------------------
+
+## Ridge versus Lasso
+
+|                    | Ridge             | Lasso              |
+|--------------------|-------------------|--------------------|
+| Penalty            | $\sum_j\beta_j^2$ | $\sum_j|\beta_j|$  |
+| Smooth             | Yes               | No                 |
+| Shrinkage          | Yes               | Yes                |
+| Exact zeros        | Usually no        | Yes                |
+| Variable selection | No                | Yes                |
+| Closed form        | Yes               | Generally no       |
+| Typical algorithm  | Linear algebra    | Coordinate descent |
+
+------------------------------------------------------------------------
+
+## A statistical warning
+
+Lasso variable selection should not be interpreted as
+
+> "the variables with zero coefficients have no relationship with $y$."
+
+With strongly correlated predictors, several models may explain the data similarly well.
+
+Lasso may choose one variable and discard another.
+
+So sparsity is useful...
+
+but must be interpreted carefully.
+
+------------------------------------------------------------------------
+
+## Choosing $\lambda$
+
+The remaining question is
+
+$$\boxed{
+\text{How do we choose }\lambda?
+}$$
+
+Training error alone cannot answer this.
+
+As $\lambda\rightarrow0$, training error decreases.
+
+Instead, $\lambda$ is normally selected using predictive performance on unseen data.
+
+This leads naturally to **cross-validation**.
+
+------------------------------------------------------------------------
+
+## The optimization landscape so far
+
+We have now seen several different optimization problems.
+
+Ordinary least squares:
+
+$$\text{smooth + convex}.$$
+
+Ridge:
+
+$$\text{smooth + strongly convex}.$$
+
+Lasso:
+
+$$\text{convex + nonsmooth}.$$
+
+Different mathematical structure suggests different algorithms.
+
+------------------------------------------------------------------------
+
+## One more perspective
+
+Lasso can be written as
+
+$$\min_\beta
+f(\beta)+g(\beta),$$
+
+where
+
+$$f(\beta)
+=
+\frac{1}{2n}
+\|y-X\beta\|_2^2$$
+
+is smooth, while
+
+$$g(\beta)
+=
+\lambda\|\beta\|_1$$
+
+is nonsmooth but simple.
+
+This structure appears constantly in modern statistical optimization.
+
+------------------------------------------------------------------------
+
+## What comes next?
+
+Instead of asking for the derivative of $g$, we can ask:
+
+> Can we solve a simple optimization problem involving $g$?
+
+For the $L_1$ norm, the answer is soft thresholding.
+
+This leads to another important family of algorithms:
+
+$$\boxed{\text{proximal gradient methods}}$$
+
+and, in particular,
+
+$$\boxed{\text{ISTA}.}$$
