@@ -1,4 +1,16 @@
 function Div(el)
+  if el.classes:includes('eqbox') then
+    local title = el.attributes['title']
+    if title and title ~= '' then
+      el.content:insert(1, pandoc.Div(
+        {pandoc.Plain({pandoc.Str(title)})},
+        pandoc.Attr('', {'eqbox-title'})
+      ))
+      el.attributes['title'] = nil
+    end
+    return el
+  end
+
   if el.classes:includes('exercise') then
     local title = el.attributes['title'] or 'Exercise'
     el.content:insert(1, pandoc.Div(

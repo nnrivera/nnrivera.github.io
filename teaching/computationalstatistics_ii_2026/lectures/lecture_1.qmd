@@ -18,41 +18,41 @@ $\newcommand{\R}{\mathbb{R}}$
 
 ## Euclidian Norm
 
-:::: {#def-euclidean-norm name="Euclidean Norm -$L_2$ Norm"}
+::: {#def-euclidean-norm name="Euclidean Norm -$L_2$ Norm"}
 For a vector ${x} = (x_1, x_2, \dots, x_n) \in \R^n$, the **Euclidean norm** (or $2$-norm) is defined as:
 
-::: eqbox
+
 $$ \|{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2} = \sqrt{x_1^2 + x_2^2 + \cdots + x_n^2} $$
-:::
 
 Some people writes $\| \cdot \|$ if it is clear from the context that we are using the Euclidean norm
-::::
+:::
 
-::: {.box title = "Properties"} For any ${x}, {y} \in \R^n$ and scalar $\alpha \in \R$:
+::: {.box title = "Properties"}
+
+For any ${x}, {y} \in \R^n$ and scalar $\alpha \in \R$:
 
 1.  **Non-negativity:** $\|{x}\|_2 \ge 0$, and $\|{x}\|_2 = 0 \iff {x} = \mathbf{0}$.
 2.  **Absolute Homogeneity:** $\|\alpha {x}\|_2 = |\alpha| \|{x}\|_2$.
-3.  **Triangle Inequality:** $\|{x} + {y}\|_2 \le \|{x}\|_2 + \|\mathbf{y}\|_2$. :::
+3.  **Triangle Inequality:** $\|{x} + {y}\|_2 \le \|{x}\|_2 + \|\mathbf{y}\|_2$.
+
+:::
 
 ## Inner Product
 
-::::: {#def-inner-product name="Inner Product (Dot Product)"}
+::: {#def-inner-product name="Inner Product (Dot Product)"}
 For two vectors ${x} = (x_1, x_2, \dots, x_n)$ and ${y} = (y_1, y_2, \dots, y_n)$ in $\R^n$, the **inner product** (or **dot product**) is defined as:
 
-::: eqbox
 $$\langle {x}, {y} \rangle
 =
 \sum_{i=1}^{n} x_i y_i
 =
 x_1y_1 + x_2y_2 + \cdots + x_ny_n.$$
-:::
 
 The Euclidean norm is induced by the inner product:
 
-::: eqbox
+
 $$\|{x}\|_2 = \sqrt{\langle {x}, {x}\rangle }.$$
 :::
-:::::
 
 ::: {.box title="Properties"}
 For any ${x}, {y}, {z} \in \R^n$ and scalar $\alpha \in \R$:
@@ -208,7 +208,11 @@ Then $F'_x = J_F(x)$.
 
 In the particular case that $m=1$, the transpose of the Jacobian is the so-called **gradient** $\nabla$:
 
-::: {.box title = "Gradient"} $$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\[1ex] \frac{\partial f}{\partial x_2} \\[1ex] \vdots \\[1ex] \frac{\partial f}{\partial x_n} \end{bmatrix}$$ :::
+::: {.box title = "Gradient"}
+
+$$\nabla f = \begin{bmatrix} \frac{\partial f}{\partial x_1} \\[1ex] \frac{\partial f}{\partial x_2} \\[1ex] \vdots \\[1ex] \frac{\partial f}{\partial x_n} \end{bmatrix}$$
+
+:::
 
 but in general writting gradient as a row or column has little importance.
 
@@ -219,9 +223,13 @@ but in general writting gradient as a row or column has little importance.
 
 Another important concept is the **Directional Derivative**
 
-:::{.box title = "Directional Derivative"} Given a vector $v\in \R^n$ we can show that $$\lim_{\lambda\to 0} \frac{f(x+\lambda v)-f(x)}{\lambda} = \langle \nabla f(x) , v\rangle$$
+::: {.box title = "Directional Derivative"}
 
-which is called the **directional derivative** in the direction of $v$. :::
+Given a vector $v\in \R^n$ we can show that $$\lim_{\lambda\to 0} \frac{f(x+\lambda v)-f(x)}{\lambda} = \langle \nabla f(x) , v\rangle$$
+
+which is called the **directional derivative** in the direction of $v$. 
+
+:::
 
 ## Smoothness: Gradient and Hessian
 
@@ -949,7 +957,7 @@ x_k-A^{-1}(Ax_k-b)
 =
 A^{-1}b.$$
 
-. . .
+
 
 Newton reaches the optimum in **one iteration**, while standard gradient descent would take a few iterations.
 
@@ -1091,9 +1099,7 @@ Newton's method naturally proposes
 
 $$x_{k+1}=x_k+p_k.$$
 
-That corresponds to
-
-$$\alpha_k=1.$$
+That corresponds to a jump size / learning rate 1.
 
 But a full Newton step is not necessarily a good step when we are far from the optimum.
 
@@ -1106,6 +1112,9 @@ In particular:
 
 ## We already know how to fix this
 
+:::: columns
+::: {.column width="50%"}
+
 Instead of automatically taking
 
 $$x_{k+1}=x_k+p_k,$$
@@ -1115,18 +1124,22 @@ use
 $$\boxed{
 x_{k+1}
 =
-x_k+\alpha_kp_k
+x_k+\lambda_kp_k
 }$$
 
 with
 
 $$p_k=-H_k^{-1}g_k.$$
 
-Choose $\alpha_k$ using the **Armijo line search**.
+Choose $\lambda_k$ using the **Armijo–Goldstein line search**.
 
 This is called **damped Newton's method**.
 
-## Damped Newton
+:::
+
+::: {.column .fragment width="50%"}
+
+### Damped Newton
 
 At iteration $k$:
 
@@ -1140,11 +1153,21 @@ At iteration $k$:
 
     $$H_kp_k=-g_k.$$
 
-3.  Use Armijo to find an acceptable $\alpha_k$.
+    Require $g_k^\top p_k<0$ (guaranteed if $H_k\succ0$ and $g_k\ne0$).
+
+3.  Choose $\lambda_k>0$ satisfying **Armijo–Goldstein**, with $0<c_1<c_2<1$:
+
+    $$\begin{aligned}
+    f(x_k+\lambda_kp_k)&\le f(x_k)+c_1\lambda_k g_k^\top p_k,\\
+    f(x_k+\lambda_kp_k)&\ge f(x_k)+c_2\lambda_k g_k^\top p_k.
+    \end{aligned}$$
 
 4.  Update
 
-    $$x_{k+1}=x_k+\alpha_kp_k.$$
+    $$x_{k+1}=x_k+\lambda_kp_k.$$
+
+:::
+::::
 
 ## Newton + Armijo in R
 
@@ -1152,21 +1175,21 @@ Assume we already have an Armijo routine:
 
 ``` r
 armijo <- function(f, grad, x, p,
-                   alpha0 = 1,
+                   lambda0 = 1,
                    rho = 0.5,
                    c = 1e-4) {
 
-  alpha <- alpha0
+  lambda <- lambda0
   g <- grad(x)
 
   while (
-    f(x + alpha * p) >
-      f(x) + c * alpha * sum(g * p)
+    f(x + lambda * p) >
+      f(x) + c * lambda * sum(g * p)
   ) {
-    alpha <- rho * alpha
+    lambda <- rho * lambda
   }
 
-  alpha
+  lambda
 }
 ```
 
@@ -1183,7 +1206,7 @@ newton_armijo <- function(f, grad, hess, x0,
     iter = 0,
     value = f(x),
     grad_norm = sqrt(sum(grad(x)^2)),
-    alpha = NA
+    lambda = NA
   )
 
   for (k in 1:max_iter) {
@@ -1197,14 +1220,14 @@ newton_armijo <- function(f, grad, hess, x0,
 
     p <- solve(H, -g)
 
-    alpha <- armijo(
+    lambda <- armijo(
       f = f,
       grad = grad,
       x = x,
       p = p
     )
 
-    x <- x + alpha * p
+    x <- x + lambda * p
 
     history <- rbind(
       history,
@@ -1212,7 +1235,7 @@ newton_armijo <- function(f, grad, hess, x0,
         iter = k,
         value = f(x),
         grad_norm = sqrt(sum(grad(x)^2)),
-        alpha = alpha
+        lambda = lambda
       )
     )
   }
@@ -1401,7 +1424,8 @@ This means that we can bound the larger eigenvalue of $\nabla^2f(\beta)$ by the 
 
 Consequently, the gradient is Lipschitz with
 
-$$L\leq\frac{\lambda_{\max}(X^\top X)}{4n}.$$
+$$L\leq\frac{\lambda_{\max}(X^\top X)}{4n},$$
+where $\lambda_{\max}(A)$ represent the largest eigenvalue of the matrix $A$.
 
 A convenient constant step is $\gamma=1/L$; feature scaling usually makes the iterations much better conditioned.
 
@@ -1417,7 +1441,7 @@ $$\boxed{\beta^{(k+1)}=\beta^{(k)}-d_k.}$$
 
 The factors $1/n$ cancel. We solve the linear system; we do **not** form a matrix inverse.
 
-. . .
+
 
 This is also called **Fisher scoring** or **iteratively reweighted least squares (IRLS)** for logistic regression. A damped step can be used if a full Newton step does not decrease $f$.
 
@@ -1604,37 +1628,16 @@ $$\min_{\beta}
 
 This is an **optimization problem**, and
 
-:::{.exercise}
-Show that the minimiser $\beta_{\text{OLS}}$ of the minimisation problem 
-\frac{1}{2n}\|y-X\beta\|_2^2$ satisfies:
+:::{#exr-label}
+Show that the minimiser $\beta_{\text{OLS}}$ of the minimisation problem  $\frac{1}{2n}\|y-X\beta\|_2^2$ satisfies:
 
 $$X^\top X\hat\beta_{\text{OLS}} = X^\top y.$$
 
-and If $X^\top X$ is invertible,
-
-then the solution $\beta_{\text{OLS}}$ is  $$\hat\beta_{\text{OLS}}
+and If $X^\top X$ is invertible, then the solution $\beta_{\text{OLS}}$ is  $$\hat\beta_{\text{OLS}}
 =
 (X^\top X)^{-1}X^\top y.$$
 :::
 
-
-## Ordinary least squares
-
-Define
-
-$$f(\beta)
-=
-\frac{1}{2n}\|y-X\beta\|_2^2.$$
-
-Its gradient is
-
-$$\nabla f(\beta)
-=
--\frac{1}{n}X^\top(y-X\beta).$$
-
-At the optimum,
-
-$$X^\top X\hat\beta = X^\top y.$$
 
 
 
@@ -1652,13 +1655,117 @@ A common solution is to deliberately introduce **bias**.
 
 ------------------------------------------------------------------------
 
-## Regularization
+## Polynomial regression without regularization: the sample
 
-Instead of minimizing only the data-fitting term,
+$n=12$ observations: $x_i\sim\mathrm{Uniform}(-2\pi,2\pi)$ and $y_i=\sin(x_i)+\varepsilon_i$, with independent $\varepsilon_i\sim N(0,0.25^2)$.
+
+The model is
+
+$$y_i = \beta_0 + \beta_1x_i + \beta_2 x_i^2 + \ldots + \beta_p x_i^p+ \varepsilon_i$$
+where $\varepsilon_i$ has mean 0 and some variance $\sigma$. We just minimise
+
+$$\beta \to \frac{1}{n}\sum_{i=1}^n (y_i-\sum_{k=0}^p \beta_k x_i^k)^2$$
+
+
+![The 12 observed points before fitting any polynomial.](images/polynomial-ols-n12-sample.png){height=580}
+
+## Polynomial regression without regularization: coefficients
+
+Same $n=12$ observations for every degree. Coefficients use standardized polynomial columns, with an unchanged intercept.
+
+::: {#polynomial-ols-coefficients}
+
+| Degree $p$ | $\beta_{0}$ | $\beta_{1}$ | $\beta_{2}$ | $\beta_{3}$ | $\beta_{4}$ | $\beta_{5}$ | $\beta_{6}$ | $\beta_{7}$ | $\beta_{8}$ | $\beta_{9}$ | $\beta_{10}$ |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 1 | 0.072 | -0.590 | — | — | — | — | — | — | — | — | — |
+| 2 | 0.072 | -0.567 | -0.239 | — | — | — | — | — | — | — | — |
+| 3 | 0.072 | -0.280 | -0.252 | -0.306 | — | — | — | — | — | — | — |
+| 4 | 0.072 | -0.374 | -0.559 | -0.204 | 0.326 | — | — | — | — | — | — |
+| 5 | 0.072 | 2.916 | -0.447 | -8.614 | 0.439 | 5.494 | — | — | — | — | — |
+| 6 | 0.072 | 2.891 | -0.655 | -8.559 | 1.073 | 5.443 | -0.443 | — | — | — | — |
+| 7 | 0.072 | 5.970 | -0.568 | -23.630 | 1.214 | 30.915 | -0.859 | -13.600 | — | — | — |
+| 8 | 0.072 | 5.269 | 0.063 | -20.360 | -3.048 | 25.530 | 7.169 | -10.861 | -4.399 | — | — |
+| 9 | 0.072 | 2.597 | -0.182 | -1.948 | -0.945 | -24.609 | 2.292 | 48.813 | -1.544 | -25.248 | — |
+| 10 | 0.072 | 3.822 | -15.544 | -8.268 | 163.618 | 14.703 | -534.115 | -32.288 | 688.900 | 19.763 | -303.913 |
+
+:::
+
+Rounded to three decimals; — denotes a term absent from the model.
+
+```{=html}
+<style>
+#polynomial-ols-coefficients table {
+  font-size: 22px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+#polynomial-ols-coefficients th,
+#polynomial-ols-coefficients td {
+  padding: 0.3em 0.35em;
+}
+</style>
+```
+
+## Polynomial regression: fitted curves
+
+Same $n=12$ observations; degrees $p=4$, $p=7$, and $p=10$.
+
+:::: columns
+::: {.column width="33.33%"}
+
+![Degree 4 OLS fit to 12 observations.](images/polynomial-ols-n12-degree-4.png){width=100%}
+
+:::
+::: {.column width="33.33%"}
+
+![Degree 7 OLS fit to 12 observations.](images/polynomial-ols-n12-degree-7.png){width=100%}
+
+:::
+::: {.column width="33.33%"}
+
+![Degree 10 OLS fit to 12 observations.](images/polynomial-ols-n12-degree-10.png){width=100%}
+
+:::
+::::
+
+## Reproduce the polynomial regression example {.scrollable}
+
+The code fits one polynomial regression. Change `p` to choose the degree. It standardises the design columns except the intercept, which is especially useful when adding regularization.
+
+``` python
+import numpy as np
+
+# Simulate the sample.
+rng = np.random.default_rng(123)
+n = 12
+x = rng.uniform(-2 * np.pi, 2 * np.pi, size=n)
+y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
+
+# Choose the polynomial degree.
+p = 10
+X = np.polynomial.polynomial.polyvander(x, p)
+
+# Standardize all columns except the intercept.
+X_mean = X[:, 1:].mean(axis=0)
+X_std = X[:, 1:].std(axis=0)
+X[:, 1:] = (X[:, 1:] - X_mean) / X_std
+
+# Fit ordinary least squares and compute fitted values.
+beta_ols = np.linalg.lstsq(X, y, rcond=None)[0]
+y_hat = X @ beta_ols
+
+print(beta_ols)
+```
+
+## Regularisation
+
+To avoid the problems with those huge coeffiecient, instead of minimizing only the data-fitting term:
 
 $$\frac{1}{2n}\|y-X\beta\|_2^2,$$
 
-we solve
+we solve the following problem:
+
+::: {.box title = "Regularisation Equation"}
 
 $$\min_\beta
 \left\{
@@ -1666,6 +1773,7 @@ $$\min_\beta
 +
 \lambda P(\beta)
 \right\}.$$
+:::
 
 The first term asks:
 
@@ -1675,9 +1783,8 @@ The second asks:
 
 > How complicated a model are we willing to accept?
 
-------------------------------------------------------------------------
 
-## The regularization parameter
+## The regularisation parameter
 
 The parameter $\lambda\geq 0$ determines the tradeoff.
 
@@ -1695,7 +1802,6 @@ $$\text{fit}
 \quad\longleftrightarrow\quad
 \text{complexity}.$$
 
-------------------------------------------------------------------------
 
 ## Two important penalties
 
@@ -1717,10 +1823,9 @@ $$P(\beta)
 
 They lead to
 
-- **Ridge regression**: $L_2$ regularization;
-- **Lasso**: $L_1$ regularization.
+- **Ridge regression**: $L_2$ regularisation;
+- **Lasso**: $L_1$ regularisation.
 
-------------------------------------------------------------------------
 
 ## Ridge regression
 
@@ -1735,9 +1840,6 @@ $$\min_\beta
 
 Unlike ordinary least squares, large coefficients are explicitly penalized.
 
-------------------------------------------------------------------------
-
-## Ridge is still a smooth problem
 
 The objective is
 
@@ -1769,9 +1871,8 @@ $$\boxed{
 (X^\top X+n\lambda I)^{-1}X^\top y
 }$$
 
-------------------------------------------------------------------------
 
-## What did regularization do?
+## What did regularisation do?
 
 Compare
 
@@ -1791,13 +1892,19 @@ $$X^\top X$$
 
 by
 
-$$X^\top X+n\lambda I.$$
+$$\boxed{X^\top X+n\lambda I}$$
 
-This makes the problem numerically more stable.
+This makes the problem numerically more stable. [Comment](#comment-yee){.explanation-link}
 
-------------------------------------------------------------------------
+:::{#comment-yee .explanation title="A comment"}
 
-## An optimization interpretation
+Before regularisation was an established tool, some people used to say: "add a bit to the diagonal to $X^\top X$"
+:::
+
+
+
+
+## An optimisation interpretation
 
 Ridge can equivalently be written as
 
@@ -1808,769 +1915,701 @@ subject to
 
 $$\|\beta\|_2^2 \leq t.$$
 
-So instead of adding a penalty, we can constrain $\beta$ to lie inside an $L_2$ ball.
+So instead of adding a penalty, we can constrain $\beta$ to lie inside an $L_2$ ball. The values of $t$ and $\lambda$ correspond to one another.
 
-The values of $t$ and $\lambda$ correspond to one another.
 
-------------------------------------------------------------------------
 
-## Ridge shrinks
 
-Suppose, for simplicity, that
+## Polynomial regression with Ridge: Python {.scrollable}
 
-$$\frac1nX^\top X = I.$$
+Return to the same $n=12$ observations and fit a degree-$p=10$ polynomial. 
 
-Then
 
-$$\hat\beta_{\text{OLS}}
-=
-\frac1nX^\top y,$$
+``` python
+import matplotlib.pyplot as plt
+import numpy as np
 
-while
 
-$$\hat\beta_{\text{ridge}}
-=
-\frac{1}{1+\lambda}
-\hat\beta_{\text{OLS}}.$$
+def main():
+    # simulate (x_i, y_i) with a non-linear relation.
+    rng = np.random.default_rng(123)
+    n = 12
+    x = rng.uniform(-2 * np.pi, 2 * np.pi, size=n)
+    y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
 
-Every coefficient is multiplied by the same shrinkage factor.
+    # Choose the polynomial degree.
+    p = 10
+    X = np.polynomial.polynomial.polyvander(x, p)
+    
+    # Estandarizamos cada columna excepto el intercepto.
+    X_mean = X[:, 1:].mean(axis=0)
+    X_std = X[:, 1:].std(axis=0)
 
-------------------------------------------------------------------------
+    X_standardized = X.copy()
+    X_standardized[:, 1:] = (
+        X[:, 1:] - X_mean
+    ) / X_std
 
-## But Ridge does not select variables
+    # Parámetro de regularización Ridge multiplicado por n
+    nlambda_ridge = 0.0001 
 
-If
+    # Matriz de penalización.
+    # El primer elemento es cero para no penalizar el intercepto.
+    penalty = np.eye(p + 1)
+    penalty[0, 0] = 0.0
 
-$$\hat\beta_j^{\text{OLS}} \neq 0,$$
+    # Estimador Ridge:
+    # beta = (X'X + nlambda_ridge * P)^(-1) X'y
+    #
+    # Usamos solve() en lugar de calcular explícitamente la inversa.
+    beta_ridge = np.linalg.solve(
+        X_standardized.T @ X_standardized
+        + nlambda_ridge * penalty,
+        X_standardized.T @ y,
+    )
 
-then typically
+    print(
+        f"Coeficientes Ridge para un polinomio de grado {p} "
+        f"con lambda = {nlambda_ridge/n}:"
+    )
+    for j, beta_j in enumerate(beta_ridge):
+        print(f"beta_{j} = {beta_j:.6f}")
 
-$$\hat\beta_j^{\text{ridge}} \neq 0.$$
+    # Construimos la matriz de diseño para la grilla.
+    x_grid = np.linspace(x.min(), x.max(), 500)
+    X_grid = np.polynomial.polynomial.polyvander(x_grid, p)
 
-Ridge makes coefficients smaller...
+    # Aplicamos la estandarización calculada con la muestra.
+    X_grid_standardized = X_grid.copy()
+    X_grid_standardized[:, 1:] = (
+        X_grid[:, 1:] - X_mean
+    ) / X_std
 
-but does not normally make them **exactly zero**.
+    # Predicciones Ridge.
+    y_hat_ridge = X_grid_standardized @ beta_ridge
 
-To obtain exact zeros, we need a different geometry.
+    # Gráfico.
+    plt.clf()
 
-------------------------------------------------------------------------
+    plt.scatter(
+        x,
+        y,
+        color="gray",
+        alpha=0.7,
+        label="Muestra",
+    )
+
+   
+
+    plt.plot(
+        x_grid,
+        y_hat_ridge,
+        color="red",
+        linewidth=2,
+        label=f"Ridge ($\\lambda={nlambda_ridge / n:.3g}$)",
+    )
+
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title(f"Regresión polinómica Ridge de grado {p}")
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
+```
+
+
+## Degree 10: OLS and Ridge coefficients
+
+Both fits use the same standardized polynomial columns. The intercept is unchanged; values below are rounded to three decimals.
+
+:::: columns
+::: {.column width="48%"}
+
+::: {#polynomial-ridge-coefficients}
+
+| Coefficient | OLS | Ridge |
+|:--|--:|--:|
+| $\beta_{0}$ | 0.072 | 0.072 |
+| $\beta_{1}$ | 3.822 | 3.958 |
+| $\beta_{2}$ | -15.544 | 0.035 |
+| $\beta_{3}$ | -8.268 | -12.524 |
+| $\beta_{4}$ | 163.618 | -2.063 |
+| $\beta_{5}$ | 14.703 | 7.263 |
+| $\beta_{6}$ | -534.115 | 2.238 |
+| $\beta_{7}$ | -32.288 | 7.579 |
+| $\beta_{8}$ | 688.900 | 3.368 |
+| $\beta_{9}$ | 19.763 | -6.738 |
+| $\beta_{10}$ | -303.913 | -3.837 |
+
+:::
+:::
+::: {.column width="52%"}
+
+| Quantity | OLS | Ridge |
+|:--|--:|--:|
+| Training MSE | 0.00150 | 0.01347 |
+| $\|\hat\beta_{1:10}\|_2$ | 938.600 | 19.064 |
+
+Ridge substantially reduces the **joint magnitude of the slopes**, at the cost of a larger training error.
+
+With correlated polynomial columns, individual coefficients can change sign or increase in magnitude. Shrinkage of the whole vector does not mean that every coefficient must shrink individually.
+
+The intercept remains $\bar y$ because the other columns are centered and the intercept is unpenalized.
+
+:::
+::::
+
+```{=html}
+<style>
+#polynomial-ridge-coefficients table {
+  font-size: 25px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+#polynomial-ridge-coefficients th,
+#polynomial-ridge-coefficients td {
+  padding: 0.25em 0.4em;
+}
+</style>
+```
+
+## Degree 10: comparing the fitted curves
+
+![OLS and Ridge fitted to the same sample, with the true mean shown for reference.](images/polynomial-ridge-vs-ols-n12-degree-10.png){height=540}
+
+The penalty changes the fit between observations as well as at the sample points. This illustrates the effect of regularization; choosing its strength for prediction still requires validation.
 
 # Lasso
 
-## The Lasso
+## From shrinkage to variable selection
 
-The Lasso solves
+Ridge shrinks coefficients, but generally does not make them exactly zero. Can a penalty also **select variables**?
 
-$$\boxed{
-\min_\beta
-\left\{
-\frac{1}{2n}\|y-X\beta\|_2^2
-+
-\lambda\|\beta\|_1
-\right\}.
-}$$
+::: {.eqbox title="Least absolute shrinkage and selection operator (Lasso)"}
+$$\min_{\beta\in\R^p} F(\beta),
+\qquad F(\beta)=\underbrace{\frac{1}{2n}\|y-X\beta\|_2^2}_{\ell(\beta)}
++\lambda\underbrace{\sum_{j=1}^p|\beta_j|}_{\|\beta\|_1},\qquad \lambda\geq0.$$
+:::
 
-That is,
+A zero coefficient removes that predictor from the fitted linear model. This is called a **sparse** solution.
 
-$$\min_\beta
-\left\{
-\frac{1}{2n}\|y-X\beta\|_2^2
-+
-\lambda\sum_{j=1}^p|\beta_j|
-\right\}.$$
+We will explain why zeros appear, then build an algorithm that computes them.
 
-------------------------------------------------------------------------
+## Our convention: intercept and predictor scale
 
-## Something important just happened
+Start with $y_i=b+\sum_j X_{ij}\beta_j+\varepsilon_i$. We penalize the slopes $\beta_j$, **not the intercept** $b$.
 
-For Ridge,
+Center $y$ and each predictor. For the derivations below, $X$ and $y$ denote these centered quantities; $X$ has no intercept column.
 
-$$\beta_j^2$$
+Also scale nonconstant predictors so that
+$$\frac1n\sum_{i=1}^n X_{ij}^2=1.$$
 
-is differentiable everywhere.
+This makes the penalty comparable across predictors measured in different units. Remove constant columns before scaling.
 
-For Lasso,
+For new observations, reuse the training means and scales. On the original scale, recover the intercept as $\hat b=\bar y-\sum_j\bar X_j\hat\beta_j^{\mathrm{original}}$.
 
-$$|\beta_j|$$
+## The obstacle is a corner
 
-is **not differentiable at** $\beta_j=0$.
+:::: columns
+::: {.column width="50%"}
+For $h(t)=|t|$,
+$$h'(t)=\begin{cases}-1,&t<0,\\1,&t>0.\end{cases}$$
 
-Therefore the Lasso objective is convex...
+At zero, the left and right derivatives disagree. There is no derivative there.
 
-but not smooth.
+Yet $t=0$ is the unique global minimizer!
+:::
+::: {.column .centered-caption width="50%"}
+![Absolute value has a corner at its minimum.](images/lasso-absolute-value.png){width=100%}
+:::
+::::
 
-------------------------------------------------------------------------
+The rule “set the gradient equal to zero” needs a replacement that also works at corners.
 
-## Why this matters computationally
+## Recall the first-order inequality for convex functions
 
-Our previous algorithms assumed that we could compute
+For a differentiable convex function $h:\R^p\to\R$,
+$$h(v)\geq h(u)+\nabla h(u)^\top(v-u)\qquad\text{for every }v.$$
 
-$$\nabla f(\beta).$$
+The tangent plane is a **global affine lower bound**, touching the graph at $u$.
 
-But
+. . .
 
-$$\frac{d}{d\beta}|\beta|$$
+At a corner, we may still find such lower bounds even though there is no unique tangent.
 
-does not exist at $\beta=0$.
+This suggests defining a slope by its lower-bound property, rather than by a limit of difference quotients.
 
-So we cannot simply apply the usual smooth optimization machinery without modification.
+## Definition: subgradient and subdifferential
 
-This leads us to **nonsmooth optimization**.
+::: {.box title="Subgradient of a convex function"}
+Let $h:\R^p\to\R$ be convex. A vector $s\in\R^p$ is a **subgradient at $u$** if
+$$h(v)\geq h(u)+s^\top(v-u)\qquad\text{for every }v\in\R^p.$$
+The set of all such vectors is the **subdifferential**, denoted $\partial h(u)$.
+:::
 
-------------------------------------------------------------------------
+Distinguish the vector $s$ from the set $\partial h(u)$: we write $s\in\partial h(u)$.
 
-## What is special about zero?
+At a differentiable point, $\partial h(u)=\{\nabla h(u)\}$, a set containing one vector. At a corner, several slopes can satisfy the inequality.
 
-For $\beta\neq0$,
+## Deriving the subdifferential of absolute value
 
-$$\frac{d}{d\beta}|\beta|
-=
-\begin{cases}
-1, & \beta>0,\\
--1, & \beta<0.
-\end{cases}$$
 
-At zero, instead of a derivative, we use the **subgradient**
 
-$$\partial|\beta|
-=
-[-1,1].$$
+:::: columns
 
-That interval is precisely what allows the Lasso solution to remain at zero.
+::: {.column width="50%"}
 
-------------------------------------------------------------------------
+At $u=0$, the definition requires
+$$|v|\geq sv\qquad\text{for every }v\in\R.$$
 
-## Optimality conditions
+For $v>0$: $v\geq sv$, so $s\leq1$.
 
-For the Lasso,
+For $v<0$: $-v\geq sv$, so $s\geq-1$.
 
-$$0
-\in
--\frac1nX^\top(y-X\hat\beta)
-+
-\lambda\partial\|\hat\beta\|_1.$$
+Both hold exactly when $s\in[-1,1]$.
 
-For an individual coefficient,
+Thus
+$$\partial|u|=\begin{cases} \{-1\} & u<0\\ [-1,1] & u=0\\ \{1\} & u>0, \end{cases}$$
 
-$$\frac1n x_j^\top(y-X\hat\beta)
-=
-\begin{cases}
-\lambda, & \hat\beta_j>0,\\
--\lambda, & \hat\beta_j<0,\\
-\text{something in }[-\lambda,\lambda],
-& \hat\beta_j=0.
-\end{cases}$$
+:::
+::: {.column width="50%"}
+![Several supporting lines at the origin lie below absolute value.](images/lasso-supporting-lines.png){width=100%}
+:::
+::::
 
-The last case is the interesting one.
+## The replacement for a zero gradient
 
-------------------------------------------------------------------------
+::: {#prp-unconstrain-convex-optimality title="Unconstrained convex optimality" }
+Let $h:\R^d \to \R$ be convex. Then $u^*$ is a global minimiser of $h$ if and only if $0\in\partial h(u^*)$
+:::
 
-## When is a coefficient zero?
+::: {.proofbox}
+Suppose that for a point $u^*$ we have that  $0\in\partial h(u^*)$ then
+$$h(v)\geq h(u^*)+0^\top(v-u^*)=h(u^*)\qquad\text{for every }v,$$
+and thus $u^*$ is a minimiser.
 
-A coefficient can remain exactly zero whenever
+Now, suppose that $u^*$ is the minimiser (hence) unique, but suppose that $0\not\in \partial h(u^*)$. This mean that for some $v\in \R^d$ we have that
 
-$$\left|
-\frac1n x_j^\top
-(y-X\hat\beta)
-\right|
-\leq
-\lambda.$$
+$$h(v)<h(u^*)+0^\top(v-u^*)=h(u^*),$$
+then $u^*$ is not a minimiser.
 
-So the Lasso contains an implicit decision rule:
+:::
 
-$$\text{signal too weak}
-\quad\Longrightarrow\quad
-\hat\beta_j=0.$$
+## Exercise: subdifferential calculus {.scrollable}
 
-This is why Lasso performs variable selection.
+:::: {#exr-subdifferential-calculus}
+Let $f,g:\R^d\to\R$ be finite convex functions. For sets $A,B\subseteq\R^d$, define the **Minkowski sum** and positive scaling by
+$$A+B=\{a+b:a\in A,\ b\in B\},\qquad cA=\{ca:a\in A\},\quad c>0.$$
 
-------------------------------------------------------------------------
+Using the definition of a subgradient, prove the following properties:
 
-## The one-dimensional problem
+1. **Convexity:** if $s,t\in\partial f(u)$ and $\theta\in[0,1]$, then $\theta s+(1-\theta)t\in\partial f(u)$.
+2. **Positive scaling:** $\partial(cf)(u)=c\,\partial f(u)$ for $c>0$.
 
-Consider
+   ::: {.explained-label}
+   [Multiplying a set by a constant](#scaling-a-set){.explanation-link}
+   :::
 
-$$\min_\beta
-\left\{
-\frac12(\beta-z)^2
-+
-\lambda|\beta|
-\right\}.$$
+   ::: {#scaling-a-set .explanation title="Multiplying a set by a constant"}
+   Multiplying a set by $c$ means multiplying **each element** by $c$:
+   $$cA=\{ca:a\in A\}.$$
+   For example, if $A=[-1,1]$ and $c=2$, then $2A=[-2,2]$.
 
-Without the penalty, the answer is simply
+   Thus $c\,\partial f(u)=\{cs:s\in\partial f(u)\}$ is the set of all scaled subgradient vectors. In contrast, $cf$ is the function defined by $(cf)(v)=c\,f(v)$.
+   :::
 
-$$\beta=z.$$
+3. **Sum rule, one inclusion:** $\partial f(u)+\partial g(u)\subseteq\partial(f+g)(u)$. Hint: add the two supporting inequalities.
 
-What does the $L_1$ penalty do?
+   ::: {.explained-label}
+   [Adding two sets: the Minkowski sum](#minkowski-sum){.explanation-link}
+   :::
 
-------------------------------------------------------------------------
+   ::: {#minkowski-sum .explanation title="Adding two sets: the Minkowski sum"}
+   The **Minkowski sum** adds one vector from each set, taking all possible pairs:
+   $$A+B=\{a+b:a\in A,\ b\in B\}.$$
+   This differs from the union $A\cup B$, which collects the elements of either set without adding them. For example,
+   $$\{1\}+\{2\}=\{3\},\qquad \{1\}\cup\{2\}=\{1,2\}.$$
+
+   Here $\partial f(u)+\partial g(u)$ consists of every vector $s+t$ with $s\in\partial f(u)$ and $t\in\partial g(u)$. The inclusion says that each such sum is a subgradient of $f+g$ at $u$.
+   :::
+
+4. **Sum rule, reverse inclusion (challenge):** using the assumption that $f$ and $g$ are finite and convex on all of $\R^d$, prove that
+   $$\partial(f+g)(u)\subseteq\partial f(u)+\partial g(u).$$
+   Together with part 3, deduce the **sum rule**:
+   $$\partial(f+g)(u)=\partial f(u)+\partial g(u).$$
+
+5. **Differentiable functions:** if $f$ is differentiable at $u$, prove that
+   $$\partial f(u)=\{\nabla f(u)\}.$$
+   Thus the gradient is the unique subgradient. Hint: for $s\in\partial f(u)$, apply the defining inequality at $u+tv$ and $u-tv$, with $t>0$, and let $t\downarrow0$.
+
+6. **Separable functions:** if $h(u)=\sum_{j=1}^d h_j(u_j)$ with each $h_j:\R\to\R$ convex, show that
+   $$s\in\partial h(u)\quad\Longleftrightarrow\quad s_j\in\partial h_j(u_j)\text{ for every }j.$$
+
+::::
+
+## Exercise: compute the subdifferential
+
+::: {#exr-computing-subdifferentials}
+For each convex function below, compute the **entire subdifferential** at every point, including points where the function is not differentiable. Justify your answers using the definition or the properties from the previous exercise.
+
+1. **Positive part:** $h(t)=\max\{0,t\}$, for $t\in\R$. Treat $t<0$, $t=0$, and $t>0$ separately.
+
+2. **Quadratic plus absolute value:** $h(t)=\frac12(t-2)^2+3|t|$, for $t\in\R$. Use the sum rule and positive scaling.
+
+3. **The $L_1$ norm:** $h(u)=\|u\|_1=\sum_{j=1}^d|u_j|$, for $u\in\R^d$. Use separability and distinguish zero from nonzero coordinates. Write out your answer for $u=(2,0,-1)$.
+
+4. **The Euclidean norm:** $h(u)=\|u\|_2$, for $u\in\R^d$. Treat $u\ne0$ and $u=0$ separately. At the origin, use the defining inequality and Cauchy–Schwarz to characterize all admissible vectors.
+:::
+
+## Combining a smooth loss with the penalty
+
+For differentiable convex $\ell$ and finite convex $h$,
+$$\partial(\ell+\lambda h)(\beta)
+=\{\nabla\ell(\beta)+\lambda s:s\in\partial h(\beta)\},\qquad\lambda\geq0.$$
+
+The $L_1$ penalty separates across coordinates:
+$$s\in\partial\|\beta\|_1
+\quad\Longleftrightarrow\quad s_j\in\partial|\beta_j|\text{ for each }j.$$
+
+Therefore the Lasso optimality condition means that **there exists** a vector $s$ such that
+$$0=\nabla\ell(\hat\beta)+\lambda s,\qquad s_j\in\partial|\hat\beta_j|.$$
+
+The set notation expresses a choice of slope at each zero coefficient. It does not say that every subgradient is zero.
+
+## Solve one coefficient first
+
+Consider a scalar problem with $\lambda>0$:
+$$\min_{b\in\R} q(b),\qquad q(b)=\frac12(b-z)^2+\lambda|b|.$$
+
+Here $z$ is the estimate without a penalty. The quadratic term makes $q$ strictly convex, so its minimizer is unique.
+
+Our new rule gives
+$$0\in b-z+\lambda\partial|b|.$$
+
+We can solve this by examining three cases: $b>0$, $b<0$, and $b=0$.
+
+## Three cases, one exact solution
+
+| Candidate | Optimality condition | When it is valid |
+|:--|:--|:--|
+| $b>0$ | $b-z+\lambda=0$, hence $b=z-\lambda$ | $z>\lambda$ |
+| $b<0$ | $b-z-\lambda=0$, hence $b=z+\lambda$ | $z<-\lambda$ |
+| $b=0$ | $0\in-z+\lambda[-1,1]$ | $|z|\leq\lambda$ |
+
+At $z=\pm\lambda$, the unique solution is also zero.
+
+. . .
+
+The interval of subgradients at zero can balance any smooth-loss slope between $-\lambda$ and $\lambda$. This is the mechanism behind exact zeros.
 
 ## Soft thresholding
 
-The solution is
+::: {.eqbox title="The solution of the scalar problem"}
+$$S_\lambda(z)=\begin{cases}
+z-\lambda,&z>\lambda,\\
+0,&|z|\leq\lambda,\\
+z+\lambda,&z<-\lambda.
+\end{cases}
+\qquad
+S_\lambda(z)=\operatorname{sign}(z)\max\{|z|-\lambda,0\}.$$
+:::
 
-$$\boxed{
-S_\lambda(z)
-=
-\operatorname{sign}(z)
-\left(|z|-\lambda\right)_+
-}$$
+For $\lambda=1$:
 
-where
+| $z$ | $3$ | $1.2$ | $0.7$ | $-0.3$ | $-2$ |
+|:--|--:|--:|--:|--:|--:|
+| $S_1(z)$ | $2$ | $0.2$ | $0$ | $0$ | $-1$ |
 
-$$(a)_+ = \max(a,0).$$
+Large magnitudes shrink by $\lambda$; magnitudes at most $\lambda$ become zero. With $\lambda=0$, $S_0(z)=z$.
+
+## Seeing the threshold
+
+{{< include soft_threshold_ojs.qmd >}}
+
+The flat segment is an entire interval of inputs producing **exactly zero**.
+
+## Back to several predictors
+
+Write $x_j\in\R^n$ for column $j$ of $X$, and $r=y-X\hat\beta$ for the residual at a solution.
+
+Since $\nabla\ell(\beta)=X^\top(X\beta-y)/n$, optimality becomes
+$$\frac{x_j^\top r}{n}=\lambda s_j,\qquad s_j\in\partial|\hat\beta_j|.$$
 
 Equivalently,
-
-## $$S_\lambda(z)
-=
-\begin{cases}
-z-\lambda, & z>\lambda,\\
-0, & |z|\leq\lambda,\\
-z+\lambda, & z<-\lambda.
+$$\begin{cases}
+x_j^\top r/n=\lambda,&\hat\beta_j>0,\\
+x_j^\top r/n=-\lambda,&\hat\beta_j<0,\\
+|x_j^\top r/n|\leq\lambda,&\hat\beta_j=0.
 \end{cases}$$
 
-## Visualizing soft thresholding
+These conditions are **necessary and sufficient** for a global minimum. They are often called the Lasso KKT conditions; no constrained-optimisation theory is needed for this derivation.
 
-```{r}
-#| echo: true
+## Interpreting the zero-coefficient condition
 
-soft_threshold <- function(z, lambda) {
-  sign(z) * pmax(abs(z) - lambda, 0)
-}
+The quantity $x_j^\top r/n$ measures how much predictor $j$ aligns with the **remaining residual**, after accounting for all fitted predictors.
 
-z <- seq(-4, 4, length.out = 500)
+At an optimum, for $\lambda>0$:
 
-plot(
-  z,
-  soft_threshold(z, lambda = 1),
-  type = "l",
-  lwd = 3,
-  xlab = "z",
-  ylab = expression(S[lambda](z))
-)
+- If $|x_j^\top r/n|<\lambda$, then $\hat\beta_j=0$.
+- If $\hat\beta_j\ne0$, then $|x_j^\top r/n|=\lambda$.
+- At equality, a coefficient can be zero or nonzero.
 
-abline(h = 0, v = 0, lty = 2)
-abline(a = 0, b = 1, lty = 3)
-```
+Thus zero coefficients are compatible with a range of residual associations. We cannot select variables simply by thresholding their raw associations with $y$.
 
-------------------------------------------------------------------------
+## When can we threshold the OLS coefficients?
 
-## Compare Ridge and Lasso
+In the special case $X^\top X/n=I$, let $z=X^\top y/n=\hat\beta^{\mathrm{OLS}}$. Expanding the square gives
+$$F(\beta)=\text{constant}+\sum_{j=1}^p
+\left\{\frac12(\beta_j-z_j)^2+\lambda|\beta_j|\right\}.$$
 
-Again suppose that
+Each coordinate can now be minimized independently:
+$$\hat\beta_j^{\mathrm{Lasso}}=S_\lambda(z_j),
+\qquad \hat\beta_j^{\mathrm{Ridge}}=\frac{z_j}{1+\lambda}.$$
 
-$$\frac1nX^\top X=I.$$
+The Ridge formula uses the penalty $\lambda\|\beta\|_2^2/2$.
 
-For Ridge,
+**Standardisation alone does not imply orthogonality.** With correlated predictors, off-diagonal terms couple the coefficients, so thresholding OLS is generally incorrect.
 
-$$\hat\beta_j^{\text{ridge}}
-=
-\frac{\hat\beta_j^{\text{OLS}}}{1+\lambda}.$$
+## Coordinate descent: solve one coefficient at a time
 
-For Lasso,
+Start from a coefficient vector, for example $\beta=0$.
 
-$$\boxed{
-\hat\beta_j^{\text{lasso}}
-=
-S_\lambda
-\left(
-\hat\beta_j^{\text{OLS}}
-\right).
-}$$
+1. Hold every coefficient except $\beta_1$ fixed and minimize over $\beta_1$.
+2. Update $\beta_2$ using the latest values of the other coefficients.
+3. Continue through $\beta_p$. This completes one **sweep**.
+4. Repeat until the optimality conditions are satisfied to a chosen tolerance.
 
-Ridge **shrinks**.
+Each update solves an exact one-dimensional minimisation, so the objective cannot increase.
 
-Lasso **shrinks and thresholds**.
+For this convex quadratic loss plus a separable $L_1$ penalty, cyclic coordinate descent converges to the optimal objective value. If $X$ has full column rank, the minimizer is unique; otherwise coefficients need not be unique.
 
-------------------------------------------------------------------------
+## Deriving the coordinate subproblem
 
-## Example
+When updating coordinate $j$, remove the contribution of the other predictors:
+$$r^{(j)}=y-\sum_{k\ne j}x_k\beta_k=r+x_j\beta_j,
+\qquad r=y-X\beta.$$
 
-Suppose
-
-$$\hat\beta^{\text{OLS}}
-=
-\begin{pmatrix}
-3\\
-1.2\\
-0.7\\
--0.3
-\end{pmatrix}$$
-
-and $\lambda=1$.
-
-Then
-
-$$\hat\beta^{\text{lasso}}
-=
-\begin{pmatrix}
-2\\
-0.2\\
-0\\
-0
-\end{pmatrix}.$$
-
-The penalty has automatically removed two variables.
-
-------------------------------------------------------------------------
-
-## Can we solve the Lasso analytically?
-
-In general,
-
-$$X^\top X \neq nI.$$
-
-The predictors interact.
-
-There is no formula analogous to
-
-$$(X^\top X+n\lambda I)^{-1}X^\top y.$$
-
-We need an algorithm.
-
-------------------------------------------------------------------------
-
-## Coordinate descent
-
-A simple idea:
-
-> Optimize one coefficient at a time.
-
-Starting from some $\beta$,
-
-1.  fix $\beta_2,\ldots,\beta_p$ and optimize $\beta_1$;
-2.  fix everything except $\beta_2$;
-3.  continue through all coordinates;
-4.  repeat until convergence.
-
-For Lasso, each one-dimensional optimization problem has a very simple solution.
-
-------------------------------------------------------------------------
-
-## Partial residuals
-
-When updating $\beta_j$, define the partial residual
-
-$$r^{(j)}
-=
-y-\sum_{k\neq j}x_k\beta_k.$$
-
-We solve
-
-$$\min_{\beta_j}
-\left\{
-\frac{1}{2n}
-\|r^{(j)}-x_j\beta_j\|_2^2
-+
-\lambda|\beta_j|
-\right\}.$$
-
-Define
-
-$$z_j
-=
-\frac1n x_j^\top r^{(j)}$$
-
-and
-
-## $$a_j
-=
-\frac1n x_j^\top x_j.$$
-
-## The coordinate update
-
-The solution is
-
-$$\boxed{
-\beta_j
-\leftarrow
-\frac{
-S_\lambda(z_j)
-}{
-a_j
-}.
-}$$
-
-If the predictors have been standardized so that
-
-$$\frac1n x_j^\top x_j=1,$$
-
-this becomes simply
-
-$$\boxed{
-\beta_j
-\leftarrow
-S_\lambda(z_j).
-}$$
-
-------------------------------------------------------------------------
-
-## Coordinate descent for Lasso
-
-```{r}
-#| echo: true
-
-soft_threshold <- function(z, lambda) {
-  sign(z) * pmax(abs(z) - lambda, 0)
-}
-
-lasso_cd <- function(X, y, lambda,
-                     beta = rep(0, ncol(X)),
-                     tol = 1e-8,
-                     maxit = 1000) {
-
-  n <- nrow(X)
-  p <- ncol(X)
-
-  a <- colSums(X^2) / n
-
-  # Current residual
-  r <- as.numeric(y - X %*% beta)
-
-  for (iter in seq_len(maxit)) {
-
-    beta_old <- beta
-
-    for (j in seq_len(p)) {
-
-      # Put contribution of variable j back
-      r <- r + X[, j] * beta[j]
-
-      z <- sum(X[, j] * r) / n
-
-      beta[j] <- soft_threshold(z, lambda) / a[j]
-
-      # Remove its new contribution
-      r <- r - X[, j] * beta[j]
-    }
-
-    if (max(abs(beta - beta_old)) < tol)
-      break
-  }
-
-  list(
-    beta = beta,
-    iterations = iter
-  )
-}
-```
-
-------------------------------------------------------------------------
-
-## Let's generate some data
-
-```{r}
-#| echo: true
-
-set.seed(123)
-
-n <- 100
-p <- 20
-
-X <- matrix(rnorm(n * p), n, p)
-X <- scale(X)
-
-beta_true <- c(
-  3, -2, 1.5,
-  rep(0, p - 3)
-)
-
-y <- as.numeric(
-  X %*% beta_true +
-  rnorm(n, sd = 1.5)
-)
-
-y <- y - mean(y)
-```
-
-Only three variables actually matter.
-
-------------------------------------------------------------------------
-
-## Fit one Lasso model
-
-```{r}
-#| echo: true
-
-fit <- lasso_cd(
-  X,
-  y,
-  lambda = 0.25
-)
-
-round(fit$beta, 3)
-```
-
-What should we expect?
-
-- a few nonzero coefficients;
-- many coefficients exactly equal to zero.
-
-------------------------------------------------------------------------
-
-## How large can $\lambda$ be?
-
-Suppose we start at
-
-$$\beta=0.$$
-
-The Lasso solution remains identically zero when
-
-$$\left|
-\frac1n x_j^\top y
-\right|
-\leq\lambda$$
-
-for every $j$.
-
-Therefore
-
-$$\boxed{
-\lambda_{\max}
-=
-\max_j
-\left|
-\frac1n x_j^\top y
-\right|.
-}$$
-
-This gives us a natural starting point for computing an entire solution path.
-
-------------------------------------------------------------------------
-
-## The regularization path
-
-Instead of choosing one $\lambda$, solve the problem for
-
-$$\lambda_1 >
-\lambda_2 >
-\cdots >
-\lambda_m.$$
-
-At $\lambda_{\max}$,
-
-$$\hat\beta=0.$$
-
-As $\lambda$ decreases, variables progressively enter the model.
-
-------------------------------------------------------------------------
-
-## Warm starts
-
-There is no reason to restart the optimization from zero for every $\lambda$.
-
-If
-
-$$\lambda_{k+1}
-\approx
-\lambda_k,$$
-
-then
-
-$$\hat\beta(\lambda_{k+1})
-\approx
-\hat\beta(\lambda_k).$$
-
-So use
-
-$$\hat\beta(\lambda_k)$$
-
-as the initial value for the next optimization.
-
-This is called a **warm start**.
-
-------------------------------------------------------------------------
-
-## Computing the Lasso path
-
-```{r}
-#| echo: true
-
-n <- nrow(X)
-p <- ncol(X)
-
-lambda_max <-
-  max(abs(crossprod(X, y))) / n
-
-lambda_grid <- exp(
-  seq(
-    log(lambda_max),
-    log(0.03 * lambda_max),
-    length.out = 100
-  )
-)
-
-B <- matrix(
-  0,
-  nrow = p,
-  ncol = length(lambda_grid)
-)
-
-beta <- rep(0, p)
-
-for (k in seq_along(lambda_grid)) {
-
-  fit <- lasso_cd(
-    X,
-    y,
-    lambda = lambda_grid[k],
-    beta = beta
-  )
-
-  beta <- fit$beta
-  B[, k] <- beta
-}
-```
-
-------------------------------------------------------------------------
-
-## The Lasso path
-
-```{r}
-#| echo: true
-
-matplot(
-  log(lambda_grid),
-  t(B),
-  type = "l",
-  lty = 1,
-  lwd = 2,
-  xlab = expression(log(lambda)),
-  ylab = expression(hat(beta)[j])
-)
-```
-
-Each curve corresponds to one coefficient.
-
-As $\lambda$ decreases, variables enter the model.
-
-------------------------------------------------------------------------
-
-## An important computational lesson
-
-The Lasso path combines several useful ideas:
-
-$$\boxed{
-\text{convexity}
-+
-\text{coordinate descent}
-+
-\text{closed-form coordinate updates}
-+
-\text{warm starts}
-}$$
-
-A seemingly difficult nonsmooth optimization problem becomes computationally cheap.
-
-------------------------------------------------------------------------
-
-## Ridge versus Lasso
-
-|                    | Ridge             | Lasso              |
-|--------------------|-------------------|--------------------|
-| Penalty            | $\sum_j\beta_j^2$ | $\sum_j|\beta_j|$  |
-| Smooth             | Yes               | No                 |
-| Shrinkage          | Yes               | Yes                |
-| Exact zeros        | Usually no        | Yes                |
-| Variable selection | No                | Yes                |
-| Closed form        | Yes               | Generally no       |
-| Typical algorithm  | Linear algebra    | Coordinate descent |
-
-------------------------------------------------------------------------
-
-## A statistical warning
-
-Lasso variable selection should not be interpreted as
-
-> "the variables with zero coefficients have no relationship with $y$."
-
-With strongly correlated predictors, several models may explain the data similarly well.
-
-Lasso may choose one variable and discard another.
-
-So sparsity is useful...
-
-but must be interpreted carefully.
-
-------------------------------------------------------------------------
-
-## Choosing $\lambda$
-
-The remaining question is
-
-$$\boxed{
-\text{How do we choose }\lambda?
-}$$
-
-Training error alone cannot answer this.
-
-As $\lambda\rightarrow0$, training error decreases.
-
-Instead, $\lambda$ is normally selected using predictive performance on unseen data.
-
-This leads naturally to **cross-validation**.
-
-------------------------------------------------------------------------
-
-## The optimization landscape so far
-
-We have now seen several different optimization problems.
-
-Ordinary least squares:
-
-$$\text{smooth + convex}.$$
-
-Ridge:
-
-$$\text{smooth + strongly convex}.$$
-
-Lasso:
-
-$$\text{convex + nonsmooth}.$$
-
-Different mathematical structure suggests different algorithms.
-
-------------------------------------------------------------------------
-
-## One more perspective
-
-Lasso can be written as
-
-$$\min_\beta
-f(\beta)+g(\beta),$$
-
+The terms depending on a proposed new value $b$ are
+$$\frac{1}{2n}\|r^{(j)}-x_jb\|_2^2+\lambda|b|
+=\text{constant}+\frac{a_j}{2}b^2-z_jb+\lambda|b|,$$
 where
+$$a_j=\frac{x_j^\top x_j}{n}>0,
+\qquad z_j=\frac{x_j^\top r^{(j)}}{n}.$$
 
-$$f(\beta)
-=
-\frac{1}{2n}
-\|y-X\beta\|_2^2$$
+The partial residual restores the **old** contribution of predictor $j$ before fitting its new coefficient.
 
-is smooth, while
+## Completing the square gives the update
 
-$$g(\beta)
-=
-\lambda\|\beta\|_1$$
+Divide the coordinate objective by $a_j$ and complete the square:
+$$\frac12\left(b-\frac{z_j}{a_j}\right)^2
++\frac{\lambda}{a_j}|b|+\text{constant}.$$
 
-is nonsmooth but simple.
+This is the scalar problem we already solved. Therefore
 
-This structure appears constantly in modern statistical optimization.
+::: {.eqbox title="Exact coordinate minimizer"}
+$$\beta_j\leftarrow S_{\lambda/a_j}(z_j/a_j)
+=\frac{S_\lambda(z_j)}{a_j}.$$
+:::
 
-------------------------------------------------------------------------
+With our scaling, $a_j=1$, so $\beta_j\leftarrow S_\lambda(z_j)$.
 
-## What comes next?
+For example, $a_j=2$, $z_j=-3$, and $\lambda=1$ give $\beta_j=(-3+1)/2=-1$.
 
-Instead of asking for the derivative of $g$, we can ask:
+## How do we know when to stop?
 
-> Can we solve a simple optimization problem involving $g$?
+A small change in coefficients is useful, but we can directly check the optimality conditions.
 
-For the $L_1$ norm, the answer is soft thresholding.
+For the current residual $r=y-X\beta$, set $c_j=x_j^\top r/n$ and define
+$$v_j=\begin{cases}
+|c_j-\lambda\operatorname{sign}(\beta_j)|,&\beta_j\ne0,\\
+\max\{|c_j|-\lambda,0\},&\beta_j=0.
+\end{cases}$$
 
-This leads to another important family of algorithms:
+At an exact optimum, every $v_j=0$. Our code stops when $\max_jv_j\leq\texttt{tol}$.
 
-$$\boxed{\text{proximal gradient methods}}$$
+This is an absolute tolerance on the optimality residual, not a bound on coefficient error. It also provides a diagnostic if the maximum number of sweeps is reached.
 
-and, in particular,
+## Python: thresholding and optimality check {.scrollable}
 
-$$\boxed{\text{ISTA}.}$$
+The code assumes centered data, no intercept column, and no constant predictors. NumPy is the only dependency.
+
+``` python
+import numpy as np
+
+
+def soft_threshold(z, lam):
+    return np.sign(z) * np.maximum(np.abs(z) - lam, 0.0)
+
+
+def kkt_error(X, y, beta, lam):
+    c = X.T @ (y - X @ beta) / len(y)
+    violation = np.where(
+        beta != 0,
+        np.abs(c - lam * np.sign(beta)),
+        np.maximum(np.abs(c) - lam, 0.0),
+    )
+    return np.max(violation)
+```
+
+## Python: coordinate descent {.scrollable}
+
+Each sweep reuses the residual rather than recomputing all fitted values after every coordinate update.
+
+``` python
+def lasso_cd(X, y, lam, beta0=None, tol=1e-7, max_sweeps=10000):
+    """Minimize ||y - X beta||^2 / (2n) + lam * ||beta||_1."""
+    X = np.asarray(X, dtype=float)
+    y = np.asarray(y, dtype=float)
+    n, p = X.shape
+    if y.shape != (n,) or n == 0 or p == 0:
+        raise ValueError("Use a nonempty X and a response vector y.")
+    if lam < 0 or tol <= 0 or max_sweeps < 1:
+        raise ValueError("Require lam >= 0, tol > 0, max_sweeps >= 1.")
+
+    a = np.sum(X ** 2, axis=0) / n
+    if np.any(a == 0):
+        raise ValueError("Remove constant columns before centering/scaling.")
+    beta = np.zeros(p) if beta0 is None else np.array(beta0, dtype=float, copy=True)
+    r = y - X @ beta
+
+    for sweep in range(1, max_sweeps + 1):
+        for j in range(p):
+            r += X[:, j] * beta[j]          # Restore the old contribution.
+            z = X[:, j] @ r / n
+            beta[j] = soft_threshold(z, lam) / a[j]
+            r -= X[:, j] * beta[j]          # Subtract the new contribution.
+
+        if kkt_error(X, y, beta, lam) <= tol:
+            return beta, sweep
+
+    raise RuntimeError("Lasso did not reach the requested KKT tolerance.")
+```
+
+## Python: simulate and fit {.scrollable}
+
+Only three predictors have nonzero coefficients in the data-generating model. Standardisation and centering use this training sample.
+
+``` python
+rng = np.random.default_rng(123)
+n, p = 100, 20
+X_raw = rng.normal(size=(n, p))
+beta_true = np.r_[3.0, -2.0, 1.5, np.zeros(p - 3)]
+y_raw = 2.0 + X_raw @ beta_true + rng.normal(0.0, 1.5, n)
+
+x_mean = X_raw.mean(axis=0)
+x_scale = X_raw.std(axis=0)  # ddof=0 gives sum(X[:, j]**2) / n = 1.
+X = (X_raw - x_mean) / x_scale
+y_mean = y_raw.mean()
+y = y_raw - y_mean
+
+lam = 0.25
+beta, sweeps = lasso_cd(X, y, lam)
+print("Standardized coefficients:", np.round(beta, 3))
+print("Sweeps:", sweeps, "KKT error:", kkt_error(X, y, beta, lam))
+
+# Recover coefficients and predictions in the original units.
+beta_original = beta / x_scale
+intercept = y_mean - x_mean @ beta_original
+y_hat = intercept + X_raw @ beta_original
+```
+
+[Download the complete Python example](lasso.py). Its returned coefficients refer to the standardized predictors.
+
+## The largest penalty needed for an all-zero fit
+
+At $\beta=0$, the residual is $y$. The optimality conditions reduce to
+$$|x_j^\top y/n|\leq\lambda\qquad\text{for every }j.$$
+
+Hence
+
+::: {.eqbox title="Starting point for the regularisation path"}
+$$\lambda_{\max}=\frac{\|X^\top y\|_\infty}{n}
+=\max_j\frac{|x_j^\top y|}{n}.$$
+:::
+
+For $\lambda\geq\lambda_{\max}$, the all-zero slope vector is optimal. With an unpenalized intercept, this predicts the training mean of $y$, rather than zero on the original scale.
+
+## A path of models and warm starts
+
+Solve for a decreasing sequence $\lambda_1=\lambda_{\max}>\cdots>\lambda_m>0$.
+
+Start the first fit at zero; initialize each subsequent fit at the previous solution. This is a **warm start**, often reducing the number of sweeps.
+
+``` python
+lambda_max = np.max(np.abs(X.T @ y)) / len(y)
+lambdas = lambda_max * np.geomspace(1.0, 0.03, 60)
+beta = np.zeros(X.shape[1])
+path = []
+for lam in lambdas:
+    beta, _ = lasso_cd(X, y, lam, beta0=beta)
+    path.append(beta.copy())
+path = np.array(path)
+```
+
+Here $\lambda_{\max}>0$; if it is zero, the zero vector is already an OLS solution. As the penalty decreases, variables can enter **and leave** the active set of nonzero coefficients.
+
+## Reading a Lasso path
+
+![Coefficient paths for the simulated example as the penalty decreases.](images/lasso-path.png){height=530}
+
+Each curve is one coefficient. A zero segment means that predictor is absent from that fitted model. Smaller penalties allow more flexible fits; the path alone does not identify the best predictive model.
+
+## Choosing the penalty and interpreting selection
+
+Choose $\lambda$ using held-out predictive performance, usually **cross-validation**: fit on training folds and evaluate on the corresponding validation fold.
+
+Estimate centering and scaling within each training fold, then apply them to its validation fold. Keep a final test set separate when reporting predictive performance.
+
+Training error alone favors weaker penalties. Validation balances fit against performance on unseen observations.
+
+A selected variable is not automatically scientifically important or causal. Correlated predictors may substitute for one another, and selection can change across samples. A zero coefficient does not establish absence of an association with the outcome.
+
+## Ridge and Lasso: what changed?
+
+| Property | Ridge | Lasso |
+|:--|:--|:--|
+| Penalty | $\lambda\|\beta\|_2^2/2$ | $\lambda\|\beta\|_1$ |
+| Objective | Smooth and convex | Convex with corners |
+| Optimality | Zero gradient | Zero belongs to the subdifferential |
+| Effect | Shrinkage; generally no exact zeros | Shrinkage and exact zeros |
+| Computation | Solve a linear system | E.g. coordinate descent |
+| Uniqueness | Yes for $\lambda>0$ on the slopes | Guaranteed if $X$ has full column rank |
+
+Both methods introduce bias. Lasso's corners are what make exact variable selection possible.
+
+## A bridge to proximal gradient
+
+We have used soft thresholding to update one coordinate. We can also use it after a gradient step on the smooth loss:
+$$z^{(k)}=\beta^{(k)}-t\nabla\ell(\beta^{(k)}),
+\qquad \beta^{(k+1)}=S_{t\lambda}(z^{(k)}),$$
+where $S$ acts coordinatewise.
+
+The second step exactly minimizes
+$$\frac{1}{2t}\|b-z^{(k)}\|_2^2+\lambda\|b\|_1.$$
+
+This is **proximal gradient**, also called **ISTA** here. For our quadratic loss, $0<t\leq1/L$ with $L=\|X\|_2^2/n>0$ is a standard safe choice; $\|X\|_2$ is the largest singular value.
+
+The idea is to differentiate the smooth part and solve the simple nonsmooth part exactly. We will develop this method next.
+
+## Check your understanding
+
+1. Use the defining inequality to show that $s=2$ is not a subgradient of $|u|$ at zero.
+2. Find $S_{0.5}(-0.2)$ and $S_{0.5}(-2)$.
+3. At a Lasso solution with $\lambda>0$, does $|x_j^\top r/n|=\lambda$ force $\hat\beta_j\ne0$?
+4. Why is applying soft thresholding to the OLS coefficients generally wrong for correlated predictors?
+
+::: {.proofbox title="Answers"}
+1. Take $v=1$: the required inequality $1\geq2$ fails.
+2. $0$ and $-1.5$.
+3. No. In the scalar problem, $z=\lambda$ gives a zero solution at equality.
+4. The quadratic loss contains cross terms, so the coordinates do not minimize independently.
+:::
+
+## Further reading
+
+- [Boyd, Duchi, Pilanci, and Vandenberghe: Subgradients](https://web.stanford.edu/class/ee364b/lectures/subgradients_notes.pdf): supporting affine bounds, calculus rules, and convex optimality.
+- [Friedman, Hastie, and Tibshirani (2010): Regularisation Paths for Generalized Linear Models via Coordinate Descent](https://doi.org/10.18637/jss.v033.i01): coordinate updates and efficient regularization paths.
