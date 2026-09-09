@@ -1,0 +1,86 @@
+```{ojs}
+//| echo: false
+
+softThresholdDemo = {
+  const container = html`
+    <div style="max-width:1100px; margin:0 auto; font-family:sans-serif;">
+      <svg viewBox="0 0 1000 490" role="img"
+           aria-label="Soft thresholding compared with the identity function"
+           style="display:block; width:100%; max-height:490px;">
+        <rect x="80" y="25" width="860" height="400" fill="#f8fafc" />
+        <rect class="zero-region" y="25" height="400" fill="#06717e" opacity="0.12" />
+        <g class="ticks" fill="#475569" font-size="18"></g>
+        <line x1="80" y1="225" x2="940" y2="225" stroke="#94a3b8" />
+        <line x1="510" y1="25" x2="510" y2="425" stroke="#94a3b8" />
+        <line x1="80" y1="425" x2="940" y2="25"
+              stroke="#94a3b8" stroke-width="2" stroke-dasharray="8 6" />
+        <line class="left-bound" y1="25" y2="425" stroke="#06717e" stroke-dasharray="4 5" />
+        <line class="right-bound" y1="25" y2="425" stroke="#06717e" stroke-dasharray="4 5" />
+        <path class="threshold-curve" fill="none" stroke="#003c58"
+              stroke-width="5" stroke-linejoin="round" />
+        <text x="510" y="475" text-anchor="middle" font-size="23">z</text>
+        <text transform="translate(24 225) rotate(-90)" text-anchor="middle" font-size="23">Estimate</text>
+      </svg>
+      <div style="display:flex; justify-content:center; gap:28px; font-size:20px; margin:4px 0 16px;">
+        <span style="color:#003c58;">━ Soft threshold Sλ(z)</span>
+        <span style="color:#64748b;">┄ No penalty: z</span>
+        <span style="color:#06717e;">Shaded region: zero output</span>
+      </div>
+      <label style="display:flex; justify-content:center; align-items:center; gap:18px; font-size:26px;">
+        <span>λ</span>
+        <input class="lambda-slider" type="range" min="0" max="4" step="0.05" value="1"
+               aria-label="Soft threshold penalty lambda" style="width:360px; cursor:pointer;">
+        <output class="lambda-value" style="min-width:65px; font-variant-numeric:tabular-nums;"></output>
+      </label>
+      <p class="threshold-summary" aria-live="polite"
+         style="text-align:center; font-size:22px; margin:10px 0 0;"></p>
+    </div>
+  `;
+
+  const px = z => 80 + (z + 4) * 860 / 8;
+  const py = value => 425 - (value + 4) * 400 / 8;
+  const ticks = container.querySelector(".ticks");
+  const svgNS = "http://www.w3.org/2000/svg";
+  for (let tick = -4; tick <= 4; tick++) {
+    const xLabel = document.createElementNS(svgNS, "text");
+    xLabel.setAttribute("x", px(tick));
+    xLabel.setAttribute("y", 450);
+    xLabel.setAttribute("text-anchor", "middle");
+    xLabel.textContent = tick;
+    ticks.append(xLabel);
+    const yLabel = document.createElementNS(svgNS, "text");
+    yLabel.setAttribute("x", 65);
+    yLabel.setAttribute("y", py(tick) + 6);
+    yLabel.setAttribute("text-anchor", "end");
+    yLabel.textContent = tick;
+    ticks.append(yLabel);
+  }
+
+  const slider = container.querySelector(".lambda-slider");
+  function update() {
+    const lam = slider.valueAsNumber;
+    // The exact piecewise-linear curve needs only its endpoints and two corners.
+    const zs = [-4, -lam, lam, 4];
+    const path = zs.map((z, i) => {
+      const value = Math.sign(z) * Math.max(Math.abs(z) - lam, 0);
+      return `${i === 0 ? "M" : "L"} ${px(z)} ${py(value)}`;
+    }).join(" ");
+    container.querySelector(".threshold-curve").setAttribute("d", path);
+    const region = container.querySelector(".zero-region");
+    region.setAttribute("x", px(-lam));
+    region.setAttribute("width", px(lam) - px(-lam));
+    for (const [selector, z] of [[".left-bound", -lam], [".right-bound", lam]]) {
+      const line = container.querySelector(selector);
+      line.setAttribute("x1", px(z));
+      line.setAttribute("x2", px(z));
+    }
+    container.querySelector(".lambda-value").textContent = lam.toFixed(2);
+    container.querySelector(".threshold-summary").textContent = lam === 0
+      ? "λ = 0: no shrinkage; S₀(z) = z."
+      : `Sλ(z) = 0 for z in [−${lam.toFixed(2)}, ${lam.toFixed(2)}].`;
+  }
+  slider.addEventListener("input", update);
+  update();
+  return container;
+}
+```
