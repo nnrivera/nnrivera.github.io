@@ -2,9 +2,28 @@
 course: "DOCE-202 Computational Statistics II"
 title: "Unit 1: Advanced Optimization"
 author: "Nicolás Rivera"
+exercise-list: true
+filters:
+    - pseudocode #quarto add leovan/quarto-pseudocode to install
 format: 
     theme-uv-revealjs:
         embed-resources: false
+        html-math-method:
+            method: mathjax
+            url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js
+        include-in-header:
+            text: |
+                <script>
+                window.MathJax = {
+                  tex: {
+                    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+                    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+                    processEscapes: true,
+                    processEnvironments: true
+                  }
+                };
+                </script>
+                <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
         toc: true
         toc-depth: 1
         width: 1600    # Default is 1050. Larger width = smaller text (1600,900), (1760,990),(1920,1080) (2240,1260), (1840, 1035), (2400, 1350)
@@ -531,7 +550,7 @@ iii. **strongly convex** on $U$, if there exists $\mu > 0$ (called the modulus o
 ::::
 
 ::: {.column width="50%"}
-{{< include convexity_ojs.qmd >}}
+{{< include codes/convexity_ojs.qmd >}}
 :::
 ::::::
 
@@ -649,7 +668,7 @@ In practice, options 1 and 3 are fine. Option 2 is too theoretical and essential
 
 ## Visualization: The Armijo-Goldstein Conditions on $f(x) = ax^3+bx^2+cx+d$
 
-{{< include diag_ag.qmd >}}
+{{< include codes/diag_ag.qmd >}}
 
 ## Data Science Application: Constant vs. Armijo-Goldstein Rule {.scrollable}
 
@@ -666,7 +685,7 @@ We will race two strategies:
 
 ### Let's see the code
 
-{{< include armijo_code.qmd >}}
+{{< include codes/armijo_code.qmd >}}
 
 # Newton's Method for Optimization
 
@@ -1628,7 +1647,7 @@ $$\min_{\beta}
 
 This is an **optimization problem**, and
 
-:::{#exr-label}
+:::{#exr-label name="OLS normal equations"}
 Show that the minimiser $\beta_{\text{OLS}}$ of the minimisation problem  $\frac{1}{2n}\|y-X\beta\|_2^2$ satisfies:
 
 $$X^\top X\hat\beta_{\text{OLS}} = X^\top y.$$
@@ -2090,27 +2109,27 @@ The penalty changes the fit between observations as well as at the sample points
 Ridge shrinks coefficients, but generally does not make them exactly zero. Can a penalty also **select variables**?
 
 ::: {.eqbox title="Least absolute shrinkage and selection operator (Lasso)"}
-$$\min_{\beta\in\R^p} F(\beta),
+$$\min_{\beta\in\R^{p+1}} F(\beta),
 \qquad F(\beta)=\underbrace{\frac{1}{2n}\|y-X\beta\|_2^2}_{\ell(\beta)}
-+\lambda\underbrace{\sum_{j=1}^p|\beta_j|}_{\|\beta\|_1},\qquad \lambda\geq0.$$
++\lambda\underbrace{\sum_{j=1}^p|\beta_j|}_{h(\beta)},\qquad \lambda\geq0.$$
 :::
 
-A zero coefficient removes that predictor from the fitted linear model. This is called a **sparse** solution.
+Here $\beta=(\beta_0,\beta_1,\ldots,\beta_p)^\top$: $\beta_0$ is the **unpenalised intercept**, and only the $p$ slopes enter $h(\beta)$. A zero slope removes that predictor from the fitted linear model. This is called a **sparse** solution.
 
 We will explain why zeros appear, then build an algorithm that computes them.
 
 ## Our convention: intercept and predictor scale
 
-Start with $y_i=b+\sum_j X_{ij}\beta_j+\varepsilon_i$. We penalize the slopes $\beta_j$, **not the intercept** $b$.
+Use $X\in\R^{n\times(p+1)}$, with rows indexed by $i=1,\ldots,n$ and columns by $j=0,1,\ldots,p$. The **first column is indexed by 0**:
+$$X_{\cdot,0}=\mathbf{1}_n,\qquad
+ y_i=\beta_0+\sum_{j=1}^p X_{i,j}\beta_j+\varepsilon_i.$$
 
-Center $y$ and each predictor. For the derivations below, $X$ and $y$ denote these centered quantities; $X$ has no intercept column.
+We keep $\beta_0$ in the coefficient vector and **differentiate and update it**, but do not penalise it:
+$$h(\beta)=\sum_{j=1}^p|\beta_j|,\qquad \frac{\partial h}{\partial\beta_0}=0.$$
 
-Also scale nonconstant predictors so that
-$$\frac1n\sum_{i=1}^n X_{ij}^2=1.$$
+In the numerical example, center and scale only the predictor columns $j=1,\ldots,p$, so $\sum_i X_{i,j}/n=0$ and $\sum_i X_{i,j}^2/n=1$. Remove constant predictors before scaling; keep column 0 equal to one and keep $y$ in its original units.
 
-This makes the penalty comparable across predictors measured in different units. Remove constant columns before scaling.
-
-For new observations, reuse the training means and scales. On the original scale, recover the intercept as $\hat b=\bar y-\sum_j\bar X_j\hat\beta_j^{\mathrm{original}}$.
+The derivations also apply to uncentered predictors. For new observations, reuse the training means and scales and prepend the column of ones.
 
 ## The obstacle is a corner
 
@@ -2201,7 +2220,7 @@ then $u^*$ is not a minimiser.
 
 ## Exercise: subdifferential calculus {.scrollable}
 
-:::: {#exr-subdifferential-calculus}
+:::: {#exr-subdifferential-calculus name="Subdifferential calculus"}
 Let $f,g:\R^d\to\R$ be finite convex functions. For sets $A,B\subseteq\R^d$, define the **Minkowski sum** and positive scaling by
 $$A+B=\{a+b:a\in A,\ b\in B\},\qquad cA=\{ca:a\in A\},\quad c>0.$$
 
@@ -2253,7 +2272,7 @@ Using the definition of a subgradient, prove the following properties:
 
 ## Exercise: compute the subdifferential
 
-::: {#exr-computing-subdifferentials}
+::: {#exr-computing-subdifferentials name="Compute the subdifferential"}
 For each convex function below, compute the **entire subdifferential** at every point, including points where the function is not differentiable. Justify your answers using the definition or the properties from the previous exercise.
 
 1. **Positive part:** $h(t)=\max\{0,t\}$, for $t\in\R$. Treat $t<0$, $t=0$, and $t>0$ separately.
@@ -2271,21 +2290,21 @@ For differentiable convex $\ell$ and finite convex $h$,
 $$\partial(\ell+\lambda h)(\beta)
 =\{\nabla\ell(\beta)+\lambda s:s\in\partial h(\beta)\},\qquad\lambda\geq0.$$
 
-The $L_1$ penalty separates across coordinates:
-$$s\in\partial\|\beta\|_1
-\quad\Longleftrightarrow\quad s_j\in\partial|\beta_j|\text{ for each }j.$$
+Our penalty is $h(\beta)=\sum_{j=1}^p|\beta_j|$. It separates across coordinates and is constant in $\beta_0$:
+$$s\in\partial h(\beta)\quad\Longleftrightarrow\quad
+s_0=0,\qquad s_j\in\partial|\beta_j|\quad(j=1,\ldots,p).$$
 
-Therefore the Lasso optimality condition means that **there exists** a vector $s$ such that
-$$0=\nabla\ell(\hat\beta)+\lambda s,\qquad s_j\in\partial|\hat\beta_j|.$$
+Therefore the Lasso optimality condition means that **there exists** such a vector $s\in\R^{p+1}$ with
+$$0=\nabla\ell(\hat\beta)+\lambda s.$$
 
-The set notation expresses a choice of slope at each zero coefficient. It does not say that every subgradient is zero.
+Coordinate 0 requires $\partial\ell/\partial\beta_0=0$. For each slope, we choose a penalty subgradient to balance the loss derivative. The set notation does not say that every subgradient is zero.
 
 ## Solve one coefficient first
 
 Consider a scalar problem with $\lambda>0$:
 $$\min_{b\in\R} q(b),\qquad q(b)=\frac12(b-z)^2+\lambda|b|.$$
 
-Here $z$ is the estimate without a penalty. The quadratic term makes $q$ strictly convex, so its minimizer is unique.
+Here $b$ represents a **penalised slope**, and $z$ is its estimate without a penalty. For the intercept, the corresponding scalar problem has no absolute-value term and its solution is simply $b=z$. The quadratic term makes $q$ strictly convex, so its minimizer is unique.
 
 Our new rule gives
 $$0\in b-z+\lambda\partial|b|.$$
@@ -2318,69 +2337,178 @@ z+\lambda,&z<-\lambda.
 S_\lambda(z)=\operatorname{sign}(z)\max\{|z|-\lambda,0\}.$$
 :::
 
-For $\lambda=1$:
 
-| $z$ | $3$ | $1.2$ | $0.7$ | $-0.3$ | $-2$ |
-|:--|--:|--:|--:|--:|--:|
-| $S_1(z)$ | $2$ | $0.2$ | $0$ | $0$ | $-1$ |
+{{< include codes/soft_threshold_ojs.qmd >}}
 
-Large magnitudes shrink by $\lambda$; magnitudes at most $\lambda$ become zero. With $\lambda=0$, $S_0(z)=z$.
-
-## Seeing the threshold
-
-{{< include soft_threshold_ojs.qmd >}}
-
-The flat segment is an entire interval of inputs producing **exactly zero**.
 
 ## Back to several predictors
 
-Write $x_j\in\R^n$ for column $j$ of $X$, and $r=y-X\hat\beta$ for the residual at a solution.
+Let $X\in\R^{n\times(p+1)}$ be the **design matrix**: $n$ observations (rows), a first column $X_{\cdot,0}=\mathbf{1}_n$ for the intercept, and $p$ predictor columns. We use the notation $X_{i,\cdot}$ and $X_{\cdot, j}$
 
-Since $\nabla\ell(\beta)=X^\top(X\beta-y)/n$, optimality becomes
-$$\frac{x_j^\top r}{n}=\lambda s_j,\qquad s_j\in\partial|\hat\beta_j|.$$
+![](images/design-matrix-notation.svg){width=85% fig-alt="The design matrix X has n rows and p+1 columns, with column 0 containing ones for the intercept. An arrow points to a blue row labeled X subscript i comma dot; another points to an orange column labeled X subscript dot comma j."}
 
-Equivalently,
-$$\begin{cases}
-x_j^\top r/n=\lambda,&\hat\beta_j>0,\\
-x_j^\top r/n=-\lambda,&\hat\beta_j<0,\\
-|x_j^\top r/n|\leq\lambda,&\hat\beta_j=0.
+The **first index selects a row**, and the **second selects a column**. A dot means take **all** entries: $X_{i,\cdot}$ is row $i$; $X_{\cdot,j}$ is column $j$. A single entry $X_{i,j}$ is the value of predictor $j$ for observation $i$.
+
+The position of $i$ matters: in $X_{i,\cdot}$ it labels an **observation**; in $X_{\cdot,j}$ it labels a **predictor**.
+
+From now on, $i=1,\ldots,n$ indexes rows and $j=0,\ldots,p$ indexes columns. A row $X_{i,\cdot}$ has shape $1\times(p+1)$; a column $X_{\cdot,j}$ has shape $n\times1$.
+
+## From rows and columns to predictions
+
+Let $\beta=(\beta_0,\beta_1,\ldots,\beta_p)^\top$ be the $(p+1)\times1$ coefficient vector, and $y$ the $n\times1$ response vector.
+
+Using **row $i$**, the prediction for observation $i$ is
+$$(X\beta)_i=X_{i,\cdot}\beta=\sum_{j=0}^p X_{i,j}\beta_j=\beta_0+\sum_{j=1}^p X_{i,j}\beta_j.$$
+
+Using **columns**, the vector of all predictions is
+$$X\beta=\sum_{j=0}^p X_{\cdot,j}\beta_j=\mathbf{1}_n\beta_0+\sum_{j=1}^p X_{\cdot,j}\beta_j.$$
+
+At a candidate solution $\hat\beta$, define the **residual** (observed minus predicted):
+$$r=y-X\hat\beta,\qquad
+r_i=y_i-X_{i,\cdot}\hat\beta.$$
+
+Each $r_i$ is one prediction error; $r$ collects all $n$ errors.
+
+## How does one coefficient change the loss?
+
+Recall the Lasso objective, with $\lambda>0$:
+$$F(\beta)=\ell(\beta)+\lambda\sum_{j=1}^p|\beta_j|,
+\qquad \ell(\beta)=\frac{1}{2n}\sum_{i=1}^n
+\left(y_i-\sum_{k=0}^p X_{i,k}\beta_k\right)^2.$$
+
+For any $j=0,\ldots,p$, hold the other coefficients fixed. The derivative of the residual for observation $i$ with respect to $\beta_j$ is $-X_{i,j}$. By the chain rule,
+$$\frac{\partial\ell}{\partial\beta_j}(\beta)
+=-\frac1n\sum_{i=1}^n X_{i,j}
+\left(y_i-\sum_{k=0}^p X_{i,k}\beta_k\right).$$
+
+At $\hat\beta$, the expression in parentheses is $r_i$, so
+$$\frac{\partial\ell}{\partial\beta_j}(\hat\beta)
+=-\frac1n\sum_{i=1}^n X_{i,j}r_i
+=-\frac{X_{\cdot,j}^{\top}r}{n}.$$
+
+The product $X_{\cdot,j}^{\top}r$ is a **scalar**: multiply each predictor value by its residual and add over observations.
+
+## Balance the loss slope and the penalty slope
+
+For each **slope** $j=1,\ldots,p$, the subgradient rule requires
+$$0\in\frac{\partial\ell}{\partial\beta_j}(\hat\beta)+\lambda\partial|\hat\beta_j|
+=-\frac{X_{\cdot,j}^{\top}r}{n}+\lambda\partial|\hat\beta_j|.$$
+
+Equivalently, choose $s_j\in\partial|\hat\beta_j|$ so that $X_{\cdot,j}^{\top}r/n=\lambda s_j$. The available slopes are
+
+$$\partial|\hat\beta_j|=\begin{cases}
+\{1\},&\hat\beta_j>0,\\
+\{-1\},&\hat\beta_j<0,\\
+[-1,1],&\hat\beta_j=0.
 \end{cases}$$
 
-These conditions are **necessary and sufficient** for a global minimum. They are often called the Lasso KKT conditions; no constrained-optimisation theory is needed for this derivation.
+For the **intercept**, the penalty derivative is zero, so
+$$0=\frac{\partial F}{\partial\beta_0}(\hat\beta)
+=\frac{\partial\ell}{\partial\beta_0}(\hat\beta)
+=-\frac{X_{\cdot,0}^{\top}r}{n}=-\frac1n\sum_{i=1}^n r_i.$$
+
+Stacking **all $p+1$ loss derivatives**, including the intercept, gives
+$$\nabla\ell(\hat\beta)=-X^\top r/n\in\R^{p+1}.$$
+
+## What does the intercept gradient tell us?
+
+Because $X_{i,0}=1$, differentiating the loss with respect to $\beta_0$ gives
+$$\frac{\partial F}{\partial\beta_0}(\beta)
+=-\frac1n\sum_{i=1}^n\left(y_i-\beta_0-\sum_{j=1}^p X_{i,j}\beta_j\right).$$
+
+Set this derivative to zero and rearrange:
+$$\hat\beta_0=\bar y-\sum_{j=1}^p\bar X_j\hat\beta_j,
+\qquad \bar X_j=\frac1n\sum_{i=1}^n X_{i,j}.$$
+
+Thus the fitted residuals have **mean zero**. If the predictor columns are centered, $\bar X_j=0$ and $\hat\beta_0=\bar y$.
+
+There is no $\lambda$ term in this equation. With uncentered predictors, the intercept can still change with $\lambda$ because the fitted slopes change.
+
+## Isolate the coefficient we want to solve for
+
+The residual $r=y-X\beta$ **depends on $\beta_j$**. To solve for this coefficient, fix all the others (including $\beta_0$), and call its proposed value $b_j$.
+
+Separate its contribution from the residual:
+$$r(b_j)=\underbrace{y-\sum_{\substack{k=0\\k\ne j}}^p X_{\cdot,k}\beta_k}_{r^{(j)}}-X_{\cdot,j}b_j.$$
+
+The **partial residual** $r^{(j)}$ stays fixed while we vary $b_j$. Define
+$$z_j=\frac{X_{\cdot,j}^{\top}r^{(j)}}{n},\qquad
+ a_j=\frac{X_{\cdot,j}^{\top}X_{\cdot,j}}{n}>0.$$
+
+Then the residual association in our subgradient condition becomes
+$$\frac{X_{\cdot,j}^{\top}r(b_j)}{n}=z_j-a_jb_j.$$
+
+## Three cases for each slope
+
+Substituting into the subgradient condition gives a scalar equation to solve:
+$$0\in a_jb_j-z_j+\lambda\partial|b_j|,\qquad \lambda>0.$$
+
+**If $b_j>0$**, the only penalty subgradient is $1$:
+$$0=a_jb_j-z_j+\lambda
+\quad\Longrightarrow\quad b_j=\frac{z_j-\lambda}{a_j}.
+\qquad b_j>0\ \Longleftrightarrow\ z_j>\lambda.$$
+
+**If $b_j<0$**, the only penalty subgradient is $-1$:
+$$0=a_jb_j-z_j-\lambda
+\quad\Longrightarrow\quad b_j=\frac{z_j+\lambda}{a_j}.
+\qquad b_j<0\ \Longleftrightarrow\ z_j<-\lambda.$$
+
+**If $b_j=0$**, we can choose any subgradient in $[-1,1]$:
+$$0\in-z_j+\lambda[-1,1]
+\quad\Longleftrightarrow\quad z_j\in[-\lambda,\lambda]
+\quad\Longleftrightarrow\quad |z_j|\leq\lambda.$$
+
+## Putting the cases together: soft thresholding
+
+The minimizer over this one coefficient is therefore
+$$b_j^*=\begin{cases}
+(z_j-\lambda)/a_j,&z_j>\lambda,\\
+0,&|z_j|\leq\lambda,\\
+(z_j+\lambda)/a_j,&z_j<-\lambda.
+\end{cases}$$
+
+This is exactly the soft-thresholding formula:
+$$\boxed{b_j^*=\frac{S_\lambda(z_j)}{a_j}
+=S_{\lambda/a_j}\!\left(\frac{z_j}{a_j}\right).}$$
+
+Without the penalty, the update would be $z_j/a_j$. The penalty shrinks its magnitude by $\lambda/a_j$, stopping at zero. With our predictor scaling, $a_j=1$, so $b_j^*=S_\lambda(z_j)$.
+
+This solves **one coefficient with the others fixed**. Since $z_j$ depends on their current values through $r^{(j)}$, we must repeat these updates: this is coordinate descent.
+
+## From a coordinate update to a Lasso solution
+
+At a full solution, every slope already equals its coordinate minimizer:
+$$\hat\beta_j=\frac{S_\lambda(z_j)}{a_j},\qquad
+z_j=\frac{X_{\cdot,j}^{\top}}{n}
+\left(y-\sum_{\substack{k=0\\k\ne j}}^p X_{\cdot,k}\hat\beta_k\right).$$
+
+Equivalently, using the **full residual** $r=y-X\hat\beta$,
+$$\begin{cases}
+X_{\cdot,j}^{\top}r/n=\lambda,&\hat\beta_j>0,\\
+X_{\cdot,j}^{\top}r/n=-\lambda,&\hat\beta_j<0,\\
+|X_{\cdot,j}^{\top}r/n|\leq\lambda,&\hat\beta_j=0.
+\end{cases}$$
+
+These slope conditions **and the intercept condition $\sum_i r_i/n=0$** must hold simultaneously. Since the objective is convex, they are **necessary and sufficient** for a global minimum: the Lasso KKT conditions.
 
 ## Interpreting the zero-coefficient condition
 
-The quantity $x_j^\top r/n$ measures how much predictor $j$ aligns with the **remaining residual**, after accounting for all fitted predictors.
+The quantity $X_{\cdot,j}^\top r/n$ measures how much predictor $j$ aligns with the **remaining residual**, after accounting for all fitted predictors.
 
-At an optimum, for $\lambda>0$:
+At an optimum, for $\lambda>0$ and **slope indices $j=1,\ldots,p$**:
 
-- If $|x_j^\top r/n|<\lambda$, then $\hat\beta_j=0$.
-- If $\hat\beta_j\ne0$, then $|x_j^\top r/n|=\lambda$.
+- If $|X_{\cdot,j}^\top r/n|<\lambda$, then $\hat\beta_j=0$.
+- If $\hat\beta_j\ne0$, then $|X_{\cdot,j}^\top r/n|=\lambda$.
 - At equality, a coefficient can be zero or nonzero.
 
 Thus zero coefficients are compatible with a range of residual associations. We cannot select variables simply by thresholding their raw associations with $y$.
-
-## When can we threshold the OLS coefficients?
-
-In the special case $X^\top X/n=I$, let $z=X^\top y/n=\hat\beta^{\mathrm{OLS}}$. Expanding the square gives
-$$F(\beta)=\text{constant}+\sum_{j=1}^p
-\left\{\frac12(\beta_j-z_j)^2+\lambda|\beta_j|\right\}.$$
-
-Each coordinate can now be minimized independently:
-$$\hat\beta_j^{\mathrm{Lasso}}=S_\lambda(z_j),
-\qquad \hat\beta_j^{\mathrm{Ridge}}=\frac{z_j}{1+\lambda}.$$
-
-The Ridge formula uses the penalty $\lambda\|\beta\|_2^2/2$.
-
-**Standardisation alone does not imply orthogonality.** With correlated predictors, off-diagonal terms couple the coefficients, so thresholding OLS is generally incorrect.
-
 ## Coordinate descent: solve one coefficient at a time
 
 Start from a coefficient vector, for example $\beta=0$.
 
-1. Hold every coefficient except $\beta_1$ fixed and minimize over $\beta_1$.
-2. Update $\beta_2$ using the latest values of the other coefficients.
-3. Continue through $\beta_p$. This completes one **sweep**.
+1. Hold the slopes fixed and minimize over the unpenalised intercept $\beta_0$.
+2. Update each slope $\beta_1,\ldots,\beta_p$ using the latest values of all other coefficients, including $\beta_0$.
+3. Updating all $p+1$ coefficients completes one **sweep**.
 4. Repeat until the optimality conditions are satisfied to a chosen tolerance.
 
 Each update solves an exact one-dimensional minimisation, so the objective cannot increase.
@@ -2389,22 +2517,39 @@ For this convex quadratic loss plus a separable $L_1$ penalty, cyclic coordinate
 
 ## Deriving the coordinate subproblem
 
-When updating coordinate $j$, remove the contribution of the other predictors:
-$$r^{(j)}=y-\sum_{k\ne j}x_k\beta_k=r+x_j\beta_j,
+When updating a **slope** $j\in\{1,\ldots,p\}$, remove the contribution of all other columns, including the intercept:
+$$r^{(j)}=y-\sum_{\substack{k=0\\k\ne j}}^p X_{\cdot,k}\beta_k=r+X_{\cdot,j}\beta_j,
 \qquad r=y-X\beta.$$
 
 The terms depending on a proposed new value $b$ are
-$$\frac{1}{2n}\|r^{(j)}-x_jb\|_2^2+\lambda|b|
+$$\frac{1}{2n}\|r^{(j)}-X_{\cdot,j}b\|_2^2+\lambda|b|
 =\text{constant}+\frac{a_j}{2}b^2-z_jb+\lambda|b|,$$
 where
-$$a_j=\frac{x_j^\top x_j}{n}>0,
-\qquad z_j=\frac{x_j^\top r^{(j)}}{n}.$$
+$$a_j=\frac{X_{\cdot,j}^\top X_{\cdot,j}}{n}>0,
+\qquad z_j=\frac{X_{\cdot,j}^\top r^{(j)}}{n}.$$
 
 The partial residual restores the **old** contribution of predictor $j$ before fitting its new coefficient.
 
+## Coordinate descent: update the intercept
+
+Hold the slopes fixed and let $r=y-X\beta$ be the **current residual**. Increasing the intercept by $\delta$ changes every prediction by $\delta$, so the new residual is $r-\mathbf{1}_n\delta$.
+
+Since the intercept is unpenalised, choose $\delta$ to minimize
+$$q_0(\delta)=\frac{1}{2n}\|r-\mathbf{1}_n\delta\|_2^2,
+\qquad q_0'(\delta)=\delta-\operatorname{mean}(r).$$
+
+Setting the derivative to zero gives the simple update:
+$$\boxed{\delta\leftarrow\operatorname{mean}(r),\qquad
+\beta_0\leftarrow\beta_0+\delta,\qquad
+r\leftarrow r-\mathbf{1}_n\delta.}$$
+
+Compute $\delta$ **before** changing $r$. The residual is updated once and now has mean zero.
+
+Equivalently, $\beta_0^{\mathrm{new}}=\bar y-\sum_{j=1}^p\bar X_j\beta_j$. For centered predictors, this gives $\beta_0^{\mathrm{new}}=\bar y$. No soft thresholding is applied.
+
 ## Completing the square gives the update
 
-Divide the coordinate objective by $a_j$ and complete the square:
+For a **slope** $j=1,\ldots,p$, divide the coordinate objective by $a_j$ and complete the square:
 $$\frac12\left(b-\frac{z_j}{a_j}\right)^2
 +\frac{\lambda}{a_j}|b|+\text{constant}.$$
 
@@ -2419,23 +2564,61 @@ With our scaling, $a_j=1$, so $\beta_j\leftarrow S_\lambda(z_j)$.
 
 For example, $a_j=2$, $z_j=-3$, and $\lambda=1$ give $\beta_j=(-3+1)/2=-1$.
 
+## Lasso coordinate descent: pseudocode
+
+**Input:** $X\in\R^{n\times(p+1)}$ with $X_{\cdot,0}=\mathbf{1}_n$, response $y$, penalty $\lambda\geq0$, tolerance $\texttt{tol}$, and maximum sweeps $M$.
+
+```pseudocode
+#| html-line-number: true
+#| html-indent-lines: true
+
+\begin{algorithm}
+\caption{Lasso coordinate descent}
+\begin{algorithmic}
+\State $\beta \gets (\bar y,0,\ldots,0)^\top$, $r \gets y-X\beta$
+\State $a_j \gets X_{\cdot,j}^{\top}X_{\cdot,j}/n > 0$ for $j=1,\ldots,p$
+\For{$m=1$ \To $M$}
+  \State $\delta \gets \operatorname{mean}(r)$
+  \State $\beta_0 \gets \beta_0+\delta$ \Comment{Unpenalised intercept}
+  \State $r \gets r-\mathbf{1}_n\delta$
+  \For{$j=1$ \To $p$}
+    \State $r \gets r+X_{\cdot,j}\beta_j$ \Comment{Partial residual}
+    \State $z_j \gets X_{\cdot,j}^{\top}r/n$
+    \State $\beta_j \gets S_\lambda(z_j)/a_j$
+    \State $r \gets r-X_{\cdot,j}\beta_j$
+  \EndFor
+  \State $c \gets X^{\top}r/n$ \Comment{Check the residual after the full sweep}
+  \State $v_0 \gets |c_0|$ \Comment{Intercept gradient error}
+  \State $v_j \gets |c_j-\lambda\operatorname{sign}(\beta_j)|$ for $j=1,\ldots,p$ with $\beta_j\ne0$
+  \State $v_j \gets \max\{|c_j|-\lambda,0\}$ for $j=1,\ldots,p$ with $\beta_j=0$
+  \If{$\max_{0\leq j\leq p}v_j \leq \texttt{tol}$}
+    \Return $\beta$
+  \EndIf
+\EndFor
+\State Report that the tolerance was not reached.
+\end{algorithmic}
+\end{algorithm}
+```
+
+The errors $v_0,\ldots,v_p$ measure violations of the intercept and slope optimality conditions; the next slide explains them.
+
 ## How do we know when to stop?
 
 A small change in coefficients is useful, but we can directly check the optimality conditions.
 
-For the current residual $r=y-X\beta$, set $c_j=x_j^\top r/n$ and define
+For the current residual $r=y-X\beta$, set $c_j=X_{\cdot,j}^\top r/n$. Check the intercept with $v_0=|c_0|=|\sum_i r_i/n|$. For the slopes $j=1,\ldots,p$, define
 $$v_j=\begin{cases}
 |c_j-\lambda\operatorname{sign}(\beta_j)|,&\beta_j\ne0,\\
 \max\{|c_j|-\lambda,0\},&\beta_j=0.
 \end{cases}$$
 
-At an exact optimum, every $v_j=0$. Our code stops when $\max_jv_j\leq\texttt{tol}$.
+At an exact optimum, every $v_j=0$. Our code stops when $\max_{0\leq j\leq p}v_j\leq\texttt{tol}$.
 
 This is an absolute tolerance on the optimality residual, not a bound on coefficient error. It also provides a diagnostic if the maximum number of sweeps is reached.
 
 ## Python: thresholding and optimality check {.scrollable}
 
-The code assumes centered data, no intercept column, and no constant predictors. NumPy is the only dependency.
+The code requires a first column of ones and fits its intercept explicitly. Predictor centering is optional for the solver; the example standardises only columns 1 through $p$. NumPy is the only dependency.
 
 ``` python
 import numpy as np
@@ -2447,37 +2630,55 @@ def soft_threshold(z, lam):
 
 def kkt_error(X, y, beta, lam):
     c = X.T @ (y - X @ beta) / len(y)
-    violation = np.where(
-        beta != 0,
-        np.abs(c - lam * np.sign(beta)),
-        np.maximum(np.abs(c) - lam, 0.0),
+    violation = np.empty_like(beta)
+    violation[0] = abs(c[0])  # Intercept: its loss derivative must be zero.
+    violation[1:] = np.where(
+        beta[1:] != 0,
+        np.abs(c[1:] - lam * np.sign(beta[1:])),
+        np.maximum(np.abs(c[1:]) - lam, 0.0),
     )
     return np.max(violation)
 ```
 
 ## Python: coordinate descent {.scrollable}
 
-Each sweep reuses the residual rather than recomputing all fitted values after every coordinate update.
+Each sweep updates `beta[0]` without a penalty, then soft-thresholds the slopes. The residual is updated after every coordinate. `beta_init` denotes the full initial vector, including its intercept.
 
 ``` python
-def lasso_cd(X, y, lam, beta0=None, tol=1e-7, max_sweeps=10000):
-    """Minimize ||y - X beta||^2 / (2n) + lam * ||beta||_1."""
+def lasso_cd(X, y, lam, beta_init=None, tol=1e-7, max_sweeps=10000):
+    """Minimize ||y-X beta||^2/(2n) + lam*sum(abs(beta[1:])).
+
+    X[:, 0] must be ones. beta_init is the full starting vector.
+    """
     X = np.asarray(X, dtype=float)
     y = np.asarray(y, dtype=float)
-    n, p = X.shape
-    if y.shape != (n,) or n == 0 or p == 0:
+    if X.ndim != 2:
+        raise ValueError("X must be a matrix with an intercept column.")
+    n, n_columns = X.shape  # n_columns = p + 1
+    if y.shape != (n,) or n == 0 or n_columns == 0:
         raise ValueError("Use a nonempty X and a response vector y.")
+    if not np.all(X[:, 0] == 1):
+        raise ValueError("The first column of X must contain ones.")
     if lam < 0 or tol <= 0 or max_sweeps < 1:
         raise ValueError("Require lam >= 0, tol > 0, max_sweeps >= 1.")
 
     a = np.sum(X ** 2, axis=0) / n
-    if np.any(a == 0):
-        raise ValueError("Remove constant columns before centering/scaling.")
-    beta = np.zeros(p) if beta0 is None else np.array(beta0, dtype=float, copy=True)
+    if np.any(a[1:] == 0):
+        raise ValueError("Remove zero predictor columns before fitting.")
+    beta = (np.zeros(n_columns) if beta_init is None
+            else np.array(beta_init, dtype=float, copy=True))
+    if beta.shape != (n_columns,):
+        raise ValueError("beta_init must include the intercept and all slopes.")
     r = y - X @ beta
 
     for sweep in range(1, max_sweeps + 1):
-        for j in range(p):
+        # Coordinate 0: add the mean residual to the intercept.
+        delta = r.mean()
+        beta[0] += delta
+        r -= delta
+
+        # Coordinates 1,...,p: soft-threshold the slope updates.
+        for j in range(1, n_columns):
             r += X[:, j] * beta[j]          # Restore the old contribution.
             z = X[:, j] @ r / n
             beta[j] = soft_threshold(z, lam) / a[j]
@@ -2491,72 +2692,171 @@ def lasso_cd(X, y, lam, beta0=None, tol=1e-7, max_sweeps=10000):
 
 ## Python: simulate and fit {.scrollable}
 
-Only three predictors have nonzero coefficients in the data-generating model. Standardisation and centering use this training sample.
+Only three predictors have nonzero slopes in the data-generating model. Center and scale the predictors using this training sample, prepend the intercept column, and keep $y$ uncentered.
 
 ``` python
 rng = np.random.default_rng(123)
 n, p = 100, 20
 X_raw = rng.normal(size=(n, p))
 beta_true = np.r_[3.0, -2.0, 1.5, np.zeros(p - 3)]
-y_raw = 2.0 + X_raw @ beta_true + rng.normal(0.0, 1.5, n)
+y = 2.0 + X_raw @ beta_true + rng.normal(0.0, 1.5, n)
 
 x_mean = X_raw.mean(axis=0)
-x_scale = X_raw.std(axis=0)  # ddof=0 gives sum(X[:, j]**2) / n = 1.
-X = (X_raw - x_mean) / x_scale
-y_mean = y_raw.mean()
-y = y_raw - y_mean
+x_scale = X_raw.std(axis=0)  # ddof=0 gives mean squared predictor values = 1.
+X = np.column_stack((np.ones(n), (X_raw - x_mean) / x_scale))
+# X has p+1 columns; y is not centered. beta[0] is fitted explicitly.
 
 lam = 0.25
 beta, sweeps = lasso_cd(X, y, lam)
-print("Standardized coefficients:", np.round(beta, 3))
+print("Intercept:", beta[0])
+print("Standardized slopes:", np.round(beta[1:], 3))
 print("Sweeps:", sweeps, "KKT error:", kkt_error(X, y, beta, lam))
 
-# Recover coefficients and predictions in the original units.
-beta_original = beta / x_scale
-intercept = y_mean - x_mean @ beta_original
-y_hat = intercept + X_raw @ beta_original
+# Recover coefficients and predictions in the original predictor units.
+beta_original = beta[1:] / x_scale
+intercept = beta[0] - x_mean @ beta_original
+y_hat = intercept + X_raw @ beta_original  # Same predictions as X @ beta.
 ```
 
-[Download the complete Python example](lasso.py). Its returned coefficients refer to the standardized predictors.
+[Download the complete Python example](computer_code/lasso.py). The returned vector contains the intercept followed by the slopes for the standardized predictors. On the original predictor scale, $\hat\beta_j^{\mathrm{original}}=\hat\beta_j/\mathrm{scale}_j$ and $\hat\beta_0^{\mathrm{original}}=\hat\beta_0-\sum_{j=1}^p\mathrm{mean}_j\hat\beta_j^{\mathrm{original}}$.
 
 ## The largest penalty needed for an all-zero fit
 
-At $\beta=0$, the residual is $y$. The optimality conditions reduce to
-$$|x_j^\top y/n|\leq\lambda\qquad\text{for every }j.$$
+Here **all-zero** refers to the slopes. If $\beta_1=\cdots=\beta_p=0$, the intercept gradient requires $\beta_0=\bar y$, giving $r=y-\bar y\mathbf{1}_n$.
 
-Hence
+The remaining optimality conditions are
+$$\frac{|X_{\cdot,j}^\top(y-\bar y\mathbf{1}_n)|}{n}\leq\lambda,
+\qquad j=1,\ldots,p.$$
 
 ::: {.eqbox title="Starting point for the regularisation path"}
-$$\lambda_{\max}=\frac{\|X^\top y\|_\infty}{n}
-=\max_j\frac{|x_j^\top y|}{n}.$$
+$$\lambda_{\max}=\max_{1\leq j\leq p}
+\frac{|X_{\cdot,j}^\top(y-\bar y\mathbf{1}_n)|}{n}.$$
 :::
 
-For $\lambda\geq\lambda_{\max}$, the all-zero slope vector is optimal. With an unpenalized intercept, this predicts the training mean of $y$, rather than zero on the original scale.
+The maximum excludes column 0. For $\lambda\geq\lambda_{\max}$, $(\bar y,0,\ldots,0)^\top$ is optimal and the model predicts the training mean of $y$.
 
 ## A path of models and warm starts
 
 Solve for a decreasing sequence $\lambda_1=\lambda_{\max}>\cdots>\lambda_m>0$.
 
-Start the first fit at zero; initialize each subsequent fit at the previous solution. This is a **warm start**, often reducing the number of sweeps.
+Start the first fit at $\beta=(\bar y,0,\ldots,0)^\top$; initialize each subsequent fit at the previous solution. This is a **warm start**, often reducing the number of sweeps.
 
 ``` python
-lambda_max = np.max(np.abs(X.T @ y)) / len(y)
+lambda_max = np.max(np.abs(X[:, 1:].T @ (y - y.mean()))) / len(y)
 lambdas = lambda_max * np.geomspace(1.0, 0.03, 60)
-beta = np.zeros(X.shape[1])
+beta = np.r_[y.mean(), np.zeros(X.shape[1] - 1)]
 path = []
 for lam in lambdas:
-    beta, _ = lasso_cd(X, y, lam, beta0=beta)
+    beta, _ = lasso_cd(X, y, lam, beta_init=beta)
     path.append(beta.copy())
 path = np.array(path)
 ```
 
-Here $\lambda_{\max}>0$; if it is zero, the zero vector is already an OLS solution. As the penalty decreases, variables can enter **and leave** the active set of nonzero coefficients.
+Here $\lambda_{\max}>0$; if it is zero, $(\bar y,0,\ldots,0)^\top$ is already an OLS solution. As the penalty decreases, variables can enter **and leave** the active set of nonzero coefficients.
 
 ## Reading a Lasso path
 
 ![Coefficient paths for the simulated example as the penalty decreases.](images/lasso-path.png){height=530}
 
-Each curve is one coefficient. A zero segment means that predictor is absent from that fitted model. Smaller penalties allow more flexible fits; the path alone does not identify the best predictive model.
+Each curve is one slope coefficient; the unpenalised intercept is omitted (plot `path[:, 1:]`). A zero segment means that predictor is absent from that fitted model. Smaller penalties allow more flexible fits; the path alone does not identify the best predictive model.
+
+## Polynomial regression with Lasso: Python {.scrollable}
+
+Return to the **same 12 observations and degree-10 polynomial** used for OLS and Ridge. Standardize each polynomial column using the sample means and scales; leave the intercept unpenalised.
+
+Here $\lambda$ multiplies $\sum_{j=1}^{10}|\beta_j|$ in the objective $\|y-X\beta\|_2^2/(2n)+\lambda\sum_{j=1}^{10}|\beta_j|$.
+
+``` python
+import numpy as np
+from lasso import lasso_cd  # Save lasso.py in the same directory.
+
+rng = np.random.default_rng(123)
+n, p = 12, 10
+x = rng.uniform(-2 * np.pi, 2 * np.pi, size=n)
+y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
+
+X = np.polynomial.polynomial.polyvander(x, p)
+X_mean = X[:, 1:].mean(axis=0)
+X_std = X[:, 1:].std(axis=0)
+X[:, 1:] = (X[:, 1:] - X_mean) / X_std
+beta_ols = np.linalg.lstsq(X, y, rcond=None)[0]
+
+lambdas = [0.6, 0.1, 0.01, 0.001]  # Strongest penalty first.
+beta = np.r_[y.mean(), np.zeros(p)]
+fits = {}
+for lam in lambdas:
+    beta, sweeps = lasso_cd(
+        X, y, lam, beta_init=beta, tol=1e-8, max_sweeps=200000
+    )
+    fits[lam] = beta.copy()
+    print(f"lambda={lam:g}", np.round(beta, 3))
+    print("Zero slope indices:", np.flatnonzero(beta[1:] == 0) + 1)
+```
+
+Small penalties can require many sweeps because polynomial columns are strongly correlated. Each fit must satisfy the optimality tolerance before it is returned.
+
+[Download the self-contained polynomial example, including the coefficient table and plots](computer_code/polynomial_lasso.py). Run it from top to bottom; plots are displayed without saving files.
+
+## Degree 10: which Lasso coefficients become zero?
+
+Same standardized polynomial columns as OLS and Ridge. **Bold zeros are exact zeros from soft thresholding**; other coefficients are rounded to three decimals.
+
+::: {#polynomial-lasso-coefficients}
+
+| Coefficient | OLS | $\lambda=0.001$ | $\lambda=0.01$ | $\lambda=0.1$ | $\lambda=0.6$ |
+|:--|--:|--:|--:|--:|--:|
+| $\beta_{0}$ | 0.072 | 0.072 | 0.072 | 0.072 | 0.072 |
+| $\beta_{1}$ | 3.822 | 2.143 | 0.630 | -0.268 | **0** |
+| $\beta_{2}$ | -15.544 | -0.606 | -0.308 | -0.157 | **0** |
+| $\beta_{3}$ | -8.268 | -5.759 | -2.092 | -0.222 | **0** |
+| $\beta_{4}$ | 163.618 | **0** | **0** | **0** | **0** |
+| $\beta_{5}$ | 14.703 | 1.593 | **0** | **0** | **0** |
+| $\beta_{6}$ | -534.115 | 1.616 | 0.244 | **0** | **0** |
+| $\beta_{7}$ | -32.288 | 1.691 | **0** | **0** | **0** |
+| $\beta_{8}$ | 688.900 | **0** | **0** | **0** | **0** |
+| $\beta_{9}$ | 19.763 | **0** | 1.093 | **0** | **0** |
+| $\beta_{10}$ | -303.913 | -1.077 | **0** | **0** | **0** |
+| Nonzero slopes | 10 | 7 | 5 | 3 | 0 |
+
+:::
+
+The intercept stays at $\bar y\approx0.072$. Here $\lambda_{\max}\approx0.5901$, so $\lambda=0.6$ removes every slope.
+
+```{=html}
+<style>
+#polynomial-lasso-coefficients table {
+  font-size: 25px;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+#polynomial-lasso-coefficients th,
+#polynomial-lasso-coefficients td {
+  padding: 0.25em 0.4em;
+}
+#polynomial-lasso-coefficients strong {
+  color: #c2410c;
+}
+</style>
+```
+
+## Degree 10: Lasso fitted curves
+
+![Degree-10 Lasso fits to the same 12 observations at four penalties; all panels use the same axes.](images/polynomial-lasso-n12-degree-10.png){height=580}
+
+The polynomial basis still contains ten possible powers, but only the nonzero slopes contribute to each fitted curve.
+
+## Exercise: which polynomial terms survive?
+
+::: {#exr-polynomial-lasso name="Which polynomial terms survive?"}
+
+Using the coefficient table and the Python code:
+
+1. For each $\lambda$, list the surviving powers of $x$. At $\lambda=0.01$, is the fitted polynomial degree equal to the number of nonzero slopes?
+2. Follow $\beta_9$ as $\lambda$ increases from $0.001$ to $0.01$ to $0.1$. Once a coefficient becomes zero, must it stay zero at every larger penalty?
+3. Explain why $\beta_0$ is unchanged and why the $\lambda=0.6$ fit is a horizontal line.
+4. Add $\lambda=0.03$ to the code. Report which slopes are exactly zero and compare the fitted curve with its neighbours in the table.
+
+:::
 
 ## Choosing the penalty and interpreting selection
 
@@ -2572,7 +2872,7 @@ A selected variable is not automatically scientifically important or causal. Cor
 
 | Property | Ridge | Lasso |
 |:--|:--|:--|
-| Penalty | $\lambda\|\beta\|_2^2/2$ | $\lambda\|\beta\|_1$ |
+| Penalty (slopes only) | $\lambda\sum_{j=1}^p\beta_j^2/2$ | $\lambda\sum_{j=1}^p|\beta_j|$ |
 | Objective | Smooth and convex | Convex with corners |
 | Optimality | Zero gradient | Zero belongs to the subdifferential |
 | Effect | Shrinkage; generally no exact zeros | Shrinkage and exact zeros |
@@ -2583,33 +2883,52 @@ Both methods introduce bias. Lasso's corners are what make exact variable select
 
 ## A bridge to proximal gradient
 
-We have used soft thresholding to update one coordinate. We can also use it after a gradient step on the smooth loss:
-$$z^{(k)}=\beta^{(k)}-t\nabla\ell(\beta^{(k)}),
-\qquad \beta^{(k+1)}=S_{t\lambda}(z^{(k)}),$$
-where $S$ acts coordinatewise.
+We have used coordinate descent to update the intercept and slopes. We can also take a gradient step on the smooth loss in **all $p+1$ coordinates**:
+$$z^{(k)}=\beta^{(k)}-t\nabla\ell(\beta^{(k)}),\qquad
+\nabla\ell(\beta)=X^\top(X\beta-y)/n.$$
 
-The second step exactly minimizes
-$$\frac{1}{2t}\|b-z^{(k)}\|_2^2+\lambda\|b\|_1.$$
+Then leave the intercept at its gradient-step value and threshold only the slopes:
+$$\beta_0^{(k+1)}=z_0^{(k)},\qquad
+\beta_j^{(k+1)}=S_{t\lambda}(z_j^{(k)}),\quad j=1,\ldots,p.$$
 
-This is **proximal gradient**, also called **ISTA** here. For our quadratic loss, $0<t\leq1/L$ with $L=\|X\|_2^2/n>0$ is a standard safe choice; $\|X\|_2$ is the largest singular value.
+This second step exactly minimizes, over $b\in\R^{p+1}$,
+$$\frac{1}{2t}\|b-z^{(k)}\|_2^2+\lambda\sum_{j=1}^p|b_j|.$$
 
-The idea is to differentiate the smooth part and solve the simple nonsmooth part exactly. We will develop this method next.
+This is **proximal gradient**, also called **ISTA** here. For our quadratic loss, $0<t\leq1/L$ with $L=\|X\|_2^2/n>0$ is a standard safe choice; $\|X\|_2$ is the largest singular value of the full design matrix, including column 0.
 
 ## Check your understanding
 
+::: {#exr-lasso-understanding name="Lasso: check your understanding"}
+
 1. Use the defining inequality to show that $s=2$ is not a subgradient of $|u|$ at zero.
 2. Find $S_{0.5}(-0.2)$ and $S_{0.5}(-2)$.
-3. At a Lasso solution with $\lambda>0$, does $|x_j^\top r/n|=\lambda$ force $\hat\beta_j\ne0$?
-4. Why is applying soft thresholding to the OLS coefficients generally wrong for correlated predictors?
+3. For a slope $j\geq1$, at a Lasso solution with $\lambda>0$, does $|X_{\cdot,j}^\top r/n|=\lambda$ force $\hat\beta_j\ne0$?
+4. Why is applying soft thresholding to the OLS slopes generally wrong for correlated predictors?
+5. Why must the intercept gradient be zero, and what is its coordinate descent update?
 
-::: {.proofbox title="Answers"}
-1. Take $v=1$: the required inequality $1\geq2$ fails.
-2. $0$ and $-1.5$.
-3. No. In the scalar problem, $z=\lambda$ gives a zero solution at equality.
-4. The quadratic loss contains cross terms, so the coordinates do not minimize independently.
 :::
 
+
+# Further Reading
 ## Further reading
 
+:::: columns
+::: {.column width="48%"}
+
+**Optimisation**
+
+- Boyd and Vandenberghe, [*Convex Optimization*](https://web.stanford.edu/~boyd/cvxbook/): convexity, optimality conditions, duality, and Newton methods. The authors provide a free PDF.
+- Nocedal and Wright (2006), [*Numerical Optimization*, 2nd edition](https://link.springer.com/book/10.1007/978-0-387-40065-5): line searches, Newton and quasi-Newton methods, and constrained optimisation.
 - [Boyd, Duchi, Pilanci, and Vandenberghe: Subgradients](https://web.stanford.edu/class/ee364b/lectures/subgradients_notes.pdf): supporting affine bounds, calculus rules, and convex optimality.
+
+:::
+::: {.column width="48%"}
+
+**Statistics and statistical learning**
+
+- James, Witten, Hastie, Tibshirani, and Taylor (2023), [*An Introduction to Statistical Learning with Applications in Python*](https://www.statlearning.com/): an accessible starting point for regression, and regularisation.
+- Hastie, Tibshirani, and Wainwright (2015), [*Statistical Learning with Sparsity: The Lasso and Generalizations*](https://hastie.su.domains/StatLearnSparsity/): a deeper treatment of sparse models, Lasso algorithms, and statistical theory.
 - [Friedman, Hastie, and Tibshirani (2010): Regularisation Paths for Generalized Linear Models via Coordinate Descent](https://doi.org/10.18637/jss.v033.i01): coordinate updates and efficient regularization paths.
+
+:::
+::::

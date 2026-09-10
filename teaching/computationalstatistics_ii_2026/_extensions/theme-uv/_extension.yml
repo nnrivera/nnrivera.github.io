@@ -18,3 +18,5 @@ contributes:
        filters:
         - explanation.lua
         - beamer-blocks.lua
+        - at: post-render
+          path: exercise-index.lua

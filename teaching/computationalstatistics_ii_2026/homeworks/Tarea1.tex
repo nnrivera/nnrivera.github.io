@@ -1,0 +1,105 @@
+\documentclass[a4paper,12 pt]{article}
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsthm,amsmath,amssymb}
+\usepackage{multicol}
+\usepackage{euscript}
+\usepackage{graphicx}
+\usepackage{algorithm,algorithmic}
+\usepackage{enumitem}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}} 
+\renewcommand{\algorithmicensure}{\textbf{Output:}} 
+\usepackage{minted}
+\newminted{python}{%
+    % options to customize output of pythoncode
+    % see section 5.3 Available options starting at page 16
+}
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=10mm,
+ bottom=12mm
+ }
+
+
+\theoremstyle{definition}
+\newtheorem{problema}{Problema}
+\begin{document}
+
+\begin{flushleft}
+\Large{ Universidad de Valpara\'iso \\
+DOCE 102 - Estadística Computacional\\
+Semestre I 2026.\\
+Profesor: Nicolás Rivera
+}
+\end{flushleft}
+
+\begin{center}
+{\Large \bf Tarea 1}\\
+{\large \bf Fecha de Entrega: Martes 28 de Abril de 2026, a las 18:00:00}\\
+\end{center}
+
+\textbf{Instrucciones:} 
+\begin{enumerate}
+\item Debe entregar la tarea en el buzón de la Tarea 1 en el Aula Virtual.
+\item Su tarea debe contener un informe en PDF, idealmente escrito en \LaTeX. Donde se expliquen sus ideas, y justifique las decisiones que tomó al escribir sus programas. Usted debe además siempre explicar, formalmente, porque sus programas funcionan.
+\item Está permitido trabajar con sus compañeros para la resolución de los problemas, pero cada uno debe escribir sus propias respuestas (sin ayuda). Junto con sus respuestas escriba el nombre de los compañeros con quién trabajó en la resolución.
+\item Pueden hacerme consultas razonables en persona o por e-mail. La calidad de las respuestas empieza a disminuir a medida que se acerca el plazo de entrega. La calidad de la respuesta también depende de que tan bien pensada está su pregunta. Por ejemplo: preguntas del tipo "No sé por donde partir, ¿qué hago?" serán ignoradas. Preguntas del tipo "Encontré este artículo que resuelve un problema parecido, creo que es relevante, sin embargo no entiendo como implementar esta parte, ¿me ayuda?" son más razonables y esperables a nivel de doctorado.
+\item Está permitido usar la internet, chats varios, etc. \textbf{Incluya su fuente en el informe, y verifique que la información obtenida sea pertinente.} Si usted incluye ideas que no hemos visto en clases, entonces debe explicar, formalmente porque funcionan. Por ejemplo si quiere usar un algoritmo $X$, usted debe explicar y fundamentar el algoritmo $X$ (es decir, debe estudiarlo y explicarlo.)
+\item Para sus implementaciones use R o Python (si quiere usar otro lenguaje consulte). Entregue un archivo por cada problema de la tarea. Su archivo debe estar listo para llegar y correr. Puede escribir un archivo auxiliar que contenga funciones que usted considere importantes para llamar desde sus archivos con las respuestas. Recomiendo correr sus programas en otros computadores para estar seguros de su funcionamiento. 
+\item Considerando tiempos modernos, donde tienen acceso a muchas herramientas que antes no existían, programas que no corran o tengan errores de compilación no serán aceptados y se evaluarán con 0 puntos. Lo mismo ocurre con programas que no están cerca de una solución correcta.
+\item Cada pregunta tiene 6 puntos, y la nota será el promedio ponderado de sus puntos más un punto (dando nota entre 1 y 7). Sin embargo, se suelen entregar una cantidad no acotada de puntos dependiendo de que tan bien esté una tarea, por lo que un excelente trabajo podría obtener, por ejemplo, nota 23. También la dificultad de los problemas influye. La nota máxima entregada históricamente ha sido 11.
+\item \textbf{Ayuda final:} la mayoría de las preguntas no se resuelven aplicando algo de clases directamente, si no que requieren uno o varios pasos que podrían requerir cierto grado de creatividad. \textbf{Discuta con sus compañeros, investigue, etc}, ya que a nadie se le puede ocurrir todo siempre.
+
+\end{enumerate}
+\newpage
+
+
+\begin{problema} (40\%)
+Escriba en R o Python la función \texttt{sampler\_raro} que reciba 3 parámetros: \begin{itemize}
+	\item \texttt{n}: un entero positivo.
+	\item \texttt{gamma}: un número real positivo.
+	\item \texttt{folder:} la dirección de una carpeta válida en su computador, por ejemplo\\ \texttt{"C:\textbackslash Users\textbackslash YourUsername\textbackslash Documents\textbackslash Projects\textbackslash"}
+\end{itemize}
+
+Su método deberá generar $n$ muestras de la distribución continua que toma valores en $(0,\infty)$ cuya función de densidad está dada por:
+$$f(x) = \begin{cases} \frac{x^10}{1+x^10}\exp(-x^{\gamma}),&\text{si }x>0\\
+0, & \text{si }x\leq 0\end{cases}.$$
+La muestra debe ser escriba en un archivo \texttt{muestra\_rara.txt}, considerando un número por linea (Ver archivo de ejemplo con $n=4$).
+
+Su método debe ser ``exacto'': es decir, si pudiésemos generar uniformes reales (no pseudo-aleatorias como hacemos en el computador), y el computador no tuviese memoria finita, entonces su función retornará muestras reales de la distribución $f$, no aproximaciones. En su informe debe justificar porqué su método es exacto.
+
+\textbf{Aclaración:} En este problema usted puede utilizar de todo.
+
+\textbf{Aclaración 2:} Su programa debe correr en un tiempo razonable. Por razonable entendemos que generar 100,000 muestras no debería tomar más que unos pocos segundos en un computador personal estándar, quizás un par de minutos.
+
+\textbf{PUNTAJE:} Su programa se probará en 4 problemas con $n=100000$ y valores $\gamma$ desconocidos para ustedes (algunos bien grandes, bien chicos y valores intermedios). Se implementarán test estadísticos para saber si su muestra es correcta y se medirá el tiempo. Por cada muestra correcta generada en un tiempo prudente tienen 1 punto. No hay puntos intermedios. El informe vale los otros 2 puntos. Un informe detallado donde se justifique el método, se explique la implementación, y en general deje satisfecho al lector de que el método es correcto tiene 2 puntos, en otro caso se entregará puntaje parcial.
+\end{problema}
+
+\begin{problema} \textbf{60\%}
+	Considere una grilla de $n\times n$, donde la esquina inferior izquierda toma el valor $(0,0)$ y la superior derecha el valor $(n,n)$. Sea $\mathcal P$ el conjunto de todos los caminos que van desde $(0,0)$ a $(n,n)$ solo usando pasos $\rightarrow$ y $\uparrow$ (Ver figura)
+	
+	\begin{center}
+		\includegraphics[scale=1]{path1.pdf} 
+	\end{center}
+	
+	En este problema a usted le gustaría definir una distribución sobre caminos que prefieran ir por arriba de la diagonal que conecta $(0,0)$ con $(n,n)$. Para lo anterior, usted debe definir una distribución de la forma
+	$$p(P) = \exp(-\beta H(P))$$
+	donde $\beta>0$ es un parámetro y $H(P)$ es un hamiltoniano. Usted debe definirlo de tal forma que represente de mejor manera la preferencia de caminos que tienden a ir por sobre la diagonal que bajo ella (ojo, que hay un signo negativo en la expresión de $p(P)$, así que defina su Hamiltoniano acorde)
+	
+	\textbf{OJO:} el hamiltoniano $H$ debe ser suficientemente razonable para tener \textit{preferencia}, es decir, igual debe permitir caminos que pasen por debajo de la diagonal principal.
+	
+	En su informe usted debe presentar el Hamiltoniano, y encontrar una forma de generar caminos de la distribución $p$ correspondiente. Su método puede ser exacto o aproximado (e.g. Metropolis Hasting)
+	
+	En su informe usted debe justificar porque su algoritmo funciona, además de mostrar ejemplos. Al mismo tiempo debe convencer al lector de que la distribución generada es interesante. 
+	
+	Como potencial ayuda, es bastante razonable escribir un programa que les permita visualizar los caminos generados, para poder mostrarlos, y compararlos quizás con caminos aleatorios, y así ejemplificar de mejor manera porque su Hamiltoniano funciona.
+	
+	\textbf{PUNTAJE:} un buen hamiltoniano y bien justificado tiene 2 puntos. El algoritmo que genera la distribución correspondiente, y bien justificado tiene otros 2 puntos. Convencer al lector de que lo obtenido es interesante, tiene 3 puntos. Note que esto suma 7 puntos (es decir, puntos extra)
+	\end{problema}
+
+
+\end{document}
