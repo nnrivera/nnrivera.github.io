@@ -1,2 +1,9 @@
 /.quarto/
 **/*.quarto_ipynb
+/homeworks/
+
+# Local theme tutorial and generated preview files
+/lectures/lecture_test.qmd
+/lectures/lecture_test.html
+/lectures/lecture_test.pdf
+/lectures/lecture_test_files/

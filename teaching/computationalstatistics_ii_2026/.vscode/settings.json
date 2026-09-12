@@ -1,3 +1,12 @@
 {
-  "quarto.lua.provideTypes": false
+  "quarto.lua.provideTypes": false,
+  "cSpell.enableFiletypes": [
+    "quarto"
+  ],
+  "cSpell.overrides": [
+    {
+      "filename": "**/lectures/**/*.{qmd,py}",
+      "language": "en-GB"
+    }
+  ]
 }

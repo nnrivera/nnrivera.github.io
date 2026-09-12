@@ -66,7 +66,7 @@ beta_gd, loss_history, gd_iterations = logistic_gradient_descent(
     X, y, tol=1e-10, max_iter=200_000
 )
 
-# ----- 2. scikit-learn: explicitly turn regularization off -----
+# ----- 2. scikit-learn: explicitly turn regularisation off -----
 sk_fit = LogisticRegression(
     C=np.inf,              # zero penalty in current scikit-learn
     solver="lbfgs",
@@ -77,7 +77,7 @@ sk_fit = LogisticRegression(
 sk_fit.fit(X, y)
 beta_sklearn = sk_fit.coef_.ravel()
 
-# ----- 3. statsmodels: Logit is unregularized by default -----
+# ----- 3. statsmodels: Logit is unregularised by default -----
 sm_fit = sm.Logit(y, X).fit(
     method="newton", disp=False, maxiter=200, tol=1e-12
 )

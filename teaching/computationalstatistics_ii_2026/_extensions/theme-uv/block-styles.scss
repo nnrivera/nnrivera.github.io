@@ -1,0 +1,85 @@
+/*-- scss:rules --*/
+
+/* Main colour, accent, dark heading. Institutional styles follow theme.scss. */
+$block-palettes: (
+  1: ($institutional_colour_1, $institutional_colour_2, $institutional_colour_1),
+  2: ($institutional_colour_2, $institutional_colour_3, $institutional_colour_1),
+  3: ($institutional_colour_3, $institutional_colour_3, $institutional_colour_1),
+  4: (mix($institutional_colour_2, $institutional_colour_3, 50%),
+      mix($institutional_colour_1, $institutional_colour_3, 50%),
+      $institutional_colour_1),
+  5: (#b53248, #d75a6e, #6d1f2d),
+  6: (#7d3c98, #a46abc, #4b245d),
+  7: (#087e8b, #20a6ad, #064f58),
+  8: (#367347, #62a16c, #20482c),
+  9: (#9a6418, #c89137, #62400f),
+  10: (#526477, #7c91a5, #303e4e)
+);
+
+@each $number, $palette in $block-palettes {
+  .block-style-#{$number} {
+    $main: nth($palette, 1);
+    --block-style-main: #{$main};
+    --block-style-accent: #{nth($palette, 2)};
+    --block-style-heading: #{nth($palette, 3)};
+    --block-style-header: #{mix($main, nth($palette, 3), 35%)};
+    --block-style-rgb: #{red($main)}, #{green($main)}, #{blue($main)};
+  }
+}
+
+.reveal .block-styled {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Preserve each environment's layout; change only its palette. */
+.reveal div.block-styled:is(.theorem, .lemma, .definition, .proposition,
+    .corollary, .conjecture, .example, .exercise, .proof, .remark, .box) {
+  background: rgba(var(--block-style-rgb), 0.06);
+  border-color: rgba(var(--block-style-rgb), 0.2);
+  border-left: 5px solid var(--block-style-main);
+}
+
+.reveal div.block-styled:is(.definition, .exercise) {
+  border-left-color: var(--block-style-accent);
+}
+
+.reveal div.block-styled > :is(.box-title, .theorem-title, .definition-title,
+    .lemma-title, .proposition-title, .corollary-title, .example-title),
+.reveal div.block-styled > p > .theorem-title {
+  color: var(--block-style-heading);
+  border-bottom-color: rgba(var(--block-style-rgb), 0.25);
+}
+
+/* Supply proof colours without overriding the component's layout rules. */
+.reveal .block-styled > details.beamer-box {
+  --proof-fill: rgba(var(--block-style-rgb), 0.08);
+  --proof-header: var(--block-style-header);
+  --proof-qed: var(--block-style-heading);
+}
+
+/* Explicit colour/alpha attributes remain independent overrides on eqbox. */
+.reveal div.eqbox.block-styled {
+  --eqbox-rgb: var(--block-style-rgb);
+}
+.reveal div.eqbox.block-styled > .eqbox-body {
+  color: var(--block-style-heading);
+}
+.reveal div.eqbox.block-styled > .eqbox-title {
+  color: var(--block-style-heading);
+}
+
+.reveal details.explanation.block-styled {
+  border-color: var(--block-style-main);
+  background: white;
+  color: var(--block-style-heading);
+  box-shadow: 4px 5px 0 rgba(var(--block-style-rgb), 0.18);
+}
+.reveal details.explanation.block-styled > summary {
+  background: rgba(var(--block-style-rgb), 0.06);
+  color: var(--block-style-heading);
+}
+.reveal .explanation-dock details.explanation.block-styled::after {
+  background: white;
+  border-color: var(--block-style-main);
+}

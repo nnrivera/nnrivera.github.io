@@ -1,12 +1,14 @@
 <script>
 (() => {
-  function initializeExplanations() {
+  async function initializeExplanations() {
     const reveal = window.Reveal;
     if (!reveal) return;
     if (!reveal.isReady()) {
       reveal.on('ready', initializeExplanations);
       return;
     }
+    // Replicas are ordinary content; finish them before moving popup panels.
+    await window.uvReplicasReady;
     const panels = [...document.querySelectorAll('.reveal .slides details.explanation')];
     if (!panels.length) return;
     if (new URLSearchParams(location.search).has('print-pdf')) {
@@ -68,8 +70,14 @@
       const content = panel.querySelector('.explanation-content');
       const margin = 16;
       const gap = 14;
-      const width = Math.min(520, window.innerWidth - margin * 2);
+      let width = Math.min(520, window.innerWidth - margin * 2);
       dock.style.width = `${width}px`;
+      // Long display mathematics may need more room than a text explanation.
+      if (panel.querySelector('.replicate')) {
+        const overflow = Math.max(0, content.scrollWidth - content.clientWidth);
+        width = Math.min(width + (overflow ? overflow + 48 : 0), 900, window.innerWidth - margin * 2);
+        dock.style.width = `${width}px`;
+      }
       const left = Math.max(margin, Math.min(anchor.left, window.innerWidth - width - margin));
       dock.style.left = `${left}px`;
       const headerHeight = panel.querySelector('summary').getBoundingClientRect().height + 4;

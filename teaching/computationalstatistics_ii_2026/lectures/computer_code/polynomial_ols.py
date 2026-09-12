@@ -7,7 +7,7 @@ n, p = 12, 10
 x = rng.uniform(-2 * np.pi, 2 * np.pi, size=n)
 y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
 
-# Design matrix: 1, x, ..., x^p; standardize only the nonconstant columns.
+# Design matrix: 1, x, ..., x^p; standardise only the nonconstant columns.
 X = np.polynomial.polynomial.polyvander(x, p)
 X_mean = X[:, 1:].mean(axis=0)
 X_std = X[:, 1:].std(axis=0)
@@ -17,7 +17,7 @@ X[:, 1:] = (X[:, 1:] - X_mean) / X_std
 beta_ols = np.linalg.lstsq(X, y, rcond=None)[0]
 y_hat = X @ beta_ols
 
-# Coefficients are in standardized coordinates; beta_ols[0] is the intercept.
+# Coefficients are in standardised coordinates; beta_ols[0] is the intercept.
 print("OLS coefficients:")
 print(np.round(beta_ols, 6))
 print("Training MSE (OLS):", np.mean((y - y_hat) ** 2))

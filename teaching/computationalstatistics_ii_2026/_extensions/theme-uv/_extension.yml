@@ -4,9 +4,10 @@ version: 1.0.0
 contributes:
   formats:
     revealjs:
-       theme: [default, theme.scss]
+       theme: [default, theme.scss, block-styles.scss]
+       fontsize: 24px
        footer: |
-        <span class="footer-left">{{< meta author >}}</span><span class="footer-center">{{< meta title >}}</span>
+        <span class="footer-left">{{< meta uv-footer-author >}}</span><span class="footer-center">{{< meta title >}}</span>
        
        preview-links: auto
        slide-number: true
@@ -14,8 +15,13 @@ contributes:
        template-partials:
         - title-slide.html
        include-after-body:
+        - centred-content.html
+        - replicate.html
         - explanation.html
        filters:
+        - title-page.lua
+        - block-styles.lua
+        - replicate.lua
         - explanation.lua
         - beamer-blocks.lua
         - at: post-render

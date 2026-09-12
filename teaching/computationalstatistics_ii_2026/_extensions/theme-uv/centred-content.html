@@ -1,0 +1,45 @@
+<script>
+// Centre the body of level-two slides, leaving their heading in normal flow.
+(() => {
+  function initialise() {
+    const reveal = window.Reveal;
+    if (!reveal) return;
+    for (const slide of document.querySelectorAll('.reveal .slides section.slide')) {
+      if (slide.classList.contains('scrollable')) continue;
+      if (!reveal.getConfig().center && !slide.classList.contains('center')) continue;
+      const heading = slide.querySelector(':scope > h2');
+      if (!heading || slide.classList.contains('uv-centred-slide')) continue;
+
+      const frame = document.createElement('div');
+      frame.className = 'uv-slide-frame';
+      const body = document.createElement('div');
+      body.className = 'uv-slide-body';
+      // Move the existing nodes: IDs, event handlers and mathematical content survive.
+      frame.append(heading);
+      while (slide.firstChild) body.append(slide.firstChild);
+      frame.append(body);
+      slide.append(frame);
+      slide.classList.add('uv-centred-slide');
+      // PDF mode makes the .slides container auto-height, so percentages alone
+      // cannot supply a height while Reveal measures the pages.
+      slide.style.setProperty('--uv-slide-height', `${reveal.getComputedSlideSize().height}px`);
+    }
+    if (reveal.isReady()) reveal.layout();
+  }
+  // Quarto includes this after Reveal.initialize(). Wrap before Reveal measures
+  // PDF pages; waiting for its ready event is too late for print positioning.
+  initialise();
+  window.Reveal?.on('ready', () => window.Reveal.layout());
+  window.Reveal?.on('resize', () => {
+    const height = `${window.Reveal.getComputedSlideSize().height}px`;
+    let changed = false;
+    document.querySelectorAll('.uv-centred-slide').forEach(slide => {
+      if (slide.style.getPropertyValue('--uv-slide-height') !== height) {
+        slide.style.setProperty('--uv-slide-height', height);
+        changed = true;
+      }
+    });
+    if (changed) window.Reveal.layout();
+  });
+})();
+</script>

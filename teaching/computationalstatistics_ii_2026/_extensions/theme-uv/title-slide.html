@@ -1,4 +1,54 @@
-<section id="title-slide" class="uv-title-slide">
+<section id="title-slide" class="uv-title-slide$if(uv-talk-title)$ uv-talk-title-slide$endif$">
+
+  $if(uv-talk-title)$
+  <div class="uv-talk-main">
+    $if(title)$
+    <p class="uv-talk-title">$title$</p>
+    $endif$
+    $if(subtitle)$
+    <p class="uv-talk-subtitle">$subtitle$</p>
+    $endif$
+
+    $if(by-author)$
+    <div class="uv-talk-authors">
+      $for(by-author)$
+      <div class="uv-talk-author">
+        <p class="uv-talk-name">$by-author.name.literal$</p>
+        $for(by-author.affiliations)$
+        <p class="uv-talk-affiliation">$it.name$</p>
+        $endfor$
+      </div>
+      $endfor$
+    </div>
+    $elseif(author)$
+    <div class="uv-talk-authors">
+      $for(author)$
+      <div class="uv-talk-author"><p class="uv-talk-name">$author$</p></div>
+      $endfor$
+    </div>
+    $endif$
+
+    $if(venue)$
+    <p class="uv-talk-venue">$venue$</p>
+    $endif$
+    $if(date)$
+    <p class="uv-talk-date">$date$</p>
+    $endif$
+
+    $if(title-logo)$
+    <div class="uv-talk-logos">
+      <img src="$title-logo$" alt="$if(title-logo-alt)$$title-logo-alt$$endif$">
+      $if(title-wordmark)$
+      <img src="$title-wordmark$" alt="$if(title-wordmark-alt)$$title-wordmark-alt$$endif$">
+      $endif$
+    </div>
+    $elseif(title-wordmark)$
+    <div class="uv-talk-logos">
+      <img src="$title-wordmark$" alt="$if(title-wordmark-alt)$$title-wordmark-alt$$endif$">
+    </div>
+    $endif$
+  </div>
+  $else$
 
   <div class="uv-title-text">
 
@@ -8,6 +58,10 @@
 
     $if(title)$
       <p class="uv-title">$title$</p>
+    $endif$
+
+    $if(subtitle)$
+      <p class="uv-subtitle">$subtitle$</p>
     $endif$
 
     $if(author)$
@@ -21,9 +75,18 @@
   </div>
 
   <div class="uv-gradient"></div>
+  $if(title-logo)$
   <div class="uv-logos">
-    <img src="../assets/logo_uv.png" class="uv-logo">
-    <img src="../assets/imagotipo.svg" class="uv-imagotipo">
+    <img src="$title-logo$" class="uv-logo" alt="$if(title-logo-alt)$$title-logo-alt$$endif$">
+    $if(title-wordmark)$
+    <img src="$title-wordmark$" class="uv-imagotipo" alt="$if(title-wordmark-alt)$$title-wordmark-alt$$endif$">
+    $endif$
   </div>
+  $elseif(title-wordmark)$
+  <div class="uv-logos">
+    <img src="$title-wordmark$" class="uv-imagotipo" alt="$if(title-wordmark-alt)$$title-wordmark-alt$$endif$">
+  </div>
+  $endif$
 
+  $endif$
 </section>

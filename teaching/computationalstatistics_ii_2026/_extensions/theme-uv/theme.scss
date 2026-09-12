@@ -1,10 +1,8 @@
 /*-- scss:defaults --*/
-$uv-dark-blue: #232754;
-$uv-blue: #0F4494;
-$uv-light-blue: #009FE3;
-$dark-blue-uv: #232754;
-$blue-uv: #0F4494;
-$light-blue-uv: #009FE3;
+/*These are the colours of your institution, from dark to lighter*/
+$institutional_colour_1: #232754 !default;
+$institutional_colour_2: #0F4494 !default;
+$institutional_colour_3: #009FE3 !default;
 
 /*-- scss:rules --*/
 
@@ -22,32 +20,32 @@ $light-blue-uv: #009FE3;
 /*--------- PARTE 0---------------
   REVEAL STUFF
 ------------------------------------*/
-          
+
 //esto cambia la posición de la ubicación del menú
-.slide-menu-button {
-  bottom: auto !important; /* Kills the default bottom positioning */
-  top: 30px !important;    /* Pins it to the top */
-  left: 30px !important;   /* Pins it to the left */
-  z-index: 100 !important; /* Ensures it stays above your slide content */
+.reveal div.slide-menu-button {
+  bottom: auto; /* Place the menu at the top left. */
+  top: 30px;    /* Pins it to the top */
+  left: 30px;   /* Pins it to the left */
+  z-index: 100; /* Ensures it stays above your slide content */
 }
 
 /*--------- PARTE I---------------
   Footer
 ------------------------------------*/
-           
+
 
 /* 1. Solid Block Beamer Footer */
-.reveal .footer {
-  display: block !important;      /* Kills Reveal's flexbox squish */
-  position: absolute !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 45px !important;
-  margin: 0 !important;
-  padding: 0 !important;          /* Removed padding so spans can position themselves */
-  background: linear-gradient(to right, $uv-dark-blue, $uv-blue, $uv-light-blue) !important;
-  z-index: 100;
+html .reveal div.footer {
+  display: block;      /* Position the footer labels independently. */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45px;
+  margin: 0;
+  padding: 0;          /* Removed padding so spans can position themselves */
+  background: linear-gradient(to right, $institutional_colour_1, $institutional_colour_2, $institutional_colour_3);
+  z-index: 2;
 }
 
 /* 2. Author Name (Left) */
@@ -76,29 +74,30 @@ $light-blue-uv: #009FE3;
 
 
 /* 4. Slide Number (Right) */
-.reveal .slide-number {
-  position: absolute !important;
-  top: auto !important;          /* CRUCIAL: Forces the browser to ignore Reveal's native 'top' setting */
-  bottom: 0 !important;
-  right: 1.5rem !important;
-  height: 45px !important;
-  line-height: 45px !important;
-  color: #FFFFFF !important; 
-  background-color: transparent !important;
-  font-size: 0.6em !important;
-  font-weight: 500 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  z-index: 101 !important; 
+html .reveal div.slide-number {
+  position: absolute;
+  top: auto;          /* CRUCIAL: Forces the browser to ignore Reveal's native 'top' setting */
+  bottom: 0;
+  right: 1.5rem;
+  height: 45px;
+  line-height: 45px;
+  color: #FFFFFF;
+  background-color: transparent;
+  font-size: 0.6em;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+  z-index: 101;
 }
 
-/* Forces the link inside the slide number to stay white */
+/* Match the slide-number link to the footer text. */
 .reveal .slide-number a {
-  color: #FFFFFF !important;
+  color: #FFFFFF;
 }
 /* 5. Hide Footer & Slide Number on Title Slide */
 .reveal:has(#title-slide.present) .footer,
 .reveal:has(#title-slide.present) .slide-number {
+  /* Quarto/Reveal set visibility with inline display declarations. */
   display: none !important;
 }
 
@@ -108,77 +107,81 @@ $light-blue-uv: #009FE3;
 ------------------------------------*/
 /*Title page*/
 .reveal .slides section.uv-title-slide {
-  position: absolute !important;
+  position: absolute;
+  /* Reveal's PDF layout sets these inline; keep the title flush with the canvas. */
   top: 0 !important;
   left: 0 !important;
   width: 100% !important;
-  height: 100% !important;  /* CRITICAL: 100% of the slide canvas, NOT 100vh */
+  /* Reveal writes display:block inline when it loads a slide. */
   display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-end !important; 
-  padding: 0 !important;    /* Remove master padding so the gradient can touch edges */
-  box-sizing: border-box !important;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0;    /* Remove master padding so the gradient can touch edges */
+  box-sizing: border-box;
   text-align: left;
-  transform: none !important;
-  height: calc(100% + 45px) !important; 
+  transform: none;
+  height: calc(100% + 45px);
 }
 
-.uv-title-text {
+.reveal .uv-title-text {
   flex: 1; /* Takes up all available top space, pushing logos/gradient down */
   display: flex;             /* REQUIRED for justify-content to work */
   flex-direction: column;    /* REQUIRED for justify-content to work */
   justify-content: flex-end; /* Aligns the text inside to the bottom */
   text-align: left;
   padding: 0 0% 0 0%;       /* Use % instead of vw/vh so it scales with the slide */
-      margin-top: 0 !important;
-    margin-bottom: 0 !important; 
+      margin-top: 0;
+    margin-bottom: 0;
 }
 
-.uv-course {
-  color: $uv-blue;
-  font-size: 0.9em !important;
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
+.reveal .uv-course {
+  color: $institutional_colour_2;
+  font-size: 0.9em;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
-h1.title {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important; 
-    line-height: 1.1 !important; /* Tightens the spacing if the title wraps to two lines */
+.reveal h1.title {
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.1; /* Tightens the spacing if the title wraps to two lines */
   }
 
-.uv-title {
-  color: $uv-dark-blue;
-  font-size: 1em !important;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important; 
-  text-align: left !important;
-  font-weight: bold !important;
+.reveal .uv-title {
+  color: $institutional_colour_1;
+  font-size: 1em;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: left;
+  font-weight: bold;
 }
 
-.uv-subtitle {
-  color: $uv-blue;
+.reveal .uv-subtitle {
+  color: $institutional_colour_2;
   font-weight: normal;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-.uv-author {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+.reveal .uv-author {
+    color: $institutional_colour_2;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
-.uv-gradient {
+.reveal .uv-gradient {
   width: 100%;
   height: 3cm;
   background: linear-gradient(
       to right,
-      $uv-dark-blue,
-      $uv-blue,
-      $uv-light-blue
+      $institutional_colour_1,
+      $institutional_colour_2,
+      $institutional_colour_3
   );
   flex-shrink: 0; /* Prevents the bar from getting squished if the slide gets crowded */
 }
 
-.uv-logos {
+.reveal .uv-logos {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -186,203 +189,237 @@ h1.title {
   margin-bottom: 0;
 }
 
-.uv-logo {
+.reveal .uv-logo {
   height: 90px;
 }
 
-.uv-imagotipo {
+.reveal .uv-imagotipo {
   height: 110px;
+  margin-left: auto;
 }
 
 /* 2. Remove the HTML "ghost gap" beneath your logos */
-.uv-logo, .uv-imagotipo {
-  display: block !important;
-  margin-bottom: 15px !important;
+.reveal .uv-logo, .reveal .uv-imagotipo {
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* Optional classic talk title page. The lecture layout remains the default. */
+.reveal .uv-talk-main {
+  flex: 1;
+  /* PDF export changes the section's display; retain its full-height body. */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1.5em 6%;
+  text-align: center;
+  color: $institutional_colour_2;
+}
+.reveal .uv-talk-main p { margin: 0; }
+.reveal .uv-talk-title {
+  max-width: 100%;
+  color: $institutional_colour_1;
+  font-size: 1.9em;
+  font-weight: bold;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.reveal .uv-talk-main > .uv-talk-subtitle {
+  margin-top: 0.4em;
+  font-size: 1em;
+}
+.reveal .uv-talk-authors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1em 2.5em;
+  max-width: 100%;
+  margin-top: 1.5em;
+}
+.reveal .uv-talk-author { max-width: 100%; }
+.reveal .uv-talk-name { font-size: 1.05em; }
+.reveal .uv-talk-author > .uv-talk-affiliation {
+  margin-top: 0.25em;
+  font-size: 0.8em;
+}
+.reveal .uv-talk-main > .uv-talk-venue {
+  margin-top: 1.6em;
+  font-size: 0.85em;
+}
+.reveal .uv-talk-main > .uv-talk-date {
+  margin-top: 1.2em;
+  font-size: 0.8em;
+}
+.reveal .uv-talk-main > .uv-talk-venue + .uv-talk-date { margin-top: 0.35em; }
+.reveal .uv-talk-logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1em 2em;
+  max-width: 100%;
+  margin-top: 1.5em;
+}
+.reveal .uv-talk-logos img {
+  height: 70px;
+  width: auto;
+  max-width: 240px;
+  object-fit: contain;
+  margin: 0;
 }
 
 /* 1. Stop Quarto from reserving footer space on the title slide */
 .reveal.hide-footer .slides {
-  margin-bottom: 0 !important;
-  padding-bottom: 0 !important;
-  height: 100% !important;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  height: 100%;
 }
 
 //Slides especiales
 .reveal .slides section#TOC {
+  /* Reveal's PDF layout writes an inline top offset. */
   top: 0 !important;
-  margin-top: 0 !important;
-  padding-top: 20px !important; /* A little breathing room from the very top */
-  transform: none !important;
-  
+  margin-top: 0;
+  /* Reveal removes PDF padding and forces paper-print padding with !important. */
+  padding-top: 20px !important;
+  transform: none;
+
   /* Break it out of Reveal's centering flexbox */
-  display: block !important; 
-  height: 100% !important;
+  display: block;
+  height: 100%;
 }
 
 /* Ensure nothing inside the TOC pushes it down */
 .reveal .slides section#TOC > * {
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 
-/*---------------------- PART III ----------------------------------------------- 
+/*---------------------- PART III -----------------------------------------------
 THis makes # -> \section, ##-> \begin{frame}[title]. No hay subsecciones, pero se hace
 un pequeño hack para tener ### como una suerte de divisor
--------------------------------------------------------------------------------*/ 
-.reveal h1 {
-  color: $uv-blue !important;
-  font-weight: bold !important;
-  text-align: center !important;
+-------------------------------------------------------------------------------*/
+.reveal .slides h1 {
+  color: $institutional_colour_2;
+  font-weight: bold;
+  text-align: center;
 }
 
 /* -------------------------------------------
    2. FRAME TITLES ( ## )
 ------------------------------------------- */
 /* Perfectly styled Beamer-style top-left headers */
-.reveal h2 {
-  color: $uv-dark-blue !important;
-  font-size: 1em !important; /* Slightly larger to command the slide */
-  font-weight: bold !important;
-  text-align: left !important;
-  margin-top: 0 !important;    /* Keeps it pinned to the top */
-  margin-bottom: 0.8em !important;
-  padding-bottom: 0.2em !important;
-  border-bottom: 2px solid $uv-light-blue !important; /* The Beamer line */
-} 
+.reveal .slides h2 {
+  color: $institutional_colour_1;
+  font-size: 1em; /* Slightly larger to command the slide */
+  font-weight: bold;
+  text-align: left;
+  margin-top: 0;    /* Keeps it pinned to the top */
+  margin-bottom: 0.8em;
+  padding-bottom: 0.2em;
+  border-bottom: 2px solid $institutional_colour_3; /* The Beamer line */
+}
 
 /* -------------------------------------------
    3. IN-SLIDE SUBHEADINGS ( ### ) - Mid-Slide Sections
 ------------------------------------------- */
-.reveal h3 {
-  color: $uv-blue !important;  /* Lighter blue to show it is secondary */
-  font-size: 1.1em !important; /* Smaller than the frame title */
-  font-weight: 600 !important; 
-  text-align: left !important;
-  
+/* A full-height slide keeps Reveal's vertical offset at zero. Only its body centres. */
+.reveal .slides section.uv-centred-slide { height: var(--uv-slide-height, 100%); }
+.reveal .uv-slide-frame {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.reveal .uv-slide-frame > h2 { flex-shrink: 0; }
+.reveal .uv-slide-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+}
+.reveal .uv-slide-body > * { flex-shrink: 0; }
+
+/* Paper printing uses document flow; Reveal PDF retains the slide layout. */
+@media print {
+  html:not(.print-pdf) .reveal .uv-slide-frame,
+  html:not(.print-pdf) .reveal .uv-slide-body {
+    display: block;
+    height: auto;
+  }
+}
+
+.reveal .slides h3 {
+  color: $institutional_colour_2;  /* Lighter blue to show it is secondary */
+  font-size: 1.1em; /* Smaller than the frame title */
+  font-weight: 600;
+  text-align: left;
+
   /* CRITICAL: It needs space ABOVE it, since it lives inside the slide body */
-  margin-top: 1em !important;  
-  margin-bottom: 0.4em !important;
-  
-  padding-bottom: 0 !important;
-  border-bottom: none !important; /* Remove the underline so it doesn't compete with the Frame Title */
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+
+  padding-bottom: 0;
+  border-bottom: none; /* Remove the underline so it doesn't compete with the Frame Title */
 }
 
 
-/*---------------------- PART IV ----------------------------------------------- 
+/*---------------------- PART IV -----------------------------------------------
 Theorems, lemmas, boxes in general
--------------------------------------------------------------------------------*/ 
+-------------------------------------------------------------------------------*/
 
-/* -------------------------------------------
-   CUSTOM COLLAPSIBLE BEAMER BOXES
-------------------------------------------- */
-details.beamer-box {
-  border: none !important;
-  border-radius: 4px !important;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2) !important;
-  margin: 1em 0 !important;
-  overflow: hidden !important;
+/* Collapsible proofs share one layout; variants supply their palette. */
+.reveal details.beamer-box {
+  --proof-header: #5d6d7e;
+  --proof-fill: rgba(93, 109, 126, 0.1);
+  --proof-qed: #5d6d7e;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  margin: 1em 0;
+  overflow: hidden;
+  background: var(--proof-fill);
 }
 
-/* The clickable header */
-details.beamer-box summary {
-  padding: 0.4em 0.8em !important;
-  font-weight: bold !important;
-  color: white !important;
-  cursor: pointer !important;
-  list-style: none !important; 
-  position: relative !important;
+.reveal details.beamer-box > summary {
+  padding: 0.4em 0.8em;
+  font-weight: bold;
+  color: white;
+  background: var(--proof-header);
+  cursor: pointer;
+  list-style: none;
+  position: relative;
 }
 
-/* Custom Beamer-style arrow */
-details.beamer-box summary::before {
+.reveal details.beamer-box > summary::before {
   content: "▶";
   display: inline-block;
   margin-right: 0.5em;
   font-size: 0.8em;
-  transition: transform 0.2s; 
+  transition: transform 0.2s;
 }
 
-/* Rotate arrow when open */
-details.beamer-box[open] summary::before {
-  transform: rotate(90deg);
+.reveal details.beamer-box[open] > summary::before { transform: rotate(90deg); }
+.reveal details.beamer-box > summary::-webkit-details-marker { display: none; }
+.reveal details.beamer-box > :not(summary) {
+  padding-left: 0.8em;
+  padding-right: 0.8em;
 }
-details.beamer-box summary::-webkit-details-marker {
-  display: none !important;
+.reveal details.beamer-box > :last-child { padding-bottom: 0.8em; }
+
+.reveal details.beamer-box.idea {
+  --proof-header: #7d3c98;
+  --proof-fill: rgba(125, 60, 152, 0.1);
 }
 
-/* Padding for the text inside the box */
-details.beamer-box > :not(summary) {
-  padding-left: 0.8em !important;
-  padding-right: 0.8em !important;
-}
-details.beamer-box > :last-child {
-  padding-bottom: 0.8em !important;
-}
-
-/* -------------------------------------------
-   THE ENVIRONMENTS (Colors & Tombstones)
-------------------------------------------- */
-details.beamer-box {
-  border: none !important;
-  border-radius: 4px !important;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2) !important;
-  margin: 1em 0 !important;
-  overflow: hidden !important;
-}
-
-/* The clickable header */
-details.beamer-box summary {
-  padding: 0.4em 0.8em !important;
-  font-weight: bold !important;
-  color: white !important;
-  cursor: pointer !important;
-  list-style: none !important; 
-  position: relative !important;
-}
-
-/* Custom Beamer-style arrow */
-details.beamer-box summary::before {
-  content: "▶";
-  display: inline-block;
-  margin-right: 0.5em;
-  font-size: 0.8em;
-  transition: transform 0.2s; 
-}
-
-/* Rotate arrow when open */
-details.beamer-box[open] summary::before {
-  transform: rotate(90deg);
-}
-details.beamer-box summary::-webkit-details-marker {
-  display: none !important;
-}
-
-/* Padding for internal content */
-details.beamer-box > :not(summary) {
-  padding-left: 0.8em !important;
-  padding-right: 0.8em !important;
-}
-details.beamer-box > :last-child {
-  padding-bottom: 0.8em !important;
-}
-
-/* -------------------------------------------
-   THE ENVIRONMENTS (Colors & Tombstones)
-------------------------------------------- */
-/* PROOF IDEA (Purple) */
-details.idea summary { background-color: #7d3c98 !important; }
-details.idea { background-color: rgba(125, 60, 152, 0.1) !important; }
-
-/* PROOF (Slate) */
-details.proof summary { background-color: #5d6d7e !important; }
-details.proof { background-color: rgba(93, 109, 126, 0.1) !important; }
-
-/* Auto-Tombstone on open proof */
-details.proof[open]::after {
+.reveal details.beamer-box.proof[open]::after {
   content: "■";
   display: block;
   text-align: right;
-  color: #5d6d7e;
+  color: var(--proof-qed);
   padding: 0 0.8em 0.8em 0;
   margin-top: -1em;
 }
@@ -391,99 +428,123 @@ details.proof[open]::after {
   text-align: center;
 }
 
-/* Equation environment: independent hooks for future styling. */
+/* A compact equation capsule, with its caption outside the highlight. */
 .reveal div.eqbox {
-  margin: 1em 0;
+  --eqbox-rgb: 45, 115, 225;
+  --eqbox-alpha: 0.1;
+  width: max-content;
+  max-width: none;
+  margin: 1em auto;
+  break-inside: avoid;
+}
+
+/* Override Quarto's margins on direct children of columns. */
+.reveal .columns > .column > div.eqbox {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .reveal div.eqbox > .eqbox-title {
-  color: $uv-blue;
-  font-weight: bold;
+  color: #70758a;
+  font-size: 0.8em;
+  font-weight: normal;
+  text-align: left;
   margin-bottom: 0.4em;
 }
 
-div.box {
-  background-color: rgba(0, 60, 88, 0.05); /* Light UV Blue tint */
-  border: 1px solid rgba(0, 60, 88, 0.15);  /* Subtle border */
-  border-left: 5px solid $uv-blue;          /* Thick UV Accent on left */
-  border-radius: 6px;
-  padding: 0.8em 1.2em;
-  margin: 1em 0;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+.reveal div.eqbox > .eqbox-body {
+  box-sizing: border-box;
+  padding: 0.75em 1.4em;
+  border-radius: 0.8em;
+  background: rgba(var(--eqbox-rgb), var(--eqbox-alpha));
+  color: $institutional_colour_1;
+  text-align: center;
+  overflow: visible;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
 }
 
-/* Ensure headings inside .box look nice */
-div.box > h3,
-div.box > h4,
-div.box > .box-title {
-  color: $uv-blue;
-  margin-top: 0 !important;
-  margin-bottom: 0.4em !important;
-  font-weight: bold;
-  font-size: 1.05em;
+/* Constrain only capsules that explicitly request horizontal scrolling. */
+.reveal div.eqbox.eqbox-scroll {
+  width: fit-content;
+  max-width: 100%;
 }
 
-/* Secondary Turquoise Variant */
-div.box.turquoise {
-  background-color: rgba(6, 113, 126, 0.05);
-  border-left-color: $uv-light-blue;
-  border-color: rgba(6, 113, 126, 0.15);
+.reveal div.eqbox.eqbox-scroll > .eqbox-body {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
 
-  > h3, > h4, > .box-title {
-    color: $uv-light-blue;
+.reveal .eqbox-body > :first-child { margin-top: 0; }
+.reveal .eqbox-body > :last-child { margin-bottom: 0; }
+.reveal .eqbox-body mjx-container[display="true"],
+.reveal .eqbox-body .MathJax_Display,
+.reveal .eqbox-body .katex-display { margin: 0; }
+
+/* MathJax 2 gives numbered displays width:10000em !important. Inside a
+   naturally sized capsule, use its measured minimum width (formula + tag). */
+.reveal .eqbox-body .MathJax_FullWidth { width: auto !important; }
+
+@media print {
+  /* Outrank Reveal's generic printed div rules while retaining capsule sizing. */
+  html .reveal .slides div.eqbox {
+    width: max-content;
+    max-width: none;
+    margin: 1em auto;
   }
+  html .reveal .slides div.eqbox > .eqbox-title { margin-bottom: 0.4em; }
+  .reveal div.eqbox.eqbox-scroll > .eqbox-body { overflow: visible; }
 }
 
-div.box {
-  background-color: rgba(0, 60, 88, 0.05); /* Light UV Blue tint */
-  border-left: 5px solid $uv-blue;          /* UV Blue border */
+/* Generic boxes: shared geometry, with optional accent and title. */
+.reveal div.box {
+  background-color: rgba($institutional_colour_2, 0.05);
+  border: 1px solid rgba($institutional_colour_2, 0.15);
+  border-left: 5px solid $institutional_colour_2;
   border-radius: 4px;
   padding: 0.8em 1.2em;
   margin: 1em 0;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.04);
 }
 
-/* Title bar inside generic box */
-div.box .box-title {
-  color: $uv-blue;
+.reveal div.box > :is(h3, h4, .box-title) {
+  color: $institutional_colour_2;
+  margin-top: 0;
+  margin-bottom: 0.4em;
   font-weight: bold;
   font-size: 1.05em;
+}
+
+.reveal div.box > .box-title {
   padding-bottom: 0.4em;
-  margin-bottom: 0.6em;
-border-bottom: 3px solid rgba(0, 60, 88, 0.25); /* Thicker line with slightly more opacity */
+  border-bottom: 3px solid rgba($institutional_colour_2, 0.25);
 }
 
-/* Exercise boxes use the institutional palette. */
-.reveal div.exercise {
-  margin: 1em 0;
-  padding: 0 1em 0.6em;
-  border: 1px solid rgba($uv-blue, 0.2);
-  border-left: 5px solid $uv-light-blue;
-  border-radius: 6px;
-  background: rgba($uv-blue, 0.04);
-  overflow: hidden;
-}
+/* The container supplies edge spacing; retain margins between content blocks. */
+.reveal div.box > :first-child,
+.reveal div.box > .box-title + * { margin-top: 0; }
+.reveal div.box > :last-child { margin-bottom: 0; }
+.reveal div.box > :is(ul, ol):last-child > li:last-child { margin-bottom: 0; }
 
-.reveal div.exercise > .exercise-title {
-  margin: 0 -1em 0.6em;
-  padding: 0.4em 1em;
-  background: linear-gradient(110deg, $uv-dark-blue, $uv-blue);
-  color: #fff;
-  font-weight: 600;
-}
+.reveal div.box:where(.turquoise) {
+  background-color: rgba($institutional_colour_3, 0.05);
+  border-color: rgba($institutional_colour_3, 0.15);
+  border-left-color: $institutional_colour_3;
 
-.reveal div.exercise > :last-child { margin-bottom: 0; }
+  > :is(h3, h4, .box-title) { color: $institutional_colour_3; }
+}
 
 //Box around standard definitions
 
-div[class*="theorem"], 
-div[class*="lemma"], 
-div[class*="definition"], 
-div[class*="proposition"], 
+div[class*="theorem"],
+div[class*="lemma"],
+div[class*="definition"],
+div[class*="proposition"],
 div[class*="corollary"],
 div[class*="example"] {
-  background-color: rgba(15, 68, 148, 0.05); /* Soft tint of $uv-blue */
-  border-left: 5px solid $uv-blue;
+  background-color: rgba($institutional_colour_2, 0.05); /* Soft tint of $institutional_colour_2 */
+  border-left: 5px solid $institutional_colour_2;
   border-radius: 4px;
   padding: 0.8em 1.2em;
   margin: 1em 0;
@@ -496,40 +557,40 @@ div[class*="example"] {
 .proposition-title,
 .corollary-title,
 .example-title {
-  color: $uv-dark-blue;
+  color: $institutional_colour_1;
   font-weight: bold;
   font-size: 1.05em;
   padding-bottom: 0.4em;
   margin-bottom: 0.6em;
-  border-bottom: 2px solid rgba(15, 68, 148, 0.25);
+  border-bottom: 2px solid rgba($institutional_colour_2, 0.25);
   display: block;
 }
 
+/* Quarto supplies exercise markup, numbering and titles. */
+.reveal div.theorem.exercise { border-left-color: $institutional_colour_3; }
+
 /* Special accent border for Definitions */
 div[class*="definition"] {
-  border-left-color: $uv-light-blue;
-  
+  border-left-color: $institutional_colour_3;
+
   .definition-title {
-    color: $uv-blue;
-    border-bottom-color: rgba(0, 159, 227, 0.3);
+    color: $institutional_colour_2;
+    border-bottom-color: rgba($institutional_colour_3, 0.3);
   }
 }
 
 
 
-/*---------------------- PART IV ----------------------------------------------- 
+/*---------------------- PART IV -----------------------------------------------
 Itemizes
 
-$uv-dark-blue: #232754;
-$uv-blue: #0F4494;
-$uv-light-blue: #009FE3;
 -------------------------------------------------------------------------------------------*/
 
 
 /* Hide the default web bullets */
-.reveal ul {
-  list-style-type: none !important;
-  padding-left: 0 !important;
+.reveal .slides ul {
+  list-style-type: none;
+  padding-left: 0;
 }
 
 /* Base spacing for all list items */
@@ -548,15 +609,15 @@ $uv-light-blue: #009FE3;
   left: 0;
   top: -0.05em; /* Adjusts vertical alignment with the text */
   font-size: 1em;
-  color: $uv-light-blue; /* Replace with your chosen color variable */
+  color: $institutional_colour_3; /* Replace with your chosen color variable */
 }
 
 /* -------------------------------------------
    Level 2: Hollow Triangle
 ------------------------------------------- */
 .reveal ul > li > ul > li::before {
-  content: "▶"; 
-  color: $uv-blue; 
+  content: "▶";
+  color: $institutional_colour_2;
   font-size: 0.8em;
   top: 0.1em;
 }
@@ -566,18 +627,18 @@ $uv-light-blue: #009FE3;
 ------------------------------------------- */
 .reveal ul > li > ul > li > ul > li::before {
   content: "▶";
-  color: $uv-dark-blue;
+  color: $institutional_colour_1;
   font-size: 0.6em;
   top: 0.35em;
 }
 
-.reveal ul ul {
-  margin-left: -0.5em !important; /* Reduces the horizontal gap (default is much larger) */
-  margin-top: 0.0em !important;  /* Keeps the vertical spacing tight between sub-items */
+.reveal .slides ul ul {
+  margin-left: -0.5em; /* Reduces the horizontal gap (default is much larger) */
+  margin-top: 0.0em;  /* Keeps the vertical spacing tight between sub-items */
 }
 
-.reveal ul ul ul {
-  margin-left: -0.5em !important; /* Same tight gap for the 3rd level */
+.reveal .slides ul ul ul {
+  margin-left: -0.5em; /* Same tight gap for the 3rd level */
 }
 
 /* Ensure ordered lists (1. 2. 3.) aren't broken by this */
@@ -587,27 +648,11 @@ $uv-light-blue: #009FE3;
 .reveal ol li {
   padding-left: 0.2em;
 }
-future {
-  justify-content: flex-start !important;
-}
 
 
-/*---------------------- PART V ----------------------------------------------- 
-Font Size
--------------------------------------------------------------------------------------------*/
+/* Body size comes from Quarto's fontsize setting; component sizes use em. */
 
-//tamaño general de la slide
-.reveal {
-  font-size: 24px;
-}
-
-//proporciones para titulos h1, h2 y h3
-/* Adjust headings relative to the base size (e.g., 2.0 = 200% of base size) */
-$presentation-h1-font-size: 2.5em;
-$presentation-h2-font-size: 1.6em;
-$presentation-h3-font-size: 1.3em;
-
-/*---------------------- PART VI ----------------------------------------------- 
+/*---------------------- PART VI -----------------------------------------------
 Colours
 
 -------------------------------------------------------------------------------------------*/
@@ -620,13 +665,17 @@ Colours
   color: blue;
 }
 
+.purple {
+  color: #7d3c98;
+}
+
 
 /* Link to a bubble with [Explain](#my-explanation){.explanation-link}. */
 .reveal a.explanation-link {
   display: inline-block;
   padding: 0.05em 0.4em;
   border-radius: 0.4em;
-  color: $uv-blue;
+  color: $institutional_colour_2;
   font-size: 0.75em;
   white-space: nowrap;
   text-decoration: underline dotted;
@@ -637,11 +686,11 @@ Colours
 .reveal a.explanation-link:hover,
 .reveal a.explanation-link[aria-expanded="true"] {
   background: #fff2bf;
-  color: $uv-dark-blue;
+  color: $institutional_colour_1;
 }
 
 .reveal a.explanation-link:focus-visible {
-  outline: 2px solid $uv-light-blue;
+  outline: 2px solid $institutional_colour_3;
   outline-offset: 2px;
 }
 
@@ -658,7 +707,9 @@ Colours
   position: fixed;
   z-index: 110;
   box-sizing: border-box;
-  font-size: clamp(18px, 1.5vw, 24px);
+  // Match the slide font, with the existing viewport adjustment (18–24px at default).
+  font-size: clamp(#{0.75 * $presentation-font-size-root},
+    #{1.5vw * ($presentation-font-size-root / 24px)}, #{$presentation-font-size-root});
   line-height: 1.4;
   text-align: left;
 }
@@ -669,11 +720,11 @@ Colours
 .reveal details.explanation {
   position: relative;
   margin: 0;
-  border: 2px solid $uv-dark-blue;
+  border: 2px solid $institutional_colour_1;
   border-radius: 20px;
   background: #fffdf3;
-  color: $uv-dark-blue;
-  box-shadow: 4px 5px 0 rgba(35, 39, 84, 0.18);
+  color: $institutional_colour_1;
+  box-shadow: 4px 5px 0 rgba($institutional_colour_1, 0.18);
   text-align: left;
 }
 
@@ -684,8 +735,8 @@ Colours
   width: 20px;
   height: 20px;
   background: #fffdf3;
-  border-right: 2px solid $uv-dark-blue;
-  border-bottom: 2px solid $uv-dark-blue;
+  border-right: 2px solid $institutional_colour_1;
+  border-bottom: 2px solid $institutional_colour_1;
 }
 
 .reveal .explanation-dock[data-placement="above"] details.explanation::after {
@@ -702,13 +753,13 @@ Colours
   padding: 0.55em 0.8em;
   border-radius: 18px;
   background: #fffdf3;
-  color: $uv-blue;
+  color: $institutional_colour_2;
   font-weight: 600;
   cursor: pointer;
 }
 
 .reveal details.explanation summary:focus-visible {
-  outline: 3px solid $uv-light-blue;
+  outline: 3px solid $institutional_colour_3;
   outline-offset: -3px;
 }
 
@@ -729,9 +780,17 @@ Colours
   }
   .reveal details.explanation summary {
     background: white;
-    color: $uv-blue;
+    color: $institutional_colour_2;
   }
-  .reveal .explanation-content { max-height: none !important; overflow: visible; }
+  .reveal .explanation-content { max-height: none; overflow: visible; }
   .reveal .explanation-dock,
   .reveal a.explanation-link { display: none; }
 }
+
+@media print {
+  /* Reveal's paper stylesheet forces left alignment on printed text. */
+  .reveal .slides h1 { text-align: center !important; }
+}
+
+/* Match Reveal's PDF selector without overriding its visibility behaviour. */
+.print-pdf .reveal div.slide-number { font-size: 0.6em; }

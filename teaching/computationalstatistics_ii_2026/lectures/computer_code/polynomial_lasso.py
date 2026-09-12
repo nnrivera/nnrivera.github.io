@@ -7,7 +7,7 @@ n, p = 12, 10
 x = rng.uniform(-2 * np.pi, 2 * np.pi, size=n)
 y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
 
-# Design matrix: 1, x, ..., x^p; standardize only the nonconstant columns.
+# Design matrix: 1, x, ..., x^p; standardise only the nonconstant columns.
 X = np.polynomial.polynomial.polyvander(x, p)
 X_mean = X[:, 1:].mean(axis=0)
 X_std = X[:, 1:].std(axis=0)
@@ -26,7 +26,7 @@ for lam in lambdas:
     # Reuse the previous solution as the starting point.
     r = y - X @ beta
     for sweep in range(1, max_sweeps + 1):
-        # Update the intercept without penalizing it.
+        # Update the intercept without penalising it.
         delta = r.mean()
         beta[0] += delta
         r -= delta
@@ -57,7 +57,7 @@ for lam in lambdas:
     print(f"lambda={lam:g}: sweeps={sweep}, Training MSE={np.mean((y - y_hat) ** 2):.6f}")
     print("Zero slope indices:", np.flatnonzero(beta[1:] == 0) + 1)
 
-# Columns are the OLS and Lasso coefficients, in standardized coordinates.
+# Columns are the OLS and Lasso coefficients, in standardised coordinates.
 print("Columns: OLS, then Lasso with lambdas", sorted(lambdas))
 coefficients = np.column_stack([beta_ols] + [fits[lam] for lam in sorted(lambdas)])
 print(np.round(coefficients, 3))

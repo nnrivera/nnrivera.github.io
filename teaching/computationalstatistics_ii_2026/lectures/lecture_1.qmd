@@ -1,39 +1,28 @@
 ---
 course: "DOCE-202 Computational Statistics II"
-title: "Unit 1: Advanced Optimization"
+title: "Unit 1: Advanced Optimisation"
 author: "Nicolás Rivera"
+title-logo: ../assets/logo_uv.png
+title-wordmark: ../assets/imagotipo.svg
+title-logo-alt: "Universidad de Valparaíso"
+title-wordmark-alt: "Universidad de Valparaíso"
+lang: en-GB
 exercise-list: true
 filters:
     - pseudocode #quarto add leovan/quarto-pseudocode to install
 format: 
     theme-uv-revealjs:
         embed-resources: false
-        html-math-method:
-            method: mathjax
-            url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js
-        include-in-header:
-            text: |
-                <script>
-                window.MathJax = {
-                  tex: {
-                    inlineMath: [["$", "$"], ["\\(", "\\)"]],
-                    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
-                    processEscapes: true,
-                    processEnvironments: true
-                  }
-                };
-                </script>
-                <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"></script>
         toc: true
         toc-depth: 1
         width: 1600    # Default is 1050. Larger width = smaller text (1600,900), (1760,990),(1920,1080) (2240,1260), (1840, 1035), (2400, 1350)
         height: 900 # Default is 700. Larger height = smaller text
-        #center: true #this is buggy because I overwrite a lot of reveal stuff.. I'll have to redesign this. 
+        #center: true # Optional: centre slide bodies beneath fixed headings.
 ---
 
 $\newcommand{\R}{\mathbb{R}}$
 
-# Fundamentals of Nonlinear Optimization I: Basic Multivariate Calculus
+# Fundamentals of Nonlinear Optimisation I: Basic Multivariate Calculus
 
 ## Euclidian Norm
 
@@ -156,7 +145,7 @@ data = d3.range(0, 10.05, 0.05).map(t => {
   return { t, ft, coneUpper, coneLower };
 });
 
-// 3. The Plot (Centered below the sliders)
+// 3. The Plot (Centred below the sliders)
 html`<div style="display: flex; justify-content: center; width: 100%; margin-top: 15px;">
   ${Plot.plot({
     width: 900,
@@ -284,6 +273,16 @@ i.e.,
 $$\frac{\partial^2 f}{\partial x_i\partial x_j}=\frac{\partial^2 f}{\partial x_j\partial x_i}.$$
 :::
 
+## Exercise: derivatives and descent directions
+
+::: {#exr-derivatives-directions name="Derivatives and descent directions"}
+Let $f(x_1,x_2)=x_1^2+x_1x_2+2x_2^2$ and $x=(1,-1)^\top$.
+
+1. Compute $\nabla f(x)$ and $\nabla^2f(x)$.
+2. Compute the directional derivative along $v=(1,0)^\top$ and along $-v$. Which is a **descent direction**?
+3. Among all vectors $u$ with $\|u\|_2=1$, find the direction with the smallest directional derivative. Justify your answer using Cauchy–Schwarz.
+:::
+
 ## Smoothness: Key Results
 
 ::: {#thm-mvt-1 name="Mean Value Theorem I"}
@@ -302,7 +301,7 @@ and for $m=1$, the previous equations reads
 $$F(y) - F(x) = \int_0^1 \langle \nabla F(y + t(x-y)), x-y \rangle \, dt$$
 :::
 
-## Smoothness: Key Results {.scrollable}
+## Smoothness: Key Results {#descent-lemma-slide .scrollable}
 
 ::: {#cor-descent-lemma name="Descent Lemma"}
 Let $f : \R^n \to \R$ be $L$-smooth. Then for any $x, y \in \R^n$,
@@ -324,7 +323,17 @@ Substituting this upper bound into our integral: $$ \dots \le \int_0^1 Lt \|x-y\
 Finally, evaluating the integral $\int_0^1 t \, dt = \frac{1}{2}$ yields the required result: $$ f(x) - f(y) - \langle \nabla f(y), x-y \rangle \le \frac{L}{2} \|x-y\|^2 $$
 :::
 
-# Fundamentals of Nonlinear Optimization II: Convex Analysis
+## Exercise: a function and its gradient
+
+::: {#exr-lipschitz-smoothness name="Lipschitz continuity versus smoothness"}
+Consider $f(t)=t^2$ on $\R$.
+
+1. Show that $f$ is **not globally Lipschitz**: no finite $K$ satisfies $|f(s)-f(t)|\leq K|s-t|$ for every $s,t\in\R$.
+2. Find the smallest Lipschitz constant of $f'$ on $\R$. Is $f$ smooth in the sense used in the lecture?
+3. Find the smallest Lipschitz constant of $f$ on $[-R,R]$, where $R>0$. Explain why this does not contradict part 1.
+:::
+
+# Fundamentals of Nonlinear Optimisation II: Convex Analysis
 
 ## Open Set
 
@@ -393,7 +402,7 @@ viewof openSetDemo = {
   // Start the point safely inside the set
   let currentPt = {x: 180, y: 135}; 
   
-  // 3. The Math Engine: Calculates colors and text based on position
+  // 3. The Math Engine: Calculates colours and text based on position
   function updateVisuals() {
     const r = slider.valueAsNumber;
     
@@ -534,6 +543,18 @@ viewof lambda = {
 }
 ```
 
+## Exercise: open and convex are different properties
+
+::: {#exr-open-convex-sets name="Open and convex sets"}
+For each subset of $\R^2$, decide whether it is **open** and whether it is **convex**:
+
+1. $A=\{x:\|x\|_2<1\}$.
+2. $B=\{x:\|x\|_2=1\}$.
+3. $C=\{x:x_1x_2>0\}$.
+
+Justify openness using a ball around a point. To disprove convexity, give two points whose midpoint lies outside the set.
+:::
+
 ## Convexity
 
 :::::: columns
@@ -607,9 +628,9 @@ Using the Euclidean expansion $\|x-y\|^2 = \|x\|^2 - 2\langle x, y \rangle + \|y
 - In general a local minimum is not a global minimum.
 - In general we don't care about maxima because $\max_{x\in U}f(x)$ is equivalent to find $\min_{x\in U}-f(x)$.
 
-## Convexity and optimization
+## Convexity and optimisation
 
-Convexity is very relevant for optimization due to the following fact.
+Convexity is very relevant for optimisation due to the following fact.
 
 ::: {#thm-uniquemin}
 Let $U\subseteq \R^n$ be a convex set and let $f:\R^n\to \R$. If $x^* \in U$ is a local minimum then is a global minimum. Moreover, if $f$ is strictly convex, then $f$ has at most one local minimum.
@@ -622,6 +643,22 @@ Let $f:\R^n \to R$ be differentiable. If $x^*$ is a local minimum or maximum of 
 :::
 
 Points with $\nabla f(x)= 0$ are called stationary or critical points.
+
+## Exercise: convexity, existence, and uniqueness
+
+::: {#exr-convexity-minimisers name="Convexity and minimisers"}
+For $x=(x_1,x_2)^\top\in\R^2$, consider
+$$\begin{aligned}
+f(x)&=x_1^2+x_1x_2+x_2^2,
+&g(x)&=(x_1^2+x_2^2)^2,\\
+h(x)&=e^{x_1}+x_2^2,
+&q(x)&=(x_1+x_2)^2.
+\end{aligned}$$
+
+1. Classify each function as convex, **strictly convex**, and/or **strongly convex on all of $\R^2$**. Justify your answers; give a modulus when one exists.
+2. Find all stationary points and the **entire set of global minimisers**. If the infimum is not attained, give a sequence approaching it.
+3. Use these examples to explain why strict convexity ensures at most one minimiser, but not existence, and why convexity alone allows multiple minimisers.
+:::
 
 # Gradient Descent
 
@@ -651,7 +688,7 @@ When performing the update $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$, the step si
 - **Constant step:** $\gamma_k = \gamma > 0$
 - **Decaying step:** $\gamma_k = \frac{\gamma}{\sqrt{k+1}}$
 
-**2. Full Relaxation (Exact Line Search)** Choose the step size that strictly minimizes the function along the search direction: $\gamma_k = \arg\min_{\gamma \ge 0} f(x_k - \gamma \nabla f(x_k))$
+**2. Full Relaxation (Exact Line Search)** Choose the step size that strictly minimises the function along the search direction: $\gamma_k = \arg\min_{\gamma \ge 0} f(x_k - \gamma \nabla f(x_k))$
 
 **3. The Armijo-Goldstein Rule** Find $x_{k+1} = x_k - \gamma_k \nabla f(x_k)$ with $\gamma_k > 0$ such that it satisfies the sufficient decrease conditions:
 
@@ -666,7 +703,7 @@ where $0 < \alpha < \beta < 1$ are fixed parameters.
 
 In practice, options 1 and 3 are fine. Option 2 is too theoretical and essentially involves solving the optimisation problem, which is what we want to do.
 
-## Visualization: The Armijo-Goldstein Conditions on $f(x) = ax^3+bx^2+cx+d$
+## Visualisation: The Armijo-Goldstein Conditions on $f(x) = ax^3+bx^2+cx+d$
 
 {{< include codes/diag_ag.qmd >}}
 
@@ -674,7 +711,7 @@ In practice, options 1 and 3 are fine. Option 2 is too theoretical and essential
 
 Let's train a simple Linear Regression model $$y_i = (ax_i+b)$$ based on data $(x_i,y_i)\in \R^2$. We write $\theta = (a,b)$, and we want to minimise the Mean Squared Error (MSE) $$L(\theta) =\frac{1}{2n}\sum_{i=1}^n (y_i-ax_i-b)^2$$
 
-The parameter to optimize is $\theta = (a,b)$. We can write the loss function as: $$L(\theta) = \frac{1}{2n}({Y} - X{\theta})^\top ({Y} - X{\theta})$$ where $X\in \R^{n\times 2}$ represents the design matrix and $Y = [y_1,\ldots, y_n]^\top$ is the vector with all the observations. The gradient is
+The parameter to optimise is $\theta = (a,b)$. We can write the loss function as: $$L(\theta) = \frac{1}{2n}({Y} - X{\theta})^\top ({Y} - X{\theta})$$ where $X\in \R^{n\times 2}$ represents the design matrix and $Y = [y_1,\ldots, y_n]^\top$ is the vector with all the observations. The gradient is
 
 $$\nabla L(\theta) = \frac{1}{n}X^\top (X{\theta}-{Y}).$$
 
@@ -687,7 +724,25 @@ We will race two strategies:
 
 {{< include codes/armijo_code.qmd >}}
 
-# Newton's Method for Optimization
+## Exercise: when does gradient descent converge?
+
+::: {#exr-gradient-step-size name="Choosing a constant step size"}
+Let $f(t)=at^2/2$, with $a>0$, and start from $t_0\neq0$.
+
+1. For a constant step $\gamma>0$, derive an expression for $t_k$ in terms of $t_0$, $a$, and $\gamma$.
+2. Find the **exact range of steps** for which $t_k\to0$. What happens at $\gamma=1/a$ and $\gamma=2/a$?
+3. Apply the [descent lemma](#descent-lemma-reminder){.explanation-link} with $L=a$ to one update. Compare its guarantee of strict decrease with the range from part 2.
+:::
+
+::: {#descent-lemma-reminder .explanation title="Descent lemma"}
+If $\nabla f$ is Lipschitz with constant $L$, then
+$$f(x)\leq f(y)+\langle\nabla f(y),x-y\rangle+\frac{L}{2}\|x-y\|^2.$$
+This bounds the function by a quadratic model around $y$. Here, use $y=t_k$ and $x=t_{k+1}$.
+
+[Go to the statement and proof](#descent-lemma-slide).
+:::
+
+# Newton's Method for Optimisation
 
 ## From step size to direction
 
@@ -751,7 +806,7 @@ H_k=\nabla^2 f(x_k).$$
 
 ## The Newton direction
 
-Instead of minimizing $f$ directly, minimize the local quadratic model:
+Instead of minimising $f$ directly, minimise the local quadratic model:
 
 $$p_k
 =
@@ -793,7 +848,7 @@ x_k
 [\nabla^2f(x_k)]^{-1}\nabla f(x_k)
 }$$
 
-This is Newton's method for optimization.
+This is Newton's method for optimisation.
 
 ## Another interpretation
 
@@ -801,7 +856,7 @@ At the optimum $x^\star$,
 
 $$\nabla f(x^\star)=0.$$
 
-So we can think of optimization as solving the nonlinear system
+So we can think of optimisation as solving the nonlinear system
 
 $$g(x)=\nabla f(x)=0.$$
 
@@ -994,7 +1049,18 @@ g_k^\top p
 +
 \frac12p^\top H_kp.$$
 
-So minimizing the quadratic model is exactly the same as minimizing $f$.
+So minimising the quadratic model is exactly the same as minimising $f$.
+
+## Exercise: Newton on a quadratic
+
+::: {#exr-newton-quadratic name="One Newton step on a quadratic"}
+Let $f(x)=\tfrac12x^\top Ax-b^\top x$, where
+$$A=\begin{pmatrix}2&1\\1&2\end{pmatrix},\qquad b=\begin{pmatrix}1\\0\end{pmatrix}.$$
+
+1. Show that $A$ is positive definite and find the unique minimiser $x^*$.
+2. Starting from $x_0=(0,0)^\top$, find the Newton direction by **solving a linear system**. Compute $x_1$.
+3. Repeat the argument for arbitrary $x_0$. Why does one full Newton step suffice for this function?
+:::
 
 ## Newton in several dimensions
 
@@ -1110,7 +1176,7 @@ $$\nabla^2f(x)\succ0,$$
 
 then the local quadratic approximation is strictly convex.
 
-So the Newton direction points toward the unique minimizer of the local quadratic model.
+So the Newton direction points towards the unique minimiser of the local quadratic model.
 
 ## But there is a problem
 
@@ -1128,6 +1194,16 @@ In particular:
 - the Hessian may not be positive definite;
 - $p_k$ may not even be a descent direction;
 - the objective may increase.
+
+## Exercise: when Newton points uphill
+
+::: {#exr-newton-ascent name="An uphill Newton direction"}
+Consider $f(t)=t^4-3t^2$ at $t_0=1/2$.
+
+1. Compute $f'(t_0)$, $f''(t_0)$, and the Newton direction $p=-f'(t_0)/f''(t_0)$.
+2. Check the sign of $f'(t_0)p$. Compare $f(t_0+p)$ with $f(t_0)$: does the full step decrease the objective?
+3. Replace the Hessian by $f''(t_0)+\mu$, with $\mu>0$. For which $\mu$ is the resulting direction a **descent direction**? Does this alone guarantee that a full step decreases $f$?
+:::
 
 ## We already know how to fix this
 
@@ -1312,7 +1388,7 @@ This tradeoff will become important later.
 
 ## Take-away
 
-Newton's method comes from minimizing a local quadratic approximation:
+Newton's method comes from minimising a local quadratic approximation:
 
 $$p_k=-H_k^{-1}g_k.$$
 
@@ -1408,7 +1484,7 @@ One important consequence is that the larger eigenvalue of $B$ is larger of equa
 $$v^\top\nabla^2f(\beta)v
 =\frac{1}{n}(Xv)^\top W(\beta)(Xv)\geq0.$$
 
-Thus the negative log-likelihood is **convex**. If the design has enough rank and the data are not separated, its minimizer is unique.
+Thus the negative log-likelihood is **convex**. If the design has enough rank and the data are not separated, its minimiser is unique.
 
 ## Logistic regression by gradient descent
 
@@ -1465,6 +1541,17 @@ The factors $1/n$ cancel. We solve the linear system; we do **not** form a matri
 This is also called **Fisher scoring** or **iteratively reweighted least squares (IRLS)** for logistic regression. A damped step can be used if a full Newton step does not decrease $f$.
 
 
+## Exercise: two observations in logistic regression
+
+::: {#exr-logistic-two-observations name="Logistic updates and separation"}
+Use the average negative log-likelihood from the lecture, with
+$$X=\begin{pmatrix}1&-1\\1&1\end{pmatrix},\qquad y=\begin{pmatrix}0\\1\end{pmatrix},\qquad \beta^{(0)}=\begin{pmatrix}0\\0\end{pmatrix}.$$
+
+1. Compute the fitted probabilities, gradient, and Hessian at $\beta^{(0)}$.
+2. Compute one gradient step with $\gamma=4$ and one full Newton step. Compare the resulting coefficients.
+3. Set $\beta=(0,b)^\top$ and let $b\to\infty$. What happens to the loss? Explain why this **strictly convex** problem has no finite minimiser.
+:::
+
 ## Vanilla gradient descent in Python {.scrollable}
 
 ::: logistic-code
@@ -1518,7 +1605,7 @@ def logistic_gradient_descent(X, y, beta0=None,
 
 ## Full comparison in Python {.scrollable}
 
-All three fits below use an intercept and the **same unregularized likelihood**. The predictors are standardized once, before fitting any of the methods.
+All three fits below use an intercept and the **same unregularised likelihood**. The predictors are standardised once, before fitting any of the methods.
 
 ::: logistic-code
 ``` python
@@ -1542,7 +1629,7 @@ beta_gd, loss_history, gd_iterations = logistic_gradient_descent(
     X, y, tol=1e-10, max_iter=200_000
 )
 
-# ----- 2. scikit-learn: explicitly turn regularization off -----
+# ----- 2. scikit-learn: explicitly turn regularisation off -----
 sk_fit = LogisticRegression(
     C=np.inf,              # zero penalty in current scikit-learn
     solver="lbfgs",
@@ -1553,7 +1640,7 @@ sk_fit = LogisticRegression(
 sk_fit.fit(X, y)
 beta_sklearn = sk_fit.coef_.ravel()
 
-# ----- 3. statsmodels: Logit is unregularized by default -----
+# ----- 3. statsmodels: Logit is unregularised by default -----
 sm_fit = sm.Logit(y, X).fit(
     method="newton", disp=False, maxiter=200, tol=1e-12
 )
@@ -1615,10 +1702,10 @@ $$\widehat\beta_{\mathrm{GD}}
 \widehat\beta_{\texttt{statsmodels}}.$$
 
 - Our routine exposes every gradient-descent operation.
-- `scikit-learn` emphasizes prediction and provides an estimator API.
-- `statsmodels` emphasizes statistical inference and reports standard errors, tests, and confidence intervals.
+- `scikit-learn` emphasises prediction and provides an estimator API.
+- `statsmodels` emphasises statistical inference and reports standard errors, tests, and confidence intervals.
 
-The comparison is meaningful only because regularization is disabled with `C=np.inf` in `scikit-learn`; its default is regularized.
+The comparison is meaningful only because regularisation is disabled with `C=np.inf` in `scikit-learn`; its default is regularised.
 
 ```{=html}
 <style>
@@ -1630,9 +1717,9 @@ The comparison is meaningful only because regularization is disabled with `C=np.
 </style>
 ```
 
-# Regularization
+# Regularisation
 
-## Regularization
+## Regularisation
 
 Consider the linear model
 
@@ -1645,7 +1732,7 @@ Ordinary least squares solves
 $$\min_{\beta}
 \frac{1}{2n}\|y-X\beta\|_2^2.$$
 
-This is an **optimization problem**, and
+This is an **optimisation problem**, and
 
 :::{#exr-label name="OLS normal equations"}
 Show that the minimiser $\beta_{\text{OLS}}$ of the minimisation problem  $\frac{1}{2n}\|y-X\beta\|_2^2$ satisfies:
@@ -1674,7 +1761,7 @@ A common solution is to deliberately introduce **bias**.
 
 ------------------------------------------------------------------------
 
-## Polynomial regression without regularization: the sample
+## Polynomial regression without regularisation: the sample
 
 $n=12$ observations: $x_i\sim\mathrm{Uniform}(-2\pi,2\pi)$ and $y_i=\sin(x_i)+\varepsilon_i$, with independent $\varepsilon_i\sim N(0,0.25^2)$.
 
@@ -1688,9 +1775,9 @@ $$\beta \to \frac{1}{n}\sum_{i=1}^n (y_i-\sum_{k=0}^p \beta_k x_i^k)^2$$
 
 ![The 12 observed points before fitting any polynomial.](images/polynomial-ols-n12-sample.png){height=580}
 
-## Polynomial regression without regularization: coefficients
+## Polynomial regression without regularisation: coefficients
 
-Same $n=12$ observations for every degree. Coefficients use standardized polynomial columns, with an unchanged intercept.
+Same $n=12$ observations for every degree. Coefficients use standardised polynomial columns, with an unchanged intercept.
 
 ::: {#polynomial-ols-coefficients}
 
@@ -1749,7 +1836,7 @@ Same $n=12$ observations; degrees $p=4$, $p=7$, and $p=10$.
 
 ## Reproduce the polynomial regression example {.scrollable}
 
-The code fits one polynomial regression. Change `p` to choose the degree. It standardises the design columns except the intercept, which is especially useful when adding regularization.
+The code fits one polynomial regression. Change `p` to choose the degree. It standardises the design columns except the intercept, which is especially useful when adding regularisation.
 
 ``` python
 import numpy as np
@@ -1764,7 +1851,7 @@ y = np.sin(x) + rng.normal(0.0, 0.25, size=n)
 p = 10
 X = np.polynomial.polynomial.polyvander(x, p)
 
-# Standardize all columns except the intercept.
+# Standardise all columns except the intercept.
 X_mean = X[:, 1:].mean(axis=0)
 X_std = X[:, 1:].std(axis=0)
 X[:, 1:] = (X[:, 1:] - X_mean) / X_std
@@ -1778,7 +1865,7 @@ print(beta_ols)
 
 ## Regularisation
 
-To avoid the problems with those huge coeffiecient, instead of minimizing only the data-fitting term:
+To avoid the problems with those huge coeffiecient, instead of minimising only the data-fitting term:
 
 $$\frac{1}{2n}\|y-X\beta\|_2^2,$$
 
@@ -1857,7 +1944,7 @@ $$\min_\beta
 \frac{\lambda}{2}\|\beta\|_2^2
 \right\}.$$
 
-Unlike ordinary least squares, large coefficients are explicitly penalized.
+Unlike ordinary least squares, large coefficients are explicitly penalised.
 
 
 The objective is
@@ -1922,6 +2009,16 @@ Before regularisation was an established tool, some people used to say: "add a b
 
 
 
+
+## Exercise: why Ridge has a unique solution
+
+::: {#exr-ridge-positive-definite name="Ridge with an unpenalised intercept"}
+Let $X$ have $n\geq1$ rows, a first column of ones, and possibly dependent predictor columns. Set $P=\operatorname{diag}(0,1,\ldots,1)$ and $\lambda>0$.
+
+1. For $F(\beta)=\|y-X\beta\|_2^2/(2n)+\lambda\beta^\top P\beta/2$, derive the normal equations.
+2. Show that $v^\top(X^\top X+n\lambda P)v>0$ for every $v\neq0$. Deduce **existence and uniqueness** even when $X$ has dependent columns.
+3. If every predictor column is centred, show that the fitted intercept is $\bar y$. Why might penalising the intercept change this conclusion?
+:::
 
 ## An optimisation interpretation
 
@@ -2043,7 +2140,7 @@ if __name__ == "__main__":
 
 ## Degree 10: OLS and Ridge coefficients
 
-Both fits use the same standardized polynomial columns. The intercept is unchanged; values below are rounded to three decimals.
+Both fits use the same standardised polynomial columns. The intercept is unchanged; values below are rounded to three decimals.
 
 :::: columns
 ::: {.column width="48%"}
@@ -2077,7 +2174,7 @@ Ridge substantially reduces the **joint magnitude of the slopes**, at the cost o
 
 With correlated polynomial columns, individual coefficients can change sign or increase in magnitude. Shrinkage of the whole vector does not mean that every coefficient must shrink individually.
 
-The intercept remains $\bar y$ because the other columns are centered and the intercept is unpenalized.
+The intercept remains $\bar y$ because the other columns are centred and the intercept is unpenalised.
 
 :::
 ::::
@@ -2100,7 +2197,7 @@ The intercept remains $\bar y$ because the other columns are centered and the in
 
 ![OLS and Ridge fitted to the same sample, with the true mean shown for reference.](images/polynomial-ridge-vs-ols-n12-degree-10.png){height=540}
 
-The penalty changes the fit between observations as well as at the sample points. This illustrates the effect of regularization; choosing its strength for prediction still requires validation.
+The penalty changes the fit between observations as well as at the sample points. This illustrates the effect of regularisation; choosing its strength for prediction still requires validation.
 
 # Lasso
 
@@ -2127,9 +2224,9 @@ $$X_{\cdot,0}=\mathbf{1}_n,\qquad
 We keep $\beta_0$ in the coefficient vector and **differentiate and update it**, but do not penalise it:
 $$h(\beta)=\sum_{j=1}^p|\beta_j|,\qquad \frac{\partial h}{\partial\beta_0}=0.$$
 
-In the numerical example, center and scale only the predictor columns $j=1,\ldots,p$, so $\sum_i X_{i,j}/n=0$ and $\sum_i X_{i,j}^2/n=1$. Remove constant predictors before scaling; keep column 0 equal to one and keep $y$ in its original units.
+In the numerical example, centre and scale only the predictor columns $j=1,\ldots,p$, so $\sum_i X_{i,j}/n=0$ and $\sum_i X_{i,j}^2/n=1$. Remove constant predictors before scaling; keep column 0 equal to one and keep $y$ in its original units.
 
-The derivations also apply to uncentered predictors. For new observations, reuse the training means and scales and prepend the column of ones.
+The derivations also apply to uncentred predictors. For new observations, reuse the training means and scales and prepend the column of ones.
 
 ## The obstacle is a corner
 
@@ -2140,7 +2237,7 @@ $$h'(t)=\begin{cases}-1,&t<0,\\1,&t>0.\end{cases}$$
 
 At zero, the left and right derivatives disagree. There is no derivative there.
 
-Yet $t=0$ is the unique global minimizer!
+Yet $t=0$ is the unique global minimiser!
 :::
 ::: {.column .centered-caption width="50%"}
 ![Absolute value has a corner at its minimum.](images/lasso-absolute-value.png){width=100%}
@@ -2281,7 +2378,7 @@ For each convex function below, compute the **entire subdifferential** at every 
 
 3. **The $L_1$ norm:** $h(u)=\|u\|_1=\sum_{j=1}^d|u_j|$, for $u\in\R^d$. Use separability and distinguish zero from nonzero coordinates. Write out your answer for $u=(2,0,-1)$.
 
-4. **The Euclidean norm:** $h(u)=\|u\|_2$, for $u\in\R^d$. Treat $u\ne0$ and $u=0$ separately. At the origin, use the defining inequality and Cauchy–Schwarz to characterize all admissible vectors.
+4. **The Euclidean norm:** $h(u)=\|u\|_2$, for $u\in\R^d$. Treat $u\ne0$ and $u=0$ separately. At the origin, use the defining inequality and Cauchy–Schwarz to characterise all admissible vectors.
 :::
 
 ## Combining a smooth loss with the penalty
@@ -2304,7 +2401,7 @@ Coordinate 0 requires $\partial\ell/\partial\beta_0=0$. For each slope, we choos
 Consider a scalar problem with $\lambda>0$:
 $$\min_{b\in\R} q(b),\qquad q(b)=\frac12(b-z)^2+\lambda|b|.$$
 
-Here $b$ represents a **penalised slope**, and $z$ is its estimate without a penalty. For the intercept, the corresponding scalar problem has no absolute-value term and its solution is simply $b=z$. The quadratic term makes $q$ strictly convex, so its minimizer is unique.
+Here $b$ represents a **penalised slope**, and $z$ is its estimate without a penalty. For the intercept, the corresponding scalar problem has no absolute-value term and its solution is simply $b=z$. The quadratic term makes $q$ strictly convex, so its minimiser is unique.
 
 Our new rule gives
 $$0\in b-z+\lambda\partial|b|.$$
@@ -2345,7 +2442,7 @@ S_\lambda(z)=\operatorname{sign}(z)\max\{|z|-\lambda,0\}.$$
 
 Let $X\in\R^{n\times(p+1)}$ be the **design matrix**: $n$ observations (rows), a first column $X_{\cdot,0}=\mathbf{1}_n$ for the intercept, and $p$ predictor columns. We use the notation $X_{i,\cdot}$ and $X_{\cdot, j}$
 
-![](images/design-matrix-notation.svg){width=85% fig-alt="The design matrix X has n rows and p+1 columns, with column 0 containing ones for the intercept. An arrow points to a blue row labeled X subscript i comma dot; another points to an orange column labeled X subscript dot comma j."}
+![](images/design-matrix-notation.svg){width=85% fig-alt="The design matrix X has n rows and p+1 columns, with column 0 containing ones for the intercept. An arrow points to a blue row labelled X subscript i comma dot; another points to an orange column labelled X subscript dot comma j."}
 
 The **first index selects a row**, and the **second selects a column**. A dot means take **all** entries: $X_{i,\cdot}$ is row $i$; $X_{\cdot,j}$ is column $j$. A single entry $X_{i,j}$ is the value of predictor $j$ for observation $i$.
 
@@ -2420,9 +2517,9 @@ Set this derivative to zero and rearrange:
 $$\hat\beta_0=\bar y-\sum_{j=1}^p\bar X_j\hat\beta_j,
 \qquad \bar X_j=\frac1n\sum_{i=1}^n X_{i,j}.$$
 
-Thus the fitted residuals have **mean zero**. If the predictor columns are centered, $\bar X_j=0$ and $\hat\beta_0=\bar y$.
+Thus the fitted residuals have **mean zero**. If the predictor columns are centred, $\bar X_j=0$ and $\hat\beta_0=\bar y$.
 
-There is no $\lambda$ term in this equation. With uncentered predictors, the intercept can still change with $\lambda$ because the fitted slopes change.
+There is no $\lambda$ term in this equation. With uncentred predictors, the intercept can still change with $\lambda$ because the fitted slopes change.
 
 ## Isolate the coefficient we want to solve for
 
@@ -2460,7 +2557,7 @@ $$0\in-z_j+\lambda[-1,1]
 
 ## Putting the cases together: soft thresholding
 
-The minimizer over this one coefficient is therefore
+The minimiser over this one coefficient is therefore
 $$b_j^*=\begin{cases}
 (z_j-\lambda)/a_j,&z_j>\lambda,\\
 0,&|z_j|\leq\lambda,\\
@@ -2477,7 +2574,7 @@ This solves **one coefficient with the others fixed**. Since $z_j$ depends on th
 
 ## From a coordinate update to a Lasso solution
 
-At a full solution, every slope already equals its coordinate minimizer:
+At a full solution, every slope already equals its coordinate minimiser:
 $$\hat\beta_j=\frac{S_\lambda(z_j)}{a_j},\qquad
 z_j=\frac{X_{\cdot,j}^{\top}}{n}
 \left(y-\sum_{\substack{k=0\\k\ne j}}^p X_{\cdot,k}\hat\beta_k\right).$$
@@ -2506,14 +2603,14 @@ Thus zero coefficients are compatible with a range of residual associations. We 
 
 Start from a coefficient vector, for example $\beta=0$.
 
-1. Hold the slopes fixed and minimize over the unpenalised intercept $\beta_0$.
+1. Hold the slopes fixed and minimise over the unpenalised intercept $\beta_0$.
 2. Update each slope $\beta_1,\ldots,\beta_p$ using the latest values of all other coefficients, including $\beta_0$.
 3. Updating all $p+1$ coefficients completes one **sweep**.
 4. Repeat until the optimality conditions are satisfied to a chosen tolerance.
 
 Each update solves an exact one-dimensional minimisation, so the objective cannot increase.
 
-For this convex quadratic loss plus a separable $L_1$ penalty, cyclic coordinate descent converges to the optimal objective value. If $X$ has full column rank, the minimizer is unique; otherwise coefficients need not be unique.
+For this convex quadratic loss plus a separable $L_1$ penalty, cyclic coordinate descent converges to the optimal objective value. If $X$ has full column rank, the minimiser is unique; otherwise coefficients need not be unique.
 
 ## Deriving the coordinate subproblem
 
@@ -2534,7 +2631,7 @@ The partial residual restores the **old** contribution of predictor $j$ before f
 
 Hold the slopes fixed and let $r=y-X\beta$ be the **current residual**. Increasing the intercept by $\delta$ changes every prediction by $\delta$, so the new residual is $r-\mathbf{1}_n\delta$.
 
-Since the intercept is unpenalised, choose $\delta$ to minimize
+Since the intercept is unpenalised, choose $\delta$ to minimise
 $$q_0(\delta)=\frac{1}{2n}\|r-\mathbf{1}_n\delta\|_2^2,
 \qquad q_0'(\delta)=\delta-\operatorname{mean}(r).$$
 
@@ -2545,7 +2642,7 @@ r\leftarrow r-\mathbf{1}_n\delta.}$$
 
 Compute $\delta$ **before** changing $r$. The residual is updated once and now has mean zero.
 
-Equivalently, $\beta_0^{\mathrm{new}}=\bar y-\sum_{j=1}^p\bar X_j\beta_j$. For centered predictors, this gives $\beta_0^{\mathrm{new}}=\bar y$. No soft thresholding is applied.
+Equivalently, $\beta_0^{\mathrm{new}}=\bar y-\sum_{j=1}^p\bar X_j\beta_j$. For centred predictors, this gives $\beta_0^{\mathrm{new}}=\bar y$. No soft thresholding is applied.
 
 ## Completing the square gives the update
 
@@ -2555,7 +2652,7 @@ $$\frac12\left(b-\frac{z_j}{a_j}\right)^2
 
 This is the scalar problem we already solved. Therefore
 
-::: {.eqbox title="Exact coordinate minimizer"}
+::: {.eqbox title="Exact coordinate minimiser"}
 $$\beta_j\leftarrow S_{\lambda/a_j}(z_j/a_j)
 =\frac{S_\lambda(z_j)}{a_j}.$$
 :::
@@ -2618,7 +2715,7 @@ This is an absolute tolerance on the optimality residual, not a bound on coeffic
 
 ## Python: thresholding and optimality check {.scrollable}
 
-The code requires a first column of ones and fits its intercept explicitly. Predictor centering is optional for the solver; the example standardises only columns 1 through $p$. NumPy is the only dependency.
+The code requires a first column of ones and fits its intercept explicitly. Predictor centring is optional for the solver; the example standardises only columns 1 through $p$. NumPy is the only dependency.
 
 ``` python
 import numpy as np
@@ -2646,7 +2743,7 @@ Each sweep updates `beta[0]` without a penalty, then soft-thresholds the slopes.
 
 ``` python
 def lasso_cd(X, y, lam, beta_init=None, tol=1e-7, max_sweeps=10000):
-    """Minimize ||y-X beta||^2/(2n) + lam*sum(abs(beta[1:])).
+    """Minimise ||y-X beta||^2/(2n) + lam*sum(abs(beta[1:])).
 
     X[:, 0] must be ones. beta_init is the full starting vector.
     """
@@ -2692,7 +2789,7 @@ def lasso_cd(X, y, lam, beta_init=None, tol=1e-7, max_sweeps=10000):
 
 ## Python: simulate and fit {.scrollable}
 
-Only three predictors have nonzero slopes in the data-generating model. Center and scale the predictors using this training sample, prepend the intercept column, and keep $y$ uncentered.
+Only three predictors have nonzero slopes in the data-generating model. Centre and scale the predictors using this training sample, prepend the intercept column, and keep $y$ uncentred.
 
 ``` python
 rng = np.random.default_rng(123)
@@ -2704,12 +2801,12 @@ y = 2.0 + X_raw @ beta_true + rng.normal(0.0, 1.5, n)
 x_mean = X_raw.mean(axis=0)
 x_scale = X_raw.std(axis=0)  # ddof=0 gives mean squared predictor values = 1.
 X = np.column_stack((np.ones(n), (X_raw - x_mean) / x_scale))
-# X has p+1 columns; y is not centered. beta[0] is fitted explicitly.
+# X has p+1 columns; y is not centred. beta[0] is fitted explicitly.
 
 lam = 0.25
 beta, sweeps = lasso_cd(X, y, lam)
 print("Intercept:", beta[0])
-print("Standardized slopes:", np.round(beta[1:], 3))
+print("Standardised slopes:", np.round(beta[1:], 3))
 print("Sweeps:", sweeps, "KKT error:", kkt_error(X, y, beta, lam))
 
 # Recover coefficients and predictions in the original predictor units.
@@ -2718,7 +2815,7 @@ intercept = beta[0] - x_mean @ beta_original
 y_hat = intercept + X_raw @ beta_original  # Same predictions as X @ beta.
 ```
 
-[Download the complete Python example](computer_code/lasso.py). The returned vector contains the intercept followed by the slopes for the standardized predictors. On the original predictor scale, $\hat\beta_j^{\mathrm{original}}=\hat\beta_j/\mathrm{scale}_j$ and $\hat\beta_0^{\mathrm{original}}=\hat\beta_0-\sum_{j=1}^p\mathrm{mean}_j\hat\beta_j^{\mathrm{original}}$.
+[Download the complete Python example](computer_code/lasso.py). The returned vector contains the intercept followed by the slopes for the standardised predictors. On the original predictor scale, $\hat\beta_j^{\mathrm{original}}=\hat\beta_j/\mathrm{scale}_j$ and $\hat\beta_0^{\mathrm{original}}=\hat\beta_0-\sum_{j=1}^p\mathrm{mean}_j\hat\beta_j^{\mathrm{original}}$.
 
 ## The largest penalty needed for an all-zero fit
 
@@ -2739,7 +2836,7 @@ The maximum excludes column 0. For $\lambda\geq\lambda_{\max}$, $(\bar y,0,\ldot
 
 Solve for a decreasing sequence $\lambda_1=\lambda_{\max}>\cdots>\lambda_m>0$.
 
-Start the first fit at $\beta=(\bar y,0,\ldots,0)^\top$; initialize each subsequent fit at the previous solution. This is a **warm start**, often reducing the number of sweeps.
+Start the first fit at $\beta=(\bar y,0,\ldots,0)^\top$; initialise each subsequent fit at the previous solution. This is a **warm start**, often reducing the number of sweeps.
 
 ``` python
 lambda_max = np.max(np.abs(X[:, 1:].T @ (y - y.mean()))) / len(y)
@@ -2762,7 +2859,7 @@ Each curve is one slope coefficient; the unpenalised intercept is omitted (plot 
 
 ## Polynomial regression with Lasso: Python {.scrollable}
 
-Return to the **same 12 observations and degree-10 polynomial** used for OLS and Ridge. Standardize each polynomial column using the sample means and scales; leave the intercept unpenalised.
+Return to the **same 12 observations and degree-10 polynomial** used for OLS and Ridge. Standardise each polynomial column using the sample means and scales; leave the intercept unpenalised.
 
 Here $\lambda$ multiplies $\sum_{j=1}^{10}|\beta_j|$ in the objective $\|y-X\beta\|_2^2/(2n)+\lambda\sum_{j=1}^{10}|\beta_j|$.
 
@@ -2799,7 +2896,7 @@ Small penalties can require many sweeps because polynomial columns are strongly 
 
 ## Degree 10: which Lasso coefficients become zero?
 
-Same standardized polynomial columns as OLS and Ridge. **Bold zeros are exact zeros from soft thresholding**; other coefficients are rounded to three decimals.
+Same standardised polynomial columns as OLS and Ridge. **Bold zeros are exact zeros from soft thresholding**; other coefficients are rounded to three decimals.
 
 ::: {#polynomial-lasso-coefficients}
 
@@ -2845,26 +2942,13 @@ The intercept stays at $\bar y\approx0.072$. Here $\lambda_{\max}\approx0.5901$,
 
 The polynomial basis still contains ten possible powers, but only the nonzero slopes contribute to each fitted curve.
 
-## Exercise: which polynomial terms survive?
-
-::: {#exr-polynomial-lasso name="Which polynomial terms survive?"}
-
-Using the coefficient table and the Python code:
-
-1. For each $\lambda$, list the surviving powers of $x$. At $\lambda=0.01$, is the fitted polynomial degree equal to the number of nonzero slopes?
-2. Follow $\beta_9$ as $\lambda$ increases from $0.001$ to $0.01$ to $0.1$. Once a coefficient becomes zero, must it stay zero at every larger penalty?
-3. Explain why $\beta_0$ is unchanged and why the $\lambda=0.6$ fit is a horizontal line.
-4. Add $\lambda=0.03$ to the code. Report which slopes are exactly zero and compare the fitted curve with its neighbours in the table.
-
-:::
-
 ## Choosing the penalty and interpreting selection
 
 Choose $\lambda$ using held-out predictive performance, usually **cross-validation**: fit on training folds and evaluate on the corresponding validation fold.
 
-Estimate centering and scaling within each training fold, then apply them to its validation fold. Keep a final test set separate when reporting predictive performance.
+Estimate centring and scaling within each training fold, then apply them to its validation fold. Keep a final test set separate when reporting predictive performance.
 
-Training error alone favors weaker penalties. Validation balances fit against performance on unseen observations.
+Training error alone favours weaker penalties. Validation balances fit against performance on unseen observations.
 
 A selected variable is not automatically scientifically important or causal. Correlated predictors may substitute for one another, and selection can change across samples. A zero coefficient does not establish absence of an association with the outcome.
 
@@ -2891,22 +2975,10 @@ Then leave the intercept at its gradient-step value and threshold only the slope
 $$\beta_0^{(k+1)}=z_0^{(k)},\qquad
 \beta_j^{(k+1)}=S_{t\lambda}(z_j^{(k)}),\quad j=1,\ldots,p.$$
 
-This second step exactly minimizes, over $b\in\R^{p+1}$,
+This second step exactly minimises, over $b\in\R^{p+1}$,
 $$\frac{1}{2t}\|b-z^{(k)}\|_2^2+\lambda\sum_{j=1}^p|b_j|.$$
 
 This is **proximal gradient**, also called **ISTA** here. For our quadratic loss, $0<t\leq1/L$ with $L=\|X\|_2^2/n>0$ is a standard safe choice; $\|X\|_2$ is the largest singular value of the full design matrix, including column 0.
-
-## Check your understanding
-
-::: {#exr-lasso-understanding name="Lasso: check your understanding"}
-
-1. Use the defining inequality to show that $s=2$ is not a subgradient of $|u|$ at zero.
-2. Find $S_{0.5}(-0.2)$ and $S_{0.5}(-2)$.
-3. For a slope $j\geq1$, at a Lasso solution with $\lambda>0$, does $|X_{\cdot,j}^\top r/n|=\lambda$ force $\hat\beta_j\ne0$?
-4. Why is applying soft thresholding to the OLS slopes generally wrong for correlated predictors?
-5. Why must the intercept gradient be zero, and what is its coordinate descent update?
-
-:::
 
 
 # Further Reading
@@ -2928,7 +3000,7 @@ This is **proximal gradient**, also called **ISTA** here. For our quadratic loss
 
 - James, Witten, Hastie, Tibshirani, and Taylor (2023), [*An Introduction to Statistical Learning with Applications in Python*](https://www.statlearning.com/): an accessible starting point for regression, and regularisation.
 - Hastie, Tibshirani, and Wainwright (2015), [*Statistical Learning with Sparsity: The Lasso and Generalizations*](https://hastie.su.domains/StatLearnSparsity/): a deeper treatment of sparse models, Lasso algorithms, and statistical theory.
-- [Friedman, Hastie, and Tibshirani (2010): Regularisation Paths for Generalized Linear Models via Coordinate Descent](https://doi.org/10.18637/jss.v033.i01): coordinate updates and efficient regularization paths.
+- [Friedman, Hastie, and Tibshirani (2010): Regularisation Paths for Generalized Linear Models via Coordinate Descent](https://doi.org/10.18637/jss.v033.i01): coordinate updates and efficient regularisation paths.
 
 :::
 ::::

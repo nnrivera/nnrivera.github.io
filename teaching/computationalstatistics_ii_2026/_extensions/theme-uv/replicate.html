@@ -1,0 +1,90 @@
+<script>
+// Materialise replicas before explanations move their content into popups.
+window.uvReplicasReady = (async () => {
+  if (document.readyState !== 'complete') {
+    await new Promise(resolve => window.addEventListener('load', resolve, { once: true }));
+  }
+  const reveal = window.Reveal;
+  if (reveal && !reveal.isReady()) await new Promise(resolve => reveal.on('ready', resolve));
+  const replicas = [...document.querySelectorAll('.replicate[data-replicate-ref]')];
+  if (!replicas.length) return;
+  // Keep the original equation numbers: copy typeset maths, never typeset twice.
+  if (window.MathJax?.startup?.promise) await window.MathJax.startup.promise;
+  else if (window.MathJax?.Hub?.Queue) {
+    await new Promise(resolve => window.MathJax.Hub.Queue(resolve));
+  }
+
+  let serial = 0;
+  const finished = new Set();
+  const active = new Set();
+
+  function fill(slot) {
+    if (finished.has(slot)) return;
+    if (active.has(slot)) throw new Error('Circular replication is not supported.');
+    active.add(slot);
+    const ref = slot.dataset.replicateRef;
+    const target = document.getElementById(ref);
+    if (!target || target.closest('.replicate')) {
+      throw new Error(`“${ref}” must identify original content, not another replica.`);
+    }
+    // Quarto places equation IDs on spans inside the equation capsule.
+    const source = target.closest('.eqbox') || target;
+    if (source.contains(slot)) throw new Error(`“${ref}” contains its own replica.`);
+    for (const child of source.querySelectorAll('.replicate[data-replicate-ref]')) fill(child);
+
+    const copy = source.cloneNode(true);
+    copy.querySelectorAll('script').forEach(el => el.remove());
+    const nodes = [copy, ...copy.querySelectorAll('*')];
+    const ids = new Map();
+    const prefix = `uv-replica-${++serial}-`;
+    nodes.forEach(el => {
+      if (el.id) {
+        let id = prefix + el.id;
+        while (document.getElementById(id)) id += '-copy';
+        ids.set(el.id, id);
+        el.id = id;
+      }
+      el.classList.remove('fragment', 'current-fragment');
+      // A resolved nested replica is simply part of the copied content.
+      el.removeAttribute('data-replicate-ref');
+    });
+    nodes.forEach(el => {
+      for (const attr of [...el.attributes]) {
+        let value = attr.value;
+        if (['for', 'headers', 'aria-labelledby', 'aria-describedby', 'aria-controls', 'aria-owns'].includes(attr.name)) {
+          value = value.split(/\s+/).map(id => ids.get(id) || id).join(' ');
+        }
+        // SVG geometry must refer to the copied IDs; prose links retain their
+        // original targets so cross-references still lead to the source.
+        if (el.namespaceURI === 'http://www.w3.org/2000/svg' && ['href', 'xlink:href'].includes(attr.name) && value.startsWith('#')) {
+          value = '#' + (ids.get(value.slice(1)) || value.slice(1));
+        }
+        value = value.replace(/url\(['"]?#([^)'"\s]+)['"]?\)/g,
+          (match, id) => ids.has(id) ? `url(#${ids.get(id)})` : match);
+        if (value !== attr.value) el.setAttribute(attr.name, value);
+      }
+    });
+    // Labelled headings are not new slides at their destination.
+    if (copy.matches('section')) {
+      const wrapper = document.createElement('div');
+      wrapper.append(...copy.childNodes);
+      slot.replaceChildren(wrapper);
+    } else {
+      slot.replaceChildren(copy);
+    }
+    slot.removeAttribute('role');
+    finished.add(slot);
+    active.delete(slot);
+  }
+
+  replicas.forEach(slot => {
+    try { fill(slot); }
+    catch (error) {
+      slot.textContent = `Cannot replicate: ${error.message}`;
+      slot.setAttribute('role', 'alert');
+      active.clear();
+    }
+  });
+  reveal?.layout();
+})();
+</script>

@@ -84,6 +84,14 @@ function Pandoc(doc)
     suffix = suffix + 1
     index_id = 'exercise-list-' .. suffix
   end
+  local section_id = 'exercise-list-section'
+  suffix = 1
+  while used_ids[section_id] or section_id == index_id do
+    suffix = suffix + 1
+    section_id = 'exercise-list-section-' .. suffix
+  end
+  doc.blocks:insert(pandoc.Header(1, 'Exercise list',
+    pandoc.Attr(section_id, {'unnumbered'})))
   doc.blocks:insert(pandoc.Header(slide_level, 'Exercises',
     pandoc.Attr(index_id, {'scrollable', 'unnumbered'})))
   doc.blocks:insert(pandoc.Div({pandoc.BulletList(items)},
