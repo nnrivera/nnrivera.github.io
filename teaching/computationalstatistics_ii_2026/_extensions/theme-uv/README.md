@@ -187,6 +187,40 @@ layouts. Oversized content starts below the heading rather than being centred
 above it; use `.scrollable` or split the slide if it does not fit. Browser paper
 printing uses document flow; Reveal PDF retains the centred slide layout.
 
+## Section timing in Speaker View
+
+Give a level-one section heading a time allocation in **minutes**:
+
+```markdown
+# Backpropagation {section-time="20"}
+
+## The chain rule
+
+Slide content.
+```
+
+Open the presentation using `quarto preview` and press **S** for Speaker View.
+Below its existing clock, a section panel shows the heading, elapsed time,
+allocation and remaining time. It marks overtime in red and includes **Pause /
+Resume** and **Reset section** buttons. Students' slides contain no timer.
+
+- Timing starts when Speaker View is connected and a timed section is active.
+- The allocation covers the section divider and all following slides until the
+  next level-one heading. A heading without `section-time` ends the timed section.
+- Leaving a section stops its timer; returning resumes its saved elapsed time.
+- Pause applies across sections until Resume is pressed. Reset affects only the
+  current section; it does not change the paused state or the built-in clock.
+- Closing Speaker View stops timing. Reopening it preserves times while the
+  main presentation remains open; reloading the main presentation clears them.
+- Decimal minutes are accepted. Nonpositive values and attributes on other
+  heading levels produce a render error.
+
+This is a theme extension, separate from Reveal's per-slide pacing timer.
+It uses the same-origin Speaker View window and its `.speaker-controls-time`
+container; serve the presentation over HTTP with `quarto preview` for reliable
+speaker-window access. No Python or R runtime is needed in the published deck.
+When updating Quarto/Reveal, check the speaker panel as well as the main slides.
+
 ## Definitions, theorems, and exercises
 
 Use Quarto's numbered mathematical blocks. Give each one a unique ID; `name`

@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "width": 4,
+      "penalty": 0.0,
+      "epoch": 1500,
+      "validation_mse": 0.058165605155690886
+    },
+    {
+      "width": 4,
+      "penalty": 0.01,
+      "epoch": 697,
+      "validation_mse": 0.09895107179277343
+    },
+    {
+      "width": 32,
+      "penalty": 0.0,
+      "epoch": 949,
+      "validation_mse": 0.049554385347073564
+    },
+    {
+      "width": 32,
+      "penalty": 0.01,
+      "epoch": 1063,
+      "validation_mse": 0.08567797655451119
+    }
+  ],
+  "selected_width": 32,
+  "selected_penalty": 0.0,
+  "test_mse": 0.05033228169780823,
+  "maximum_gradient_check_error": 2.2170863755999193e-10
+}

@@ -1,0 +1,13 @@
+{
+  "plane": {
+    "selected_epoch": 592,
+    "test_accuracy": 0.908
+  },
+  "cnn": {
+    "selected_epoch": 250,
+    "test_accuracy": 1.0,
+    "correct": 200,
+    "test_size": 200,
+    "gradient_check_error": 9.970437669926113e-11
+  }
+}

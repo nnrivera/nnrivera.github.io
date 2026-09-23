@@ -1,0 +1,20 @@
+```pseudocode
+#| html-line-number: true
+#| html-indent-lines: true
+\begin{algorithm}
+\caption{Mini-batch SGD}
+\begin{algorithmic}
+\State Initialise weights randomly and choose biases.
+\For{each epoch}
+  \State Shuffle the training indices and partition them into batches.
+  \For{each batch}
+    \State Compute predictions and the average loss on the batch.
+    \State Backpropagate to obtain the batch gradient.
+    \State Subtract the learning rate times the gradient from the parameters.
+  \EndFor
+  \State Record training and validation errors without parameter updates.
+\EndFor
+\Return The fitted parameters
+\end{algorithmic}
+\end{algorithm}
+```

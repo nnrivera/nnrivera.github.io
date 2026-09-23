@@ -1,0 +1,1 @@
+Selected epoch: **250**; test accuracy: **100.0%** (200/200). This synthetic task is deliberately simple.

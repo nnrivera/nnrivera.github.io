@@ -1,0 +1,101 @@
+<script>
+// The main deck owns timing state. Only the same-origin speaker window gets UI.
+(() => {
+  const reveal = window.Reveal;
+  if (!reveal || window.parent !== window || new URLSearchParams(location.search).has('print-pdf')) return;
+  let speaker, panel, active = null, last = performance.now(), paused = false;
+  const sections = new Map();
+  const owners = new Map();
+
+  function collect() {
+    let owner = null;
+    for (const slide of reveal.getSlides()) {
+      const heading = slide.querySelector('h1');
+      if (heading) {
+        const minutes = Number(slide.getAttribute('data-section-time') || heading.getAttribute('data-section-time'));
+        owner = minutes > 0 ? { title: heading.textContent.trim(), budget: minutes * 60, elapsed: 0 } : null;
+        if (owner) sections.set(slide, owner);
+      }
+      owners.set(slide, owner);
+    }
+    active = owners.get(reveal.getCurrentSlide()) || null;
+  }
+
+  function account() {
+    const now = performance.now();
+    if (active && speaker && !speaker.closed && !paused) active.elapsed += (now - last) / 1000;
+    last = now;
+  }
+
+  function duration(seconds) {
+    const whole = Math.max(0, Math.floor(seconds));
+    return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
+  }
+
+  function paint() {
+    if (!panel || !speaker || speaker.closed) return;
+    panel.querySelector('.uv-section-name').textContent = active ? active.title : 'No timed section';
+    panel.querySelector('.uv-section-value').textContent = active
+      ? `${duration(active.elapsed)} elapsed / ${duration(active.budget)} allocated` : 'Add section-time to a section heading.';
+    panel.querySelector('.uv-section-status').textContent = active
+      ? `${paused ? 'Paused · ' : ''}${duration(Math.abs(active.budget - active.elapsed))} ${active.elapsed >= active.budget ? 'over time' : 'remaining'}` : '';
+    panel.classList.toggle('uv-over-time', !!active && active.elapsed >= active.budget);
+    panel.querySelector('.uv-section-pause').textContent = paused ? 'Resume' : 'Pause';
+    panel.querySelectorAll('button').forEach(button => { button.disabled = !active; });
+  }
+
+  function attach(target) {
+    // Reveal's notes plugin sends this handshake after constructing its UI.
+    try {
+      if (target.opener !== window) return;
+      const doc = target.document;
+      const controls = doc.querySelector('.speaker-controls-time');
+      if (!controls) return;
+      account();
+      speaker = target;
+      panel = doc.getElementById('uv-section-timer');
+      if (!panel) {
+        const style = doc.createElement('style');
+        style.textContent = `
+          #uv-section-timer { clear: both; margin-top: 12px; border-top: 2px solid #0f4494; padding-top: 8px; font: 14px/1.4 Helvetica, Arial, sans-serif; }
+          #uv-section-timer .uv-section-name { font-weight: bold; overflow-wrap: anywhere; }
+          #uv-section-timer .uv-section-value { font-variant-numeric: tabular-nums; }
+          #uv-section-timer .uv-section-status { color: #0f4494; }
+          #uv-section-timer.uv-over-time .uv-section-status { color: #b42318; font-weight: bold; }
+          #uv-section-timer button { margin: 6px 8px 0 0; padding: 3px 8px; cursor: pointer; }
+        `;
+        doc.head.append(style);
+        panel = doc.createElement('div');
+        panel.id = 'uv-section-timer';
+        panel.innerHTML = '<div class="uv-section-name"></div><div class="uv-section-value"></div><div class="uv-section-status"></div><button type="button" class="uv-section-pause">Pause</button><button type="button" class="uv-section-reset">Reset section</button>';
+        controls.append(panel);
+        panel.querySelector('.uv-section-pause').addEventListener('click', () => {
+          account(); paused = !paused; paint();
+        });
+        panel.querySelector('.uv-section-reset').addEventListener('click', () => {
+          account(); if (active) active.elapsed = 0; paint();
+        });
+      }
+      paint();
+    } catch (error) {
+      console.warn('Section timer requires a same-origin Speaker View.', error);
+    }
+  }
+
+  function initialise() {
+    collect();
+    if (!sections.size) return;
+    reveal.on('slidechanged', () => {
+      account(); active = owners.get(reveal.getCurrentSlide()) || null; paint();
+    });
+    window.addEventListener('message', event => {
+      if (event.origin !== location.origin || !event.source) return;
+      let message;
+      try { message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data; } catch { return; }
+      if (message?.namespace === 'reveal-notes' && message.type === 'connected') attach(event.source);
+    });
+    setInterval(() => { account(); paint(); }, 250);
+  }
+  if (reveal.isReady()) initialise(); else reveal.on('ready', initialise);
+})();
+</script>

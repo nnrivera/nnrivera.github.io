@@ -1,0 +1,47 @@
+```{=html}
+<div id="nn-convolution-mount"></div>
+<script>
+(() => {
+  const template = document.createElement('template');
+  template.innerHTML = `<div style="max-width:1000px;margin:auto;font-family:sans-serif">
+    <svg viewBox="0 0 1000 320" role="img" aria-label="A two by two filter sliding over a three by three input" style="width:100%;max-height:320px"></svg>
+    <label style="display:flex;justify-content:center;gap:20px;align-items:center">Filter position
+      <input type="range" min="0" max="3" step="1" value="0" aria-label="Filter position" style="width:300px">
+    </label>
+    <p class="calculation" aria-live="polite" style="text-align:center;font-size:25px;color:#7d3c98"></p>
+  </div>`;
+  const root = template.content.firstElementChild;
+  const svg = root.querySelector('svg');
+  const X = [[1,2,0],[0,1,3],[2,1,0]], K = [[1,0],[0,-1]];
+  const Z = [[0,-1],[-1,1]];
+  function add(tag,attrs,label) {
+    const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    for(const [k,v] of Object.entries(attrs)) e.setAttribute(k,v);
+    if(label!==undefined)e.textContent=label;
+    svg.append(e);return e;
+  }
+  function draw() {
+    svg.replaceChildren();
+    const p=+root.querySelector('input').value, row=Math.floor(p/2),col=p%2;
+    function matrix(A,left,title,highlight) {
+      add('text',{x:left+80,y:30,'text-anchor':'middle','font-size':23,fill:'#0f4494'},title);
+      A.forEach((r,i)=>r.forEach((v,j)=>{
+        const active=highlight(i,j);
+        add('rect',{x:left+j*70,y:55+i*70,width:68,height:68,fill:active?'#eaddf0':'#f1f5f9',stroke:active?'#7d3c98':'#cbd5e1'});
+        add('text',{x:left+j*70+34,y:99+i*70,'text-anchor':'middle','font-size':25,fill:'#232754'},v);
+      }));
+    }
+    matrix(X,50,'Input',(i,j)=>i>=row&&i<row+2&&j>=col&&j<col+2);
+    matrix(K,420,'Filter',()=>true);
+    matrix(Z,760,'Output',(i,j)=>i===row&&j===col);
+    add('text',{x:335,y:145,'font-size':36,fill:'#0f4494'},'×');
+    add('text',{x:650,y:145,'font-size':36,fill:'#0f4494'},'→');
+    root.querySelector('.calculation').textContent=
+      `${X[row][col]} × 1 + ${X[row][col+1]} × 0 + ${X[row+1][col]} × 0 + ${X[row+1][col+1]} × (−1) = ${Z[row][col]}`;
+  }
+  root.querySelector('input').addEventListener('input',draw);
+  draw();
+  document.getElementById('nn-convolution-mount').append(root);
+})();
+</script>
+```

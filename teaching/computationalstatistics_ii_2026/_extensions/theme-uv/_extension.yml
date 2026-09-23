@@ -18,8 +18,10 @@ contributes:
         - centred-content.html
         - replicate.html
         - explanation.html
+        - section-timer.html
        filters:
         - title-page.lua
+        - section-timer.lua
         - block-styles.lua
         - replicate.lua
         - explanation.lua

@@ -1,0 +1,1 @@
+Selected epoch: **592**; test accuracy: **90.8%** on 500 independent observations.

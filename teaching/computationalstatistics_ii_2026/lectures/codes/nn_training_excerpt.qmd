@@ -1,0 +1,12 @@
+```python
+# X: (batch, inputs); W: (inputs, hidden); v: (hidden,)
+H = np.tanh(X @ W + b)
+scores = H @ v + c
+residual = (scores - y) / len(y)
+
+grad_v = H.T @ residual + penalty * v
+grad_c = residual.sum()
+delta = residual[:, None] * v * (1 - H**2)
+grad_W = X.T @ delta + penalty * W
+grad_b = delta.sum(axis=0)
+```

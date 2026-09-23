@@ -1,0 +1,61 @@
+```{=html}
+<div id="nn-relu-mount"></div>
+<script>
+(() => {
+  const template = document.createElement('template');
+  template.innerHTML = `<div style="max-width:1100px;margin:0 auto;font-family:sans-serif;">
+    <svg viewBox="0 0 1000 355" role="img" aria-label="Three weighted ReLU units and their sum" style="display:block;width:100%;max-height:355px;">
+      <defs><clipPath id="nn-relu-clip"><rect x="65" y="15" width="875" height="270"/></clipPath></defs>
+      <rect x="65" y="15" width="875" height="270" fill="#f8fafc"/>
+      <g class="nn-ticks" fill="#475569" font-size="16"></g>
+      <g clip-path="url(#nn-relu-clip)">
+        <path class="nn-unit-0" fill="none" stroke="#0f4494" stroke-width="2" stroke-dasharray="6 5"/>
+        <path class="nn-unit-1" fill="none" stroke="#be2832" stroke-width="2" stroke-dasharray="6 5"/>
+        <path class="nn-unit-2" fill="none" stroke="#7d3c98" stroke-width="2" stroke-dasharray="6 5"/>
+        <path class="nn-sum" fill="none" stroke="#172554" stroke-width="4"/>
+      </g>
+      <text x="500" y="342" text-anchor="middle" font-size="20">x</text>
+    </svg>
+    <div style="display:flex;justify-content:center;gap:22px;font-size:19px;">
+      <span style="color:#0f4494">┄ ReLU(x)</span>
+      <span style="color:#be2832">┄ −2 ReLU(x − t)</span>
+      <span style="color:#7d3c98">┄ ReLU(x − 2)</span>
+      <span style="color:#172554">━ Sum</span>
+    </div>
+    <label style="display:flex;justify-content:center;align-items:center;gap:18px;margin-top:12px;font-size:23px;">
+      Middle bend t
+      <input class="nn-bend" type="range" min="0.25" max="1.75" step="0.05" value="1" aria-label="Middle ReLU bend" style="width:300px;">
+      <output class="nn-bend-value" style="min-width:55px;"></output>
+    </label>
+  </div>`;
+  const container = template.content.firstElementChild;
+  const px = x => 65 + (x + 0.5) * 875 / 3;
+  const py = y => 285 - (y + 5) * 270 / 8;
+  const ticks = container.querySelector('.nn-ticks');
+  const svgNS = 'http://www.w3.org/2000/svg';
+  function element(tag, attrs, label) {
+    const e = document.createElementNS(svgNS, tag);
+    for (const [name,value] of Object.entries(attrs)) e.setAttribute(name,value);
+    if (label !== undefined) e.textContent = label;
+    ticks.append(e);
+  }
+  element('line',{x1:px(-0.5),x2:px(2.5),y1:py(0),y2:py(0),stroke:'#94a3b8'});
+  element('line',{x1:px(0),x2:px(0),y1:15,y2:285,stroke:'#94a3b8'});
+  for (const x of [0,1,2]) element('text',{x:px(x),y:310,'text-anchor':'middle'},x);
+  for (const y of [-4,-2,0,2]) element('text',{x:52,y:py(y)+5,'text-anchor':'end'},y);
+  const slider = container.querySelector('.nn-bend');
+  function update() {
+    const t = slider.valueAsNumber;
+    const xs = [-0.5,0,t,2,2.5];
+    const units = [x=>Math.max(0,x),x=>-2*Math.max(0,x-t),x=>Math.max(0,x-2)];
+    const curve = fn => xs.map((x,i)=>`${i?'L':'M'} ${px(x)} ${py(fn(x))}`).join(' ');
+    units.forEach((fn,i)=>container.querySelector(`.nn-unit-${i}`).setAttribute('d',curve(fn)));
+    container.querySelector('.nn-sum').setAttribute('d',curve(x=>units.reduce((sum,fn)=>sum+fn(x),0)));
+    container.querySelector('.nn-bend-value').textContent = t.toFixed(2);
+  }
+  slider.addEventListener('input',update);
+  update();
+  document.getElementById('nn-relu-mount').append(container);
+})();
+</script>
+```
