@@ -1,9 +1,8 @@
-```{=html}
-<div id="nn-relu-mount"></div>
-<script>
-(() => {
-  const template = document.createElement('template');
-  template.innerHTML = `<div style="max-width:1100px;margin:0 auto;font-family:sans-serif;">
+```{ojs}
+//| echo: false
+
+nnReluDemo = {
+  const container = html`<div style="max-width:1100px;margin:0 auto;font-family:sans-serif;">
     <svg viewBox="0 0 1000 355" role="img" aria-label="Three weighted ReLU units and their sum" style="display:block;width:100%;max-height:355px;">
       <defs><clipPath id="nn-relu-clip"><rect x="65" y="15" width="875" height="270"/></clipPath></defs>
       <rect x="65" y="15" width="875" height="270" fill="#f8fafc"/>
@@ -28,7 +27,6 @@
       <output class="nn-bend-value" style="min-width:55px;"></output>
     </label>
   </div>`;
-  const container = template.content.firstElementChild;
   const px = x => 65 + (x + 0.5) * 875 / 3;
   const py = y => 285 - (y + 5) * 270 / 8;
   const ticks = container.querySelector('.nn-ticks');
@@ -55,7 +53,6 @@
   }
   slider.addEventListener('input',update);
   update();
-  document.getElementById('nn-relu-mount').append(container);
-})();
-</script>
+  return container;
+}
 ```

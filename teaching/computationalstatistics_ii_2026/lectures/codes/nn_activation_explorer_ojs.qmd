@@ -1,9 +1,8 @@
-```{=html}
-<div id="nn-activation-mount"></div>
-<script>
-(() => {
-  const template = document.createElement('template');
-  template.innerHTML = `<div class="nn-activation-explorer" style="max-width:1260px;margin:0 auto;font-family:system-ui,sans-serif;color:#232754;">
+```{ojs}
+//| echo: false
+
+nnActivationExplorer = {
+  const container = html`<div class="nn-activation-explorer" style="max-width:1260px;margin:0 auto;font-family:system-ui,sans-serif;color:#232754;">
     <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 34px;font-size:20px;margin:0 0 10px;">
       <label style="display:flex;align-items:center;gap:10px;">Activation
         <select class="nn-activation-choice" style="font:inherit;color:#642b80;background:#faf5ff;border:1px solid #bba4c9;border-radius:6px;padding:5px 10px;">
@@ -62,7 +61,6 @@
     </svg>
     <p class="nn-activation-observation" aria-live="polite" style="font-size:19px;text-align:center;margin:8px 0 0;min-height:26px;"></p>
   </div>`;
-  const container = template.content.firstElementChild;
   const svgNS = 'http://www.w3.org/2000/svg';
   const select = container.querySelector('.nn-activation-choice');
   const weight = container.querySelector('.nn-activation-weight');
@@ -127,7 +125,6 @@
   }
   for (const control of [select,weight,intercept]) control.addEventListener('input',update);
   update();
-  document.getElementById('nn-activation-mount').append(container);
-})();
-</script>
+  return container;
+}
 ```
