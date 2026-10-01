@@ -16,10 +16,8 @@ Before this I was a postdoc with <a href="https://www.cl.cam.ac.uk/~tms41/">Thom
 <br />
 
 <strong> Activities</strong> <br>
-<a href="https://nnrivera.github.io/workshops/2026_miniworkshop_ideuv">Encuentro tutores Doctorado en Estadística UV</a> 2026 (in spanish)  
-<br>
-<a href="https://nnrivera.github.io/workshops/2026_miniworkshop_ideuv"> Mini-workshop IDEUV  on Statistical Methodology and Machine Learning Methods</a> 2026 
-<br>
+<a href="https://nnrivera.github.io/workshops/2026_miniworkshop_ideuv">Encuentro tutores Doctorado en Estadística UV</a> 2026 (in spanish)<br>
+<a href="https://nnrivera.github.io/workshops/2026_miniworkshop_ideuv"> Mini-workshop IDEUV  on Statistical Methodology and Machine Learning Methods</a> 2026 <br>
 <a href="https://nnrivera.github.io/workshops/2026_encuentro_doctorado"> Encuentro Doctorado en Estadística UV</a> 2026 (in spanish) 
 <br>
 <a href="https://nnrivera.github.io/workshops/2024_workshop_ideuv"> Mini-workshop IDEUV: Despedida Año Académico</a> 2024 (in spanish) 
