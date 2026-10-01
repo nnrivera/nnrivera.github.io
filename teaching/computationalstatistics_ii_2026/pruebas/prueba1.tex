@@ -1,0 +1,140 @@
+\documentclass[a4paper,12 pt]{article}
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsthm,amsmath,amssymb,dsfont}
+\usepackage{multicol}
+\usepackage{euscript}
+\usepackage{graphicx}
+\usepackage{algorithm,algorithmic}
+\usepackage{enumitem}
+\newcommand{\transpose}{\intercal}
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,265mm},
+	left=15mm,
+	top=15mm,
+	right = 15mm
+}
+
+
+\theoremstyle{definition}
+\newtheorem{problema}{Problema}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\begin{document}
+	
+	\begin{flushleft}
+		\Large{ Universidad de Valpara\'iso \\
+			DOCE-102 Computación Estadística\\
+			Semestre I 2026.\\
+			Profesor: Nicolás Rivera
+		}
+	\end{flushleft}
+	
+	\begin{center}
+		{\Large \bf Prueba 1}
+	\end{center}
+	
+	
+	
+	\section*{Instrucciones}
+
+	
+		\begin{problema}
+		
+		Sea \(X_1,\ldots,X_n\) una muestra aleatoria independiente proveniente de una distribución
+		\[
+		X_i \sim N(\mu,\sigma^2),
+		\]
+		donde tanto \(\mu\) como \(\sigma^2\) son desconocidos.
+		
+		\begin{enumerate}
+						
+			\item Calcule el gradiente de la log-verosimilitud con respecto a los parámetros \((\mu,\sigma^2)\).
+			
+			\item Calcule la matriz Hessiana de la log-verosimilitud.
+			
+			\item Encuentre los estimadores de máxima verosimilitud de \(\mu\) y \(\sigma^2\).
+			
+			\item Utilice la matriz Hessiana para verificar que el punto obtenido corresponde a un máximo.
+		\end{enumerate}
+		
+	\end{problema}
+
+
+\begin{problema}
+Sea $f(t)=at^2/2$, con $a>0$. Considere el método de descenso de gradiente con paso constante $\gamma>0$, iniciado en $t_0\neq0$:
+\[
+t_{k+1}=t_k-\gamma f'(t_k),\qquad k=0,1,\ldots.
+\]
+
+\begin{enumerate}
+	\item Encuentre el único minimizador global de $f$ y obtenga una expresión explícita para $t_k$ en términos de $t_0$, $a$ y $\gamma$.
+	\item Determine todos los valores de $\gamma>0$ para los cuales $t_k$ converge al minimizador. Describa qué ocurre cuando $\gamma=1/a$ y cuando $\gamma=2/a$.
+	\item Aplique el lema de descenso del anexo con $L=a$ para demostrar que
+	\[
+	f(t_{k+1})\leq f(t_k)-\gamma\left(1-\frac{a\gamma}{2}\right)|f'(t_k)|^2.
+	\]
+	¿Para qué valores de $\gamma$ garantiza esta desigualdad un descenso estricto cuando $t_k\neq0$? Compare con el intervalo de convergencia obtenido anteriormente.
+	\item Escriba la actualización del método de Newton con paso completo y demuestre que alcanza el minimizador en una iteración desde cualquier punto inicial. ¿A qué elección de $\gamma$ corresponde en este ejemplo?
+\end{enumerate}
+\end{problema}
+
+\begin{problema}
+Sea $X\in\R^{n\times(p+1)}$, con $n\geq1$, una matriz cuya primera columna está formada por unos. Las demás columnas pueden ser linealmente dependientes. Para $y\in\R^n$, $\lambda>0$ y $P=\operatorname{diag}(0,1,\ldots,1)$, considere el objetivo de regresión Ridge
+\[
+F(\beta)=\frac{1}{2n}\|y-X\beta\|_2^2+\frac{\lambda}{2}\beta^\top P\beta,
+\qquad \beta=(\beta_0,\beta_1,\ldots,\beta_p)^\top.
+\]
+El intercepto $\beta_0$ no se penaliza.
+
+\begin{enumerate}
+	\item Calcule el gradiente y la matriz Hessiana de $F$. Deduzca las ecuaciones que debe satisfacer un minimizador.
+	\item Demuestre que
+	\[
+	v^\top(X^\top X+n\lambda P)v>0\qquad\text{para todo }v\in\R^{p+1}\setminus\{0\}.
+	\]
+	Concluya que existe un único minimizador global, incluso si las columnas de $X$ son linealmente dependientes, y encuentre una expresión para él.
+	\item Suponga que cada columna de predictores está centrada, es decir, $\sum_{i=1}^n X_{ij}=0$ para $j=1,\ldots,p$. Demuestre que el intercepto estimado es $\widehat\beta_0=\bar y$, donde $\bar y=n^{-1}\sum_{i=1}^n y_i$. ¿Cuál sería el intercepto estimado si también se penalizara $\beta_0$, reemplazando $P$ por la matriz identidad?
+\end{enumerate}
+\end{problema}
+
+	
+\section*{Anexo: resultados útiles}
+Puede utilizar los siguientes resultados sin demostrarlos. En cada aplicación, verifique las hipótesis correspondientes.
+
+\subsection*{1. Matrices definidas positivas y negativas}
+Una matriz simétrica $A\in\R^{d\times d}$ es:
+\begin{itemize}
+    \item \textbf{Semidefinida positiva} si $v^\top Av\geq0$ para todo $v\in\R^d$.
+    \item \textbf{Definida positiva} si $v^\top Av>0$ para todo $v\neq0$.
+    \item \textbf{Definida negativa} si $v^\top Av<0$ para todo $v\neq0$.
+\end{itemize}
+Toda matriz definida positiva o definida negativa es invertible.
+
+\subsection*{2. Condiciones de optimalidad y convexidad}
+Sea $f:U\to\R$ dos veces continuamente diferenciable, donde $U\subseteq\R^d$ es abierto.
+\begin{itemize}
+    \item Si $x^*\in U$ es un mínimo o máximo local, entonces $\nabla f(x^*)=0$.
+    \item Si $\nabla f(x^*)=0$ y $\nabla^2f(x^*)$ es definida positiva, entonces $x^*$ es un mínimo local estricto. Si es definida negativa, es un máximo local estricto.
+    \item Si, además, $U$ es convexo y $\nabla^2f(x)$ es semidefinida positiva para todo $x\in U$, entonces $f$ es convexa. Si la Hessiana es definida positiva en todo $U$, entonces $f$ es estrictamente convexa.
+    \item Para una función convexa diferenciable, todo punto estacionario es un minimizador global. La convexidad estricta garantiza que hay a lo más un minimizador, pero por sí sola no garantiza su existencia.
+\end{itemize}
+
+\subsection*{3. Lema de descenso}
+Sea $f:\R^d\to\R$ una función diferenciable cuyo gradiente es Lipschitz con constante $L>0$, es decir,
+\[
+\|\nabla f(x)-\nabla f(y)\|_2\leq L\|x-y\|_2
+\qquad\text{para todo }x,y\in\R^d.
+\]
+Entonces, para todo $x,y\in\R^d$,
+\[
+\boxed{f(x)\leq f(y)+\langle\nabla f(y),x-y\rangle
++\frac{L}{2}\|x-y\|_2^2.}
+\]
+En dimensión uno, el gradiente es la derivada, el producto interno es el producto usual y la norma es el valor absoluto.
+
+\end{document}

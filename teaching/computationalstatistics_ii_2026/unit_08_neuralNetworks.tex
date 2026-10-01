@@ -1,0 +1,651 @@
+\documentclass[9pt,xcolor=table]{beamer}
+%add handout for no pauses
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}% útil para que ponga letras acentuadas y no junte una vocal con un acento.
+\usepackage{pgfpages}
+\usepackage{../style/arrowsnew}
+\usepackage{ulem}
+\usepackage{tikz,pgf}
+\usetikzlibrary{shapes.callouts,decorations.pathmorphing,arrows,snakes,shapes,patterns}
+\usepgflibrary{shapes.callouts}
+\usepackage{xcolor}
+\usepackage{babel}
+\usepackage{tikz}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{../style/beamerthemeMPII}
+\usepackage{minted}
+%[xleftmargin=20pt,linenos] usual option 
+
+
+\input{../style/CommonPackages}
+
+\input{../style/BoxesEtAl}
+
+\input{../style/NotationShortcuts}
+
+\newcommand{\argmin}{\operatorname{argmin}}
+\newcommand{\argmax}{\operatorname{argmax}}
+\newcommand{\sm}{\operatorname{sm}}
+%%% SOME OPTIONS
+
+%% for title page
+\newif\ifshowtitledate
+% TODO teaser image
+
+%% for status bar
+\newif\ifshowshorttitle
+\newif\ifshowshortauthor
+\newif\ifshowdate
+\newif\ifshowtotalnumberofframes
+
+%% for content
+\newif\ifshowminiframes
+\newif\ifincludetoc
+
+% default values
+\showtitledatefalse
+\showshorttitlefalse
+\showshortauthorfalse
+\showdatefalse
+\showtotalnumberofframesfalse
+\showminiframesfalse
+\includetocfalse
+
+%%%% TITLE
+\makeatletter
+\newcommand\changemode[1]{%
+  \gdef\beamer@currentmode{#1}}
+\makeatother
+% Title page containing title, author name, date
+\mode<presentation>
+%%%% EDIT HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Specify the title, put the shorttitle in square brackets, the full title in curly brackets
+    \title[]{DOCE-102 Statistical Computing\\
+    Unit 8: Neural Networks}
+
+    \showshorttitletrue
+   \author[N.R.]{Nicol\'as Rivera}
+
+   % \showshortauthortrue
+    \date{1S 2025}
+    \showtitledatetrue
+     \showtotalnumberofframestrue
+    \MPIIcolorscheme{MPIIdarkblue}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\begin{tikzpicture}[overlay,scale=0.45,opacity=1.0,remember picture]
+%\node () at (12,6) {
+%\includegraphics[scale=0.55]
+%{geometry2title}};
+\node () at (12,-7) {
+\includegraphics[scale=0.04]
+{../style/uvalparaiso}};
+\end{tikzpicture}
+\end{frame}
+\setbeamertemplate{headline}[MPIIheadline]
+\setbeamertemplate{footline}[MPIIfootline]
+
+  \setbeamertemplate{mini frames}[tick]
+  \setbeamersize{mini frame size=0.135cm}
+
+\AtBeginSection[] % Do nothing for \section*
+{
+\begin{frame}
+\frametitle{Table of Contents}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\section{Warning Message}
+
+\begin{frame}{Warning Message}
+Neural networks are very popular, and thus the internet is full of non-useful information
+\vspace{1cm}
+
+As an introduction to the subject, I recommend Chapter 11 of the Book \vspace{0.5cm}
+\begin{center}
+
+\textit{\textcolor{red}{Elements of Statistical learning}}\\
+ by Hastie, Tibshirani, and Friedman
+\end{center}
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{A Neuron = A regression}
+The basic element of a Neural Network is a Neuron. 
+
+A neuron is, more or less, a linear regression or a logistic regression.
+
+\fancythm{Linear Regression Model}
+{
+	In linear regression we model a response $Y \in \R$ in terms of covariates $X \in \R^d$ by using weights $\alpha \in \R^d$, i.e.
+	$$Y = \alpha_0 + \alpha^{\transpose} X.$$
+		As usual, it is convenient to include the intercept in $X$ to avoid writing the $\alpha_0$ term.
+}
+
+\fancythm{logistic Regression Model}
+{
+	In logistic regression we model the probability of a response $Y \in \{0,1\}$ in terms of covariates $X \in \R^d$ by using weights $\alpha \in \R^d$, and a link function $\sigma:\R\to [0,1]$
+	$$\Prob(Y=1) = \sigma(\alpha_0 + \alpha^{\transpose} X).$$
+ Usually, $\sigma(x) = \frac{1}{1+e^{-x}}.$
+}
+\end{frame}
+
+\begin{frame}{A Neuron = A regression}
+Sometimes is useful to extend logistic regression to $K$ classes by using the so-called soft-max function $\sm:\R^K \to \R^K$ defined by
+
+$$\sm_k(T) = \frac{e^{T_k}}{\sum_{\ell=1}^K e^{T_\ell}}.$$
+
+In this case, we can extend logistic regression by $K$ groups.
+
+\fancythm{K-groups extension of logistic regression}
+{
+	Consider $X \in \R^d$, define 
+	
+	 For $k \in \{1,\ldots, K\}$, let $\alpha_k \in \R^d$. Then K-groups extension of logistic regression is defined by
+	 
+	 \begin{align*}
+	 \Prob(Y=k) &= \sm_k(\alpha_{k0} + \alpha_k^{\transpose} X),  \text{ for $k \in \{1,\ldots, K\}$}
+	 \end{align*}
+	 
+	 %Usually, to avoid identifiability issues, we  can choose $\alpha_1$ as the vector with only 1's. 
+}
+\textbf{Exercise:} verify that when $K=2$ we recover exactly the logistic regression with link $\sigma(x) = 1/(1+e^{-x})$.
+\end{frame}
+
+\begin{frame}{1-hidden-layer Neural Networks}
+
+\fancythm{1-hidden-layer NN for Classification}
+{
+Suppose we have a data point $(X,Y)$ where $Y \in \{1,\ldots, K\}$ and $X \in \R^d$. We can write the following model for $\Prob(Y)$ in terms of $X$.
+
+\begin{align*}
+Z_m &= \sigma(\alpha_{m0} + \alpha_i^{\transpose} X), \text{ for } m \in \{1,\ldots, M\}\\
+\Prob(Y=k) &= \sm_k(\beta_{k0} +  \beta_k^{\transpose} Z), \text{ for } k \in \{1,\ldots, K\}
+\end{align*}
+where $\alpha_{m} \in \R^d$ and $\beta_k \in \R^M$.
+}
+\vspace{1cm}
+
+A few comments:
+
+\begin{enumerate}
+\item Here the $Z_m$ is so-called hidden layer, because we do not observe them.
+\item In practice, a few parameters can be fixed to make the model identifiable. For example, we can set $\beta_1$ as the vector with only 1's. In practice practice, this solution is an extra problem.
+\item We denote by $\mathbf{\alpha}$ the matrix containing the $\alpha$'s, each $\alpha_m$ in a row (including $\alpha_{m0}$)
+\item We denote by $\mathbf{\beta}$ the matrix containing the $\beta$'s, each $\beta_k$ in a row (including the intercept)
+\end{enumerate}
+\end{frame}
+\begin{frame}{1-hidden-layer Neural Networks}
+
+\begin{center}
+\includegraphics[scale=0.8]{NN_classification.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{1-hidden-layer Neural Networks}
+
+\begin{center}
+\includegraphics[scale=0.6]{NN_classification.pdf} 
+\end{center}
+\pause
+\begin{enumerate}
+\item The middle layer is called the hidden layer because we do not observe the variables $Z$
+\item Each $Z_m$ is called a (hidden) neuron
+\item $\alpha$ and $\beta$ are called the weight matrices
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{1-hidden-layer Neural Networks}
+We can also have a model with a continuous response $Y$, with a very similar picture
+
+\fancythm{1-hidden-layer NN for Regression}
+{
+Suppose we have a data point $(X,Y)$ where $Y \in \R^K$ and $X \in \R^d$. Then
+
+\begin{align*}
+Z_m &= \sigma(\alpha_{m0} + \alpha_i^{\transpose} X), \text{ for } m \in \{1,\ldots, M\}\\
+\textcolor{violet}{Y_k }&= \textcolor{violet}{\beta_{k0} +  \beta_k^{\transpose} Z, \text{ for } k \in \{1,\ldots, K\}}
+\end{align*}
+where $\alpha_{m} \in \R^d$ and $\beta_k \in \R^M$.
+}
+\begin{center}
+\includegraphics[scale=0.47]{NN_regression.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{1-hidden-layer Neural Networks}
+The good thing about neural networks is that they are very flexible. \\
+
+Consider a 1-hidden-layer NN for regression. Denote by
+$\alpha$ and $\beta$ its weight matrices, and by $f_{{\alpha},{\beta}}(x)$ the output when the input is $x$, i.e. $f_{{\alpha},{\beta}}$ is a function $\R^d\to \R^K$.\\
+
+The following approximation results is due to Cybenko\footnote{Cybenko G -  Approximation by Superposition of a Sigmoidal Function}
+
+
+\begin{theorem}
+
+\textbf{\textit{Informal Version:}} Every continuous-function $f:[0,1]^d \to \R^K$ can be approximated by a 1-hidden-layer Neural Network for regression.\\
+
+\vspace{1cm}
+
+\textbf{\textit{Formal Version:}} For every continuous-function $f:[0,1]^d \to \R^K$ and every $\varepsilon>0$, it exists a NN network $f_{\alpha,\beta}$ such that
+
+$$\|f(x)-f_{\alpha,\beta}(x)\|_2< \varepsilon$$
+for all $x \in \R^d$.
+\end{theorem}
+\end{frame}
+
+\begin{frame}{Fitting a Neural Network}
+
+In a 1-hidden-layer Neural Network for covariate $X \in \R^d$ and response $Y \in \R^K$ we have the parameters
+
+$$\alpha = (\alpha_{m \ell}: \ell \in \{0,\ldots, d\}, m \in \{1,\ldots, M\})$$
+and
+$$\beta = (\beta_{km}: m \in \{0,\ldots, M\}, k \in \{1,\ldots, K\})$$
+
+so there are $M(d+1)+K(M+1)$ parameters.
+
+\vspace{1cm}
+
+Denote by $f_{\alpha,\beta}(x)$ the output of such network when the input is $x\in \R^d$.
+
+\end{frame}
+
+\begin{frame}{Fitting a Neural Network}
+Suppose we now observe data $(X_i,Y_i)_{i=1}^n$. We want to fit the best parameters. 
+
+\begin{enumerate}
+\item For regression, we use the typical loss function
+$$L(\alpha,\beta) = \sum_{i=1}^n \sum_{k=1}^K (Y_{ik}-f_{k, \alpha,\beta}(X_i))^2$$
+\item For classification we can use 
+$$L(\alpha,\beta) = \sum_{i=1}^n \sum_{k=1}^K (Y_{ik}-f_{k,\alpha,\beta}(X_i))^2$$
+or the so-called cross-entropy
+$$L(\alpha,\beta) = -\sum_{i=1}^n \sum_{k=1}^K Y_{ik} \log f_{k,\alpha,\beta}(X_i)$$
+\end{enumerate}
+
+\pause
+
+In general, we may want to add some penalisation term, otherwise a NN will overfit our data.
+\end{frame}
+
+
+
+\section{Gradient of a NN}
+
+
+\begin{frame}{Gradient of a NN}
+
+By being very careful, we can compute derivatives associated with the loss function of the NN. A general approach is to use the back propagation algorithm (see extra material)
+
+\vspace{0.5cm}
+
+\begin{center}
+\includegraphics[scale=0.5]{NN_classification.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Fitting a Neural Network}
+Recall that we observe data $(X_i,Y_i)_{i=1}^n$, and we use loss functions
+
+\begin{enumerate}
+\item For regression, we use the typical loss function
+$$L(\alpha,\beta) = \sum_{i=1}^n \sum_{k=1}^K (Y_{ik}-f_{k, \alpha,\beta}(X_i))^2$$
+\item For classification we can use 
+$$L(\alpha,\beta) = \sum_{i=1}^n \sum_{k=1}^K (Y_{ik}-f_{k,\alpha,\beta}(X_i))^2$$
+or the so-called cross-entropy
+$$L(\alpha,\beta) = -\sum_{i=1}^n \sum_{k=1}^K Y_{ik} \log f_{k,\alpha,\beta}(X_i)$$
+\end{enumerate}
+
+Also, we might add a penalisation term.
+\end{frame}
+
+\begin{frame}
+Some consideration:
+\begin{enumerate}
+\item Recall that towards the first layer we always use the sigmoid function $\sigma$
+\item The link function between first and second layer may change depending on the problem. For a generic explanation, call it $g:\R^K \to \R^K$, with $g(t) = (g_1(t),\ldots, g_K(t))$.
+\item It is convenient to add a 1 in front of each covariate vector, so we write $\alpha_m^{\transpose} X$ instead of $\alpha_{m0}+ \alpha_m^{\transpose} X$, etc.
+\item for ease of notation, instead of writting $f_{k,\alpha,\beta}(x)$ for the $k$-th output of the NN when the input is $x$, we just write $f_k(x)$.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Gradient of a NN: Chain Rule}
+		\fancythm{Chain Rule}{
+		Let $x_1,\ldots, x_d$ be variables in $\R$. Let $a_1,\ldots, a_m:\R^d \to \R$ be functions, and let $F:\R^m \to \R$ be another function.\\
+		
+		Let $g(x_1,\ldots,x_d) = F(a_1(x_1,\ldots, x_d), a_2(x_1,\ldots, x_d),\ldots, a_m(x_1,\ldots, x_d))$\\
+		
+		\begin{align*}
+			&\left(\frac{\partial g}{\partial x_k}\right)g(x_1,\ldots,x_d)\\
+			= &\sum_{i=1}^r \left(\frac{\partial a_i}{\partial x_k}\right)(x_1,\ldots, x_d) \times  \left(\frac{\partial F}{\partial a_i}\right)(a_1(x_1,\ldots, x_d), a_2(x_1,\ldots, x_d),\ldots, a_m(x_1,\ldots, x_d))
+		\end{align*}
+	}\textbf{}
+\end{frame}
+\begin{frame}{Gradient of a NN}
+
+\begin{enumerate}
+\item Write $L_i = \sum_{k=1}^K (Y_{ik} - f_k(X_i))^2$, implicitly depending on $\alpha$ and $\beta$
+
+\item Let $Z_{im} =\sigma(\alpha_m^{\transpose} X_i)$ and $Z_i = (Z_{i1},\ldots, Z_{iM})$, and recall that $X_i = (1, X_{i1},\ldots, X_{id})$
+\item Let $T_{ik} = \beta_{k}^{\transpose} Z_i$ and $T_i = (T_{i1},\ldots, T_{iK})$
+
+\item It is important to know that
+\begin{align*}
+\sigma'(x)& = \sigma(x)(1-\sigma(x))\\
+\frac{\partial \sm_k(t)}{\partial t_{\ell}} &= \begin{cases}\sm_k(t)\sm_{\ell}(t) & \text{ if } k\neq \ell\\
+-\sm_k(t)(1-\sm_k(t)) & \text{ if } k=\ell\end{cases}
+\end{align*}
+\item Also recall the chain rule for multivariate functions. If $r = r(a) \in \R^d$ with $a \in \R$,  and $F:\R^d \to R$, then 
+$$\frac{\partial F(r(a))}{ \partial a} =  \sum_{\ell=1}^d \frac{\partial r_\ell(a)}{\partial a} \left(\frac{\partial }{ \partial r_{\ell}} F\right)(r(a))$$
+\item Other useful facts: $Z_{im}$ only depends on $\alpha_{\ell m}$ for $\ell \in \{0,\ldots, d\}$, and $f_k(X_i)$ only depends on $\beta_{mk}$ for $m\in \{0,\ldots, M\}$
+
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Gradient of a NN}
+For classification, we have $g_k(T) = \sm_k(T)$. Write $L_i = \sum_{k=1}^K (Y_{ik} - f_{k}(X_i))^2$, then
+
+\begin{align*}
+\frac{\partial L_i}{\partial \alpha_{m \ell}} &= -2\sum_{k=1}^K(Y_{ik}-f_k(X_i))  \sum_{j=1}^m \frac{\partial Z_{ij}}{\partial \alpha_{ m \ell}} \frac{\partial g_k(T_i)}{\partial Z_{ij}}\\
+&= -2\sum_{k=1}^K(Y_{ik}-f_k(X_i))  \frac{\partial Z_{im}}{\partial \alpha_{ m \ell}} \frac{\partial g_k(T_i)}{\partial Z_{im}}\\
+\end{align*}
+now, $\frac{\partial Z_{im}}{\partial \alpha_{m \ell}} = X_{i\ell} Z_{im}(1-Z_{im})$ and 
+\begin{align*}
+\frac{\partial g_k(T_i)}{\partial Z_{im}} &= \sum_{j=1}^K \frac{\partial T_{ij}}{\partial Z_{im}} \frac{\partial g_k(T_i)}{\partial T_i}\\
+&=\sum_{j=1}^K \beta_{jm} \frac{\partial g_k(T_i)}{\partial T_{ij}} = \sum_{j=1}^K \beta_{jm} \frac{\partial \sm_k(T_i)}{\partial T_{ij}} 
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{Gradient of a NN}
+Also, 
+
+\begin{align*}
+\frac{\partial L_i}{\partial \beta_{jm}} &= -2\sum_{k=1}^K (Y_{ik} - f_k(X_i)) \sum_{p=1}^K \frac{\partial T_{ip}}{\partial \beta_{jm}} \frac{\partial g_k(T_i)}{\partial T_{ip}}\\
+&= -2\sum_{k=1}^K (Y_{ik} - f_k(X_i)) Z_{im} \frac{\partial \sm_k(T_i)}{\partial T_{ij}}
+\end{align*}
+\end{frame}
+
+\begin{frame}{Gradient of a NN}
+With this, we can do a DG algorithm!
+We update as following:
+
+\begin{align*}
+\beta_{km}^{t+1} &= \beta_{km}^t- \gamma_t \sum_{i=1}^n \frac{\partial L_i^t}{\partial \beta_{km}^t}\\
+\alpha_{m\ell}^{t+1} &= \alpha_{m\ell} - \gamma_t \sum_{i=1}^n \frac{\partial L_i^t}{\partial \alpha_{km}^t}
+\end{align*}
+
+%where is the Back-propagation?
+
+%\begin{enumerate}
+%\item Given initial parameters $\alpha^t$ and $\beta^t$, we have to %evaluate $R$ (that's a forward evaluation)
+%\item Then we have to \textit{update} back to obtain $\alpha^{t+1}$ and $%\beta^{t+1}$.%
+%\end{enumerate}
+\end{frame}
+
+\begin{frame}{Gradient of a NN}
+\textbf{Exercise:} Compute the gradient of a NN for Classification when the loss function is $L(\alpha,\beta) = -\sum_{i=1}^n \sum_{k=1}^K Y_{ik} \log f_k(X_i)$\\
+
+\vspace{1cm}
+
+\textbf{Exercise 2:} Compute the gradient of NN for \textbf{Regression}, i.e. the loss function is $L(\alpha,\beta) = \sum_{i=1}^n \sum_{k=1}^K (Y_{ik}-f_k(X_i))^2$ and $g_k(t) = t$.
+\end{frame}
+
+\section{Material Extra}
+
+\section{Back Propagation}
+\begin{frame}
+	Since NNs have so many parameters and nested functions we need to be very careful at computing derivatives and applying chain rules.
+	\\
+	
+	\vspace{1cm}
+	
+	We first need a nice representation of functions. For that we consider a network of functions
+	
+\end{frame}
+
+\begin{frame}{Network of functions}
+	
+	A network of function is 
+	
+	\begin{enumerate}
+		\item A graph with vertices $V$ and directed edges $E$ with no directed cycles
+		\item A set of initial vertices $S\subseteq V$ and each $s \in S$ has an associated value $x_s$. Vertices in $S$ only have outgoing edges
+		\item Each non-initial vertex has associated a function $f:\R^d \to \R$ where $d$ is the number  of incoming vertices of the vertex
+		\item A final vertex $f \in V$ that has no outgoing edges.
+		\item \textbf{Requirement:} every vertex $v \in V$ belongs to a directed path from a vertex $s \in V$ to $f$.
+		\item \textbf{For implementation purposes:} each vertex has a list of incoming vertices and outgoing vertices. To evaluate functions variables are introduced into the function in the order given by the incoming list.
+	\end{enumerate}
+	
+\end{frame}
+
+\begin{frame}{Network of functions}
+	\includegraphics[scale=0.8]{FunctionNetwork.pdf} 
+\end{frame}
+
+
+
+\begin{frame}{Network of functions: Evaluation}
+	The evaluation of a network of function is quite easy:
+	
+	\begin{itemize}
+		\item Set the initial values for the vertices in $S$, and the other vertices are without value
+		\item A vertex is \textbf{ready} if it has a value
+		\item Every vertex that is ready pass the value to its neighbours following the outgoing edges
+		\item If a vertex has received values by all the vertices in the incoming list, then it evaluates the function and set its value to the outcome of the function
+	\end{itemize} 
+\end{frame}
+
+
+\begin{frame}{Network of functions}
+	\includegraphics[scale=0.8]{FunctionNetwork1.pdf} 
+\end{frame}
+
+
+\begin{frame}{The back propagation algorithm}
+	
+	Since these network represent composition of networks they are ideal for the chain rule.
+	
+	\fancythm{Chain Rule}{
+		Let $x_1,\ldots, x_d$ be variables in $\R$. Let $a_1,\ldots, a_m:\R^d \to \R$ be functions, and let $F:\R^m \to \R$ be another function.\\
+		
+		Let $g(x_1,\ldots,x_d) = F(a_1(x_1,\ldots, x_d), a_2(x_1,\ldots, x_d),\ldots, a_m(x_1,\ldots, x_d))$\\
+		
+		\begin{align*}
+			&\left(\frac{\partial g}{\partial x_k}\right)g(x_1,\ldots,x_d)\\
+			= &\sum_{i=1}^r \left(\frac{\partial a_i}{\partial x_k}\right)(x_1,\ldots, x_d) \times  \left(\frac{\partial F}{\partial a_i}\right)(a_1(x_1,\ldots, x_d), a_2(x_1,\ldots, x_d),\ldots, a_m(x_1,\ldots, x_d))
+		\end{align*}
+	}
+	
+\end{frame}
+
+
+\begin{frame}{The back propagation algorithm}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN2.pdf} 
+	\end{center}
+	We want the gradient of  $g_6(x,y,z) = f_6(f_4( f_1(x,y,z),f_2(x,y,z) ), f_5(f_2(x,y,z),f_3(x,y,z))$. Denote
+	
+	\begin{align*}
+		g_5(x,y,z) &= f_5(f_2(x,y,z),f_3(x,y,z))\\
+		g_4(x,y,z) &= f_4( f_1(x,y,z),f_2(x,y,z) )\\
+		g_3(x,y,z) &= f_3(x,y,z)\\
+		g_2(x,y,z) &= f_2(x,y,z)\\
+		g_1(x,y,z) &= f_1(x,y,z)
+	\end{align*}
+\end{frame}
+
+\begin{frame}{The back propagation algorithm}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN3.pdf} 
+	\end{center}
+	We want the gradient of  $g_6(x,y,z) = f_6(f_4( f_1(x,y,z),f_2(x,y,z) ), f_5(f_2(x,y,z),f_3(x,y,z))$. Denote
+	
+	\begin{align*}
+		g_5(x,y,z) &= f_5(f_2(x,y,z),f_3(x,y,z))\\
+		g_4(x,y,z) &= f_4( f_1(x,y,z),f_2(x,y,z) )\\
+		g_3(x,y,z) &= f_3(x,y,z)\\
+		g_2(x,y,z) &= f_2(x,y,z)\\
+		g_1(x,y,z) &= f_1(x,y,z)
+	\end{align*}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN4.pdf} 
+	\end{center}
+	
+	\begin{align*}
+		\left(\frac{\partial g_6}{\partial x}\right)(x,y,z)& = \textcolor{violet}{\left(\partial_1 f_6 \right)}(g_4(x,y,z), g_5(x,y,z)) \times \frac{\partial g_4}{\partial x}(x,y,z) \\
+		&+ \textcolor{violet}{\left(\partial_2 f_6\right)}(g_4(x,y,z), g_5(x,y,z)) \times \left(\frac{\partial g_5}{\partial x}\right)(x,y,z)
+	\end{align*}
+	
+	Here $\partial_i f$ represents partial derivative with respect to the $i$-th coordinate of $f$.
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN5.pdf} 
+	\end{center}
+	
+	\begin{align*}
+		\left(\frac{\partial g_6}{\partial x}\right)(x,y,z)& = \textcolor{violet}{\left(\partial_1 f_6 \right)}(g_4(x,y,z), g_5(x,y,z)) \times \frac{\partial g_4}{\partial x}(x,y,z) \\
+		&+ \textcolor{violet}{\left(\partial_2 f_6\right)}(g_4(x,y,z), g_5(x,y,z)) \times \left(\frac{\partial g_5}{\partial x}\right)(x,y,z)\\
+		&=\textcolor{red}{h_{46}} \times \frac{\partial g_4}{\partial x}(x,y,z)+ \textcolor{red}{h_{56}} \times \left(\frac{\partial g_5}{\partial x}\right)(x,y,z)
+\end{align*}\end{frame}
+
+\begin{frame}
+	Iteratively, we find the derivatives of $g_4$ and $g_5$. \\
+	
+	For $g_4$ we have
+	
+	\begin{align*}
+		\left(\frac{\partial g_4}{\partial x}\right)(x,y,z)& = \textcolor{violet}{\left(\partial_1 f_4 \right)}(g_1(x,y,z), g_2(x,y,z)) \times \frac{\partial g_1}{\partial x}(x,y,z) \\
+		&+ \textcolor{violet}{\left(\partial_2 f_4\right)}(g_1(x,y,z), g_2(x,y,z)) \times \left(\frac{\partial g_2}{\partial x}\right)(x,y,z)\\
+		&=\textcolor{red}{h_{14}} \times \frac{\partial g_1}{\partial x}(x,y,z)+ \textcolor{red}{h_{24}} \times \left(\frac{\partial g_2}{\partial x}\right)(x,y,z)
+	\end{align*}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN6.pdf} 
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	Similarly, for $g_5$
+	
+	\begin{align*}
+		\left(\frac{\partial g_5}{\partial x}\right)(x,y,z)& = \textcolor{violet}{\left(\partial_1 f_5 \right)}(g_2(x,y,z), g_3(x,y,z)) \times \frac{\partial g_2}{\partial x}(x,y,z) \\
+		&+ \textcolor{violet}{\left(\partial_2 f_5\right)}(g_2(x,y,z), g_3(x,y,z)) \times \left(\frac{\partial g_3}{\partial x}\right)(x,y,z)\\
+		&=\textcolor{red}{h_{25}} \times \frac{\partial g_2}{\partial x}(x,y,z)+ \textcolor{red}{h_{35}} \times \left(\frac{\partial g_3}{\partial x}\right)(x,y,z)
+	\end{align*}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN7.pdf} 
+	\end{center}
+	
+	
+	
+	
+\end{frame}
+
+\begin{frame}
+	Up to this point:
+	
+	\begin{center}
+		\includegraphics[scale=0.45]{FN7.pdf} 
+	\end{center}
+	
+	\begin{align*}
+		\left(\frac{\partial g_6}{\partial x}\right)(x,y,z)&= \textcolor{red}{h_{14}h_{46}} \frac{\partial g_1}{\partial x}(x,y,z)+  \textcolor{red}{\left(h_{24}h_{46} + h_{25}h_{56}\right)}  \frac{\partial g_2}{\partial x}(x,y,z)+  \textcolor{red}{h_{25}h_{56}}  \frac{\partial g_3}{\partial x}(x,y,z)
+	\end{align*}
+	
+	One more propagation and we are done
+\end{frame}
+
+
+\begin{frame}
+	In the final propagation we compute the derivatives of $g_1$, $g_2$ and $g_3$, but in this case there is no more chain rule to apply.
+	\begin{align*}
+		\left(\frac{\partial g_1}{\partial x}\right)(x) = \left(\frac{\partial f_1}{\partial x}\right)(x) = \textcolor{red}{h_{x1}}\\
+		\left(\frac{\partial g_2}{\partial x}\right)(x) = \left(\frac{\partial f_2}{\partial x}\right)(x)= \textcolor{red}{h_{x2}}\\
+	\end{align*}
+	
+	\begin{center}
+		\includegraphics[scale=0.45]{FN8.pdf} 
+	\end{center}
+	
+	
+\end{frame}
+
+
+\begin{frame}
+	\begin{center}
+		\includegraphics[scale=0.45]{FN8.pdf} 
+	\end{center}
+	
+	Up to this point we have
+	
+	\begin{align*}
+		\left(\frac{\partial g_6}{\partial x}\right)(x,y,z)&= \textcolor{red}{h_{14}h_{46}} \frac{\partial g_1}{\partial x}(x,y,z)+  \textcolor{red}{\left(h_{24}h_{46} + h_{25}h_{56}\right)}  \frac{\partial g_2}{\partial x}(x,y,z)+  \textcolor{red}{h_{25}h_{56}}  \frac{\partial g_3}{\partial x}(x,y,z)\\&= \textcolor{red}{h_{x1}h_{14}h_{46}} + \textcolor{red}{h_{x2}h_{24}h_{46}} + \textcolor{red}{h_{x2}h_{25}h_{56}}    
+	\end{align*}
+	
+	In practice, we do not need to pass $h_{vw}$ but rather the cumulative product.
+\end{frame}
+
+\begin{frame}{Back Propagation Algorithm}
+	\Large
+	\fancythm{Back Propagation Algorithm}
+	{
+		\begin{enumerate}
+			\item Compute the forward evaluations $g_v$ for each non-initial vertex $V$.
+			\item For each vertex $v$ different than the final vertex $v$, set the variable $c_v = -\infty$ and for each $w$ that can be reached from $v$ by a direct edge set $c_{vw}= -\infty$ 
+			\item Set each vertex of the graph as \textbf{not-ready}, and set the final vertex as \textbf{ready}
+			\item Repeat until al vertices are \textbf{done}
+			\begin{enumerate}
+				\item[i.] For all $w \in V$ such that $w$ is \textbf{ready}, and all $v \in V$ such that $v \to w$, then $w$ propagates backward to $v$ the value $c_{vw}=c_{w} \times h_{vw}$ with $h_{vw} = (\partial_v f_w)(g_v)$ where $\partial_v f_w$ means the derivative with respect to the coordinate where $v$ is included in $f_w$.
+				\item[ii.] Set all \textbf{ready} vertices as \textbf{done}. 
+				\item[iii.] For all vertices $v \in V$ that are \textbf{non-ready}, and check if they have receive all values $c_{vw}$. In such a case, set $c_v = \sum_{w: v\to w} c_{vw}$ and $v$ is set to be \textbf{ready}
+			\end{enumerate}
+		\end{enumerate}
+	}
+\end{frame}
+
+\begin{frame}{Back Propagation Algorithm}
+	In practice, for implementing the gradient descent algorithm we need. 
+	
+	\begin{enumerate}
+		\item Gradient of each function presented in a vertex of the network
+		\item Each vertex has a label variable indicating that the vertex is \textbf{not-ready}, \textbf{ready} or \textbf{done}
+		\item Each vertex has a list $(c_{vw}: w\in V, v\to w)$, and a value $c_v$. Set $c_f = 1$ for the final vertex.
+	\end{enumerate}
+\end{frame}
+
+\begin{frame}{Back Propagation Algorithm: final comments}
+	
+	\begin{witemize}
+		\item Back-propagation is a very good way to keep track of partial derivatives and it can be used in a lot of algorithms that require derivatives, not only in Gradient Descent algorithms.
+		
+		\item It automatises the computation of derivatives that sometimes are painful to do by hand
+		
+		\item Automatic differentiation is a very important area of research.
+		
+		\item In some cases we don't want to implement the algorithm but use it only to \textit{\textcolor{blue}{get ideas}} of how to compute gradients. If we have a well defined model BP can help us to be careful and clean with our ideas.
+		
+		\item In some other cases BP is unavoidable.
+	\end{witemize}
+	
+\end{frame}
+
+
+\end{document}

@@ -787,91 +787,389 @@ Draw a second outgoing edge from h to explain why contributions add. Distinguish
 reusing a computed value from treating its different uses as independent parameters.
 :::
 
-## The chain rule, one local step at a time
+## Recall: the multivariate chain rule
 
-Write $\delta_s=\partial\ell/\partial s$. For squared loss, $\delta_s=s-y$.
+Let $u=g(x)\in\R^m$ for $x\in\R^d$, and let $F(x)=f(g(x))\in\R$.
+Assume $g$ is differentiable at $x$ and $f$ is differentiable at $u=g(x)$.
 
-::: {.eqbox}
+$$x\in\R^d\ \xrightarrow{\quad g\quad}\ u\in\R^m
+\ \xrightarrow{\quad f\quad}\ F(x)\in\R.$$
+
+::: {.eqbox title="One input coordinate, all intermediate coordinates"}
+$$\frac{\partial F}{\partial x_j}(x)
+=\sum_{i=1}^m
+\frac{\partial f}{\partial u_i}(g(x))\,
+\frac{\partial g_i}{\partial x_j}(x),
+\qquad j=1,\ldots,d.$$
+:::
+
+- Changing $x_j$ can change **every** intermediate coordinate $u_i$.
+- [Multiply along each path]{.blue}, then [add over the paths]{.purple}.
+- Evaluate each derivative at its own input: $x$ for $g$, and $g(x)$ for $f$.
+
+::: {.notes}
+For d=m=1 this is the familiar derivative of a composition.
+With the other input coordinates fixed, a small change t in x_j changes u_i by
+(partial g_i / partial x_j)t + o(t). The linear approximation of f adds the
+resulting contributions. Existence of partial derivatives alone is not sufficient.
+:::
+
+## Recall: Jacobians organise the derivatives
+
+For $g:\R^d\to\R^m$, its **Jacobian** has one row per output and one column per input:
+
+$$J_g(x)=\left[\frac{\partial g_i}{\partial x_j}(x)\right]_{i,j}
+\in\R^{m\times d},
+\qquad g(x+\Delta x)\approx g(x)+J_g(x)\Delta x.$$
+
+If $f:\R^m\to\R^k$, the same rule applies to each output coordinate.
+Assume both maps are differentiable at the relevant points.
+
+::: {.eqbox title="The chain rule is matrix multiplication" colour="purple"}
+$$\underbrace{J_{f\circ g}(x)}_{k\times d}
+=\underbrace{J_f(g(x))}_{k\times m}\,
+\underbrace{J_g(x)}_{m\times d}.$$
+:::
+
+- Each entry of the product is a **sum of path contributions**.
+- The order matters: first apply $J_g(x)$ to an input change, then $J_f(g(x))$.
+
+::: {.notes}
+The approximation has remainder o(norm(Delta x)). Composing the two linear
+approximations gives the matrix product. Check dimensions before computing.
+:::
+
+## Recall: a scalar loss gives a backward gradient
+
+For $F(x)=f(g(x))\in\R$, use **column vectors** for gradients:
+$\nabla f(u)\in\R^m$ and $\nabla F(x)\in\R^d$.
+Then $J_f(u)=\nabla f(u)^\top$.
+
+::: {.eqbox title="Propagate a gradient backwards"}
+$$\underbrace{\nabla F(x)}_{d\times1}
+=\underbrace{J_g(x)^\top}_{d\times m}\,
+\underbrace{\nabla f(g(x))}_{m\times1}.$$
+:::
+
+- **Forward:** $J_g(x)$ maps input changes to intermediate changes.
+- **Backward:** $J_g(x)^\top$ maps an intermediate loss gradient to an input gradient.
+
+For an affine layer $u=Wx+b$ and a differentiable loss $\ell=f(u)$:
+
+::: {.eqbox colour="purple"}
+$$J_g(x)=W,\qquad \nabla_x\ell=W^\top\nabla_u\ell.$$
+:::
+
+::: {.notes}
+Retain the differentiability assumptions from the preceding slides.
+The transpose follows by transposing J_F = J_f J_g. It is not an inverse.
+Alternatively, write d ell = (nabla_u ell)^T du and du = W dx.
+Backpropagation repeatedly applies this rule, using stored forward values.
+Implementations can compute the product without constructing a full Jacobian.
+:::
+
+## Several branches: add their contributions
+
+Let $u=x_1x_2$, $v=x_1+x_2$ and $F(x)=f(u,v)=u^2+v$.
+Both intermediate quantities depend on $x_1$ and $x_2$.
+
+::: {.eqbox title="Two paths from each input to the output" colour="purple"}
 $$\begin{aligned}
-\frac{\partial\ell}{\partial v}&=\delta_s h,
-&\frac{\partial\ell}{\partial c}&=\delta_s,\\
-\delta_z:=\frac{\partial\ell}{\partial z}&=\delta_s v\,\mathbf1_{\{z>0\}},
-&\frac{\partial\ell}{\partial w}&=\delta_z x,
-&\frac{\partial\ell}{\partial b}&=\delta_z.
+\frac{\partial F}{\partial x_1}
+&=\frac{\partial f}{\partial u}\frac{\partial u}{\partial x_1}
++\frac{\partial f}{\partial v}\frac{\partial v}{\partial x_1}
+=2u\,x_2+1,\\
+\frac{\partial F}{\partial x_2}
+&=2u\,x_1+1.
 \end{aligned}$$
 :::
 
-- Each step multiplies an incoming derivative by a **local derivative**.
-- For ReLU, the derivative is $0$ for $z<0$ and $1$ for $z>0$.
-- At $z=0$, ReLU has no derivative; a common computational convention uses $0$.
+::: {#exr-nn-chain-rule name="A parameter used twice" block-style="6"}
+Suppose the same scalar parameter $t$ supplies both inputs: $H(t)=F(t,t)$.
 
-::: {.notes}
-This convention does not make the complete network objective differentiable at
-all parameter values. Use examples away from zero for ordinary gradient checks.
+1. Derive $H'(t)$ using the multivariate chain rule, and verify it by differentiating $H$ directly.
+2. Explain why keeping only one input contribution gives an incorrect derivative in general.
 :::
 
-## Backward propagation follows the connections
-
-![Derivatives travel backwards through the same numerical network. The inactive ReLU blocks the derivative to its incoming weights.](images/nn-backward-pass.svg){height=480px}
-
-- With $y=1$ and squared loss, the output derivative is $s-y=-3/2$.
-- Output weights transmit derivatives to hidden units; ReLU then passes or blocks them.
-- Each edge gradient combines an [arriving derivative]{.purple} with its [stored input]{.blue}.
-
 ::: {.notes}
-The reverse labels -3, 3/2, -3/2 are derivatives with respect to hidden outputs,
-before the ReLU gate. The first gate turns -3 into zero because z_1=-1. The
-post-gate derivatives are therefore 0,3/2,-3/2. Red dashed forward connections
-retain the intercept inputs as architectural context; they are not reverse
-derivative arrows. Backpropagation differentiates the computation, not inverts it.
+For @exr-nn-chain-rule, the map t -> (t,t) has Jacobian (1,1)^T.
+Thus H'(t) = partial_1 F(t,t) + partial_2 F(t,t)
+= (2t^3+1)+(2t^3+1) = 4t^3+2.
+Directly, H(t)=t^4+2t. A shared parameter affects the loss through every use;
+its derivative is the sum of those contributions. Allow 3 minutes.
 :::
 
-## One hidden layer: backward propagation
+## Fitting one hidden layer: write the loss explicitly
 
-Let $z=Wx+b$, $h=\sigma(z)$ and $s=v^\top h+c$ for a scalar output.
+For data $(x_i,y_i)_{i=1}^n$ with $x_i\in\R^d$ and $y_i\in\R$, use $m$ hidden units:
 
-::: {.eqbox title="One observation" colour="purple"}
+$$z_{ij}=b_j+\sum_{r=1}^d W_{jr}x_{ir},\qquad
+h_{ij}=\sigma(z_{ij}),\qquad
+s_i=c+\sum_{j=1}^m v_jh_{ij}.$$
+
+::: {.eqbox title="Squared-error objective" colour="purple"}
+$$L(W,b,v,c)=\frac1n\sum_{i=1}^n\ell_i,
+\qquad
+\ell_i=\frac12\left[c+\sum_{j=1}^m v_j\sigma\!\left(b_j+\sum_{r=1}^d W_{jr}x_{ir}\right)-y_i\right]^2.$$
+:::
+
+- The parameters are $W\in\R^{m\times d}$, $b,v\in\R^m$ and $c\in\R$: **$m(d+1)+m+1$ parameters**.
+- Fix one observation $i$ and differentiate $\ell_i$ first; average the derivatives afterwards.
+- We assume $\sigma$ is differentiable at the values $z_{ij}$ used below.
+
+::: {.notes}
+This follows the coordinate-by-coordinate approach of the old lecture, using
+our current notation and keeping intercepts explicit. The factor 1/2 cancels
+the 2 from differentiating a square; 1/n averages over observations.
+For ReLU, work away from zero. For sigmoid, sigma'(z)=sigma(z)(1-sigma(z)).
+:::
+
+## Step 1: differentiate the output weight and intercept
+
+Fix observation $i$. Throughout the calculation, **the data are fixed**:
+
+$$\ell_i=\frac12(s_i-y_i)^2,\qquad
+s_i=c+\sum_{q=1}^m v_qh_{iq}.$$
+
+First, $\displaystyle\frac{\partial\ell_i}{\partial s_i}
+=\frac12\,2(s_i-y_i)=s_i-y_i$.
+Call this residual $e_i:=s_i-y_i$.
+
+- The hidden values $h_{iq}$ do not depend on $v$ or $c$.
+- Only $v_jh_{ij}$ depends on $v_j$, so $\partial s_i/\partial v_j=h_{ij}$; also $\partial s_i/\partial c=1$.
+
+::: {.eqbox title="Multiply the outer derivative by the local derivative"}
 $$\begin{aligned}
-\delta_s&=\frac{\partial\ell}{\partial s},
-&\nabla_v\ell&=\delta_s h,
-&\frac{\partial\ell}{\partial c}&=\delta_s,\\
-\delta_z&=(v\delta_s)\odot\sigma'(z),
-&\nabla_W\ell&=\delta_z x^\top,
-&\nabla_b\ell&=\delta_z.
+\frac{\partial\ell_i}{\partial v_j}
+&=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial v_j}
+=e_i h_{ij},\\
+\frac{\partial\ell_i}{\partial c}
+&=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial c}
+=e_i.
 \end{aligned}$$
 :::
 
-- $\odot$ denotes coordinatewise multiplication.
-- $\delta_z\in\R^m$ and $\delta_zx^\top\in\R^{m\times d}$.
-- The gradient of each parameter array has the [same shape]{.blue} as that array.
-
 ::: {.notes}
-Derive the (j,k) entry: d ell/d W_jk = delta_z,j x_k.
-This is an outer product, not an inner product. Use the numerical example as
-a consistency check for the derived rule, rather than an arithmetic exercise.
+The index i selects an observation; j selects a hidden unit; q is a dummy
+summation index. We compute derivatives of ell_i first, then average over i.
+The residual e_i is evaluated at the current parameters; it is not a new parameter.
 :::
 
-## The forward-pass example, continued
+## Step 2: how does the loss depend on a hidden unit?
 
-For the earlier input $x=(1,2)^\top$,
+To reach $W$ and $b$, first differentiate with respect to the intermediate values.
+Recall $s_i=c+\sum_q v_qh_{iq}$ and $h_{ij}=\sigma(z_{ij})$.
 
-$$z=(-1,2,1)^\top,\quad h=(0,2,1)^\top,\quad
-v=(2,-1,1)^\top,\quad s=-\tfrac12.$$
-
-Take $y=1$ and squared loss. Then $\delta_s=s-y=-\tfrac32$.
+**Through the output layer:** $\partial s_i/\partial h_{ij}=v_j$, hence
 
 ::: {.eqbox}
-$$\nabla_v\ell=\begin{pmatrix}0\\-3\\-3/2\end{pmatrix},\quad
-\delta_z=\begin{pmatrix}0\\3/2\\-3/2\end{pmatrix},\quad
-\nabla_W\ell=\begin{pmatrix}0&0\\3/2&3\\-3/2&-3\end{pmatrix}.$$
+$$\frac{\partial\ell_i}{\partial h_{ij}}
+=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial h_{ij}}
+=e_i v_j.$$
 :::
 
-Also $\nabla_b\ell=\delta_z$ and $\partial\ell/\partial c=-3/2$.
+**Through the activation:** $\partial h_{ij}/\partial z_{ij}=\sigma'(z_{ij})$, hence
 
-The first hidden unit contributes zero parameter gradient [for this observation]{.purple}.
+::: {.eqbox title="Name this derivative so that we can reuse it" colour="purple"}
+$$\delta_{ij}:=\frac{\partial\ell_i}{\partial z_{ij}}
+=\frac{\partial\ell_i}{\partial h_{ij}}\frac{\partial h_{ij}}{\partial z_{ij}}
+=e_i v_j\sigma'(z_{ij}).$$
+:::
+
+- For **sigmoid**, $\sigma'(z_{ij})=h_{ij}(1-h_{ij})$.
+- For **ReLU**, $\sigma'(z_{ij})=\mathbf1_{\{z_{ij}>0\}}$ when $z_{ij}\ne0$.
+
+::: {.notes}
+Derivatives with respect to intermediate values mean derivatives of the
+remaining, downstream loss. ReLU is not differentiable at zero; assigning its
+local derivative the value zero is a computational convention, not an ordinary
+differentiability statement. An inactive ReLU blocks this loss derivative.
+:::
+
+## Step 3: differentiate an input weight and intercept
+
+Select $W_{jr}$, from input coordinate $r$ to hidden unit $j$. Recall
+
+$$z_{iq}=b_q+\sum_{a=1}^d W_{qa}x_{ia}.$$
+
+[Only $z_{ij}$ depends on $W_{jr}$]{.blue}:
+$\partial z_{ij}/\partial W_{jr}=x_{ir}$, whereas
+$\partial z_{iq}/\partial W_{jr}=0$ for $q\ne j$.
+
+::: {.eqbox title="Apply the multivariate chain rule, then simplify"}
+$$\begin{aligned}
+\frac{\partial\ell_i}{\partial W_{jr}}
+&=\sum_{q=1}^m\frac{\partial\ell_i}{\partial z_{iq}}
+\frac{\partial z_{iq}}{\partial W_{jr}}\\
+&=\delta_{ij}x_{ir}
+=e_i v_j\sigma'(z_{ij})x_{ir}.
+\end{aligned}$$
+:::
+
+Similarly, only $z_{ij}$ depends on $b_j$, with $\partial z_{ij}/\partial b_j=1$:
+
+::: {.eqbox colour="purple"}
+$$\frac{\partial\ell_i}{\partial b_j}=\delta_{ij}
+=e_i v_j\sigma'(z_{ij}).$$
+:::
+
+::: {.notes}
+The sum is the recalled multivariate chain rule with the vector z_i as the
+intermediate variable. The surviving path is W_jr -> z_ij -> h_ij -> s_i -> ell_i.
+For the intercept the final local factor is 1 rather than x_ir.
+All other parameters are held fixed when computing each partial derivative.
+:::
+
+## Step 4: collect the derivatives into vectors and matrices
+
+Keep the same observation $i$. Write $z_i=Wx_i+b$, $h_i=\sigma(z_i)$ and
+$\delta_i=(\delta_{i1},\ldots,\delta_{im})^\top$.
+
+::: {.eqbox title="The coordinate calculations, collected together" colour="purple"}
+$$\begin{aligned}
+e_i&=s_i-y_i,
+&\delta_i&=(e_i v)\odot\sigma'(z_i),\\
+\nabla_v\ell_i&=e_i h_i,
+&\frac{\partial\ell_i}{\partial c}&=e_i,\\
+\nabla_W\ell_i&=\delta_i x_i^\top,
+&\nabla_b\ell_i&=\delta_i.
+\end{aligned}$$
+:::
+
+- $\odot$ means coordinatewise multiplication; $\delta_i\in\R^m$.
+- The $(j,r)$ entry of $\delta_i x_i^\top$ is $\delta_{ij}x_{ir}$: **exactly the derivative just computed**.
+- Thus $\nabla_W\ell_i\in\R^{m\times d}$ has the same shape as $W$.
+
+This is **backpropagation**: compute the forward values, then reuse derivatives while moving backwards.
+
+::: {.notes}
+No new differentiation is hidden in the matrix notation. The product delta_i
+x_i^T is an outer product. The two factors have sizes m by 1 and 1 by d.
+Keep i throughout; delta_i denotes the vector of derivatives at the hidden
+pre-activations for observation i, while e_i is the scalar score derivative.
+:::
+
+## Check the formulas on the forward-pass example
+
+Use the earlier **ReLU** network for one observation $i$:
+
+$$x_i=(1,2)^\top,\quad y_i=1,\quad
+z_i=(-1,2,1)^\top,\quad h_i=(0,2,1)^\top,\quad
+v=(2,-1,1)^\top,\quad s_i=-\tfrac12.$$
+
+1. The score derivative is $e_i=s_i-y_i=-\tfrac32$.
+2. The activation derivatives are $\sigma'(z_i)=(0,1,1)^\top$.
+3. Therefore $\delta_i=(e_i v)\odot\sigma'(z_i)=(0,\tfrac32,-\tfrac32)^\top$.
+
+::: {.eqbox title="Substitute into the gradient formulas"}
+$$\nabla_v\ell_i=\begin{pmatrix}0\\-3\\-3/2\end{pmatrix},\qquad
+\nabla_W\ell_i=\begin{pmatrix}0&0\\3/2&3\\-3/2&-3\end{pmatrix},\qquad
+\nabla_b\ell_i=\delta_i,\quad
+\frac{\partial\ell_i}{\partial c}=-\frac32.$$
+:::
+
+The inactive first hidden unit gives a [zero first row in $\nabla_W\ell_i$]{.purple}.
+
+## Finish fitting: differentiate the full objective
+
+Return to the objective we started with:
+$L(W,b,v,c)=\frac1n\sum_{i=1}^n\ell_i$.
+**Differentiate the finite sum term by term.**
+
+::: {.eqbox title="Average the derivatives over observations" colour="purple"}
+$$\begin{aligned}
+\nabla_W L&=\frac1n\sum_{i=1}^n\delta_i x_i^\top,
+&\nabla_b L&=\frac1n\sum_{i=1}^n\delta_i,\\
+\nabla_v L&=\frac1n\sum_{i=1}^n e_i h_i,
+&\frac{\partial L}{\partial c}&=\frac1n\sum_{i=1}^n e_i.
+\end{aligned}$$
+:::
+
+- Every observation uses the **same current parameters**, but has its own $e_i,h_i,\delta_i$.
+- Collect the parameters as $\theta=(W,b,v,c)$. A gradient descent step is
+
+::: {.eqbox}
+$$\theta^{\mathrm{new}}=\theta-\eta\nabla_\theta L(\theta),\qquad \eta>0.$$
+:::
+
+Compute all derivatives **before** updating any parameter.
+Next, we extend the same calculation to several output scores.
+
+::: {.notes}
+This completes the scalar regression objective before changing the model or loss.
+Parameter collection means concatenating the entries when a vector is required.
+Using a subset of observations instead of all n gives the mini-batch version later.
+:::
+
+## Several outputs: first differentiate one output weight
+
+We now replace the scalar output by **$K$ scores** and $v$ by $V\in\R^{K\times m}$.
+For one observation, omit the index $i$ and write $h=\sigma(Wx+b)$:
+
+$$s_k=c_k+\sum_{q=1}^m V_{kq}h_q,\qquad k=1,\ldots,K,
+\qquad \ell=\ell(y,s).$$
+
+Write $\delta_k:=\partial\ell/\partial s_k$.
+Changing $V_{kj}$ changes **only score $s_k$**, so
+
+::: {.eqbox}
+$$\frac{\partial\ell}{\partial V_{kj}}
+=\sum_{a=1}^K\frac{\partial\ell}{\partial s_a}
+\frac{\partial s_a}{\partial V_{kj}}
+=\delta_k h_j,
+\qquad \frac{\partial\ell}{\partial c_k}=\delta_k.$$
+:::
+
+- **Squared loss** $\ell=\tfrac12\sum_a(s_a-y_a)^2$: $\delta_k=s_k-y_k$.
+- **Softmax cross-entropy** $\ell=-s_y+\log\sum_a e^{s_a}$: $\delta_k=p_k-\mathbf1_{\{k=y\}}$.
+
+[With softmax, changing one score changes every probability.]{.purple}
+That dependence is already included in $\delta_k$.
+
+::: {.notes}
+V is K by m; it replaces the vector v used for a scalar output. Here y is a
+vector for squared loss and a class index for cross-entropy.
+For softmax, partial p_a / partial s_k = p_a(1_{a=k}-p_k): positive on
+the diagonal, negative off the diagonal. Hence differentiating -log p_y
+with respect to s_k yields p_k-1_{k=y}. The old TeX slides reverse these signs.
+Do not confuse the sparse dependence of scores on output weights with the
+coupled dependence of softmax probabilities on all scores.
+:::
+
+## Several outputs: a hidden weight affects every score
+
+Each hidden value $h_j$ feeds all $K$ scores. Therefore,
+
+::: {.eqbox title="Add the contributions arriving from the outputs" colour="purple"}
+$$\frac{\partial\ell}{\partial h_j}
+=\sum_{k=1}^K\frac{\partial\ell}{\partial s_k}
+\frac{\partial s_k}{\partial h_j}
+=\sum_{k=1}^K\delta_k V_{kj}.$$
+:::
+
+Now continue through $h_j=\sigma(z_j)$ and $z_j=b_j+\sum_r W_{jr}x_r$:
+
+::: {.eqbox}
+$$\frac{\partial\ell}{\partial W_{jr}}
+=\underbrace{\left(\sum_{k=1}^K\delta_k V_{kj}\right)\sigma'(z_j)}_{\displaystyle\delta_{z,j}}
+\,x_r,
+\qquad \frac{\partial\ell}{\partial b_j}=\delta_{z,j}.$$
+:::
+
+- The sum over outputs [remains]{.purple}: each score can contribute to the loss derivative.
+- In vector form, $\delta_z=(V^\top\delta)\odot\sigma'(z)$ and $\nabla_W\ell=\delta_zx^\top$.
+- Applying this same calculation to each layer gives the backward recursion.
+
+::: {.notes}
+Contrast the two sums: only one hidden unit depends on W_jr, but every output
+score depends on that hidden unit. This explains which sum collapses and which
+remains. For K=1, the formula reduces to the scalar-output calculation.
+:::
 
 ## Several layers: the backward recursion
 
+Finally, replace the single hidden layer by $L$ hidden layers; set $h^{(0)}=x$.
+Here $L$ denotes the **number of hidden layers**; superscripts index the layers.
 Write $z^{(\ell)}=W^{(\ell)}h^{(\ell-1)}+b^{(\ell)}$ and
 $h^{(\ell)}=\sigma_\ell(z^{(\ell)})$, for $\ell=1,\ldots,L$.
 The output scores are $s=W^{(L+1)}h^{(L)}+b^{(L+1)}$.

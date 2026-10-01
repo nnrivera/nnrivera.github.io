@@ -1341,27 +1341,30 @@ Differentiate with respect to the class scores
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-chain-rule-one-local-step-at-a-time" class="slide level2">
-<h2>The chain rule, one local step at a time</h2>
-<p>Write <span class="math inline">\(\delta_s=\partial\ell/\partial s\)</span>. For squared loss, <span class="math inline">\(\delta_s=s-y\)</span>.</p>
+<section id="recall-the-multivariate-chain-rule" class="slide level2">
+<h2>Recall: the multivariate chain rule</h2>
+<p>Let <span class="math inline">\(u=g(x)\in\R^m\)</span> for <span class="math inline">\(x\in\R^d\)</span>, and let <span class="math inline">\(F(x)=f(g(x))\in\R\)</span>. Assume <span class="math inline">\(g\)</span> is differentiable at <span class="math inline">\(x\)</span> and <span class="math inline">\(f\)</span> is differentiable at <span class="math inline">\(u=g(x)\)</span>.</p>
+<p><span class="math display">\[x\in\R^d\ \xrightarrow{\quad g\quad}\ u\in\R^m
+\ \xrightarrow{\quad f\quad}\ F(x)\in\R.\]</span></p>
 <div class="eqbox">
+<div class="eqbox-title">
+One input coordinate, all intermediate coordinates
+</div>
 <div class="eqbox-body">
-<p><span class="math display">\[\begin{aligned}
-\frac{\partial\ell}{\partial v}&amp;=\delta_s h,
-&amp;\frac{\partial\ell}{\partial c}&amp;=\delta_s,\\
-\delta_z:=\frac{\partial\ell}{\partial z}&amp;=\delta_s v\,\mathbf1_{\{z&gt;0\}},
-&amp;\frac{\partial\ell}{\partial w}&amp;=\delta_z x,
-&amp;\frac{\partial\ell}{\partial b}&amp;=\delta_z.
-\end{aligned}\]</span></p>
+<p><span class="math display">\[\frac{\partial F}{\partial x_j}(x)
+=\sum_{i=1}^m
+\frac{\partial f}{\partial u_i}(g(x))\,
+\frac{\partial g_i}{\partial x_j}(x),
+\qquad j=1,\ldots,d.\]</span></p>
 </div>
 </div>
 <ul>
-<li>Each step multiplies an incoming derivative by a <strong>local derivative</strong>.</li>
-<li>For ReLU, the derivative is <span class="math inline">\(0\)</span> for <span class="math inline">\(z&lt;0\)</span> and <span class="math inline">\(1\)</span> for <span class="math inline">\(z&gt;0\)</span>.</li>
-<li>At <span class="math inline">\(z=0\)</span>, ReLU has no derivative; a common computational convention uses <span class="math inline">\(0\)</span>.</li>
+<li>Changing <span class="math inline">\(x_j\)</span> can change <strong>every</strong> intermediate coordinate <span class="math inline">\(u_i\)</span>.</li>
+<li><span class="blue">Multiply along each path</span>, then <span class="purple">add over the paths</span>.</li>
+<li>Evaluate each derivative at its own input: <span class="math inline">\(x\)</span> for <span class="math inline">\(g\)</span>, and <span class="math inline">\(g(x)\)</span> for <span class="math inline">\(f\)</span>.</li>
 </ul>
 <aside class="notes">
-<p>This convention does not make the complete network objective differentiable at all parameter values. Use examples away from zero for ordinary gradient checks.</p>
+<p>For d=m=1 this is the familiar derivative of a composition. With the other input coordinates fixed, a small change t in x_j changes u_i by (partial g_i / partial x_j)t + o(t). The linear approximation of f adds the resulting contributions. Existence of partial derivatives alone is not sufficient.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1374,58 +1377,29 @@ Differentiate with respect to the class scores
           display:block!important;
       }</style></aside>
 </section>
-<section id="backward-propagation-follows-the-connections" class="slide level2">
-<h2>Backward propagation follows the connections</h2>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/nn-backward-pass.svg" height="480"></p>
-<figcaption>Derivatives travel backwards through the same numerical network. The inactive ReLU blocks the derivative to its incoming weights.</figcaption>
-</figure>
-</div>
-<ul>
-<li>With <span class="math inline">\(y=1\)</span> and squared loss, the output derivative is <span class="math inline">\(s-y=-3/2\)</span>.</li>
-<li>Output weights transmit derivatives to hidden units; ReLU then passes or blocks them.</li>
-<li>Each edge gradient combines an <span class="purple">arriving derivative</span> with its <span class="blue">stored input</span>.</li>
-</ul>
-<aside class="notes">
-<p>The reverse labels -3, 3/2, -3/2 are derivatives with respect to hidden outputs, before the ReLU gate. The first gate turns -3 into zero because z_1=-1. The post-gate derivatives are therefore 0,3/2,-3/2. Red dashed forward connections retain the intercept inputs as architectural context; they are not reverse derivative arrows. Backpropagation differentiates the computation, not inverts it.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="one-hidden-layer-backward-propagation" class="slide level2">
-<h2>One hidden layer: backward propagation</h2>
-<p>Let <span class="math inline">\(z=Wx+b\)</span>, <span class="math inline">\(h=\sigma(z)\)</span> and <span class="math inline">\(s=v^\top h+c\)</span> for a scalar output.</p>
+<section id="recall-jacobians-organise-the-derivatives" class="slide level2">
+<h2>Recall: Jacobians organise the derivatives</h2>
+<p>For <span class="math inline">\(g:\R^d\to\R^m\)</span>, its <strong>Jacobian</strong> has one row per output and one column per input:</p>
+<p><span class="math display">\[J_g(x)=\left[\frac{\partial g_i}{\partial x_j}(x)\right]_{i,j}
+\in\R^{m\times d},
+\qquad g(x+\Delta x)\approx g(x)+J_g(x)\Delta x.\]</span></p>
+<p>If <span class="math inline">\(f:\R^m\to\R^k\)</span>, the same rule applies to each output coordinate. Assume both maps are differentiable at the relevant points.</p>
 <div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
 <div class="eqbox-title">
-One observation
+The chain rule is matrix multiplication
 </div>
 <div class="eqbox-body">
-<p><span class="math display">\[\begin{aligned}
-\delta_s&amp;=\frac{\partial\ell}{\partial s},
-&amp;\nabla_v\ell&amp;=\delta_s h,
-&amp;\frac{\partial\ell}{\partial c}&amp;=\delta_s,\\
-\delta_z&amp;=(v\delta_s)\odot\sigma'(z),
-&amp;\nabla_W\ell&amp;=\delta_z x^\top,
-&amp;\nabla_b\ell&amp;=\delta_z.
-\end{aligned}\]</span></p>
+<p><span class="math display">\[\underbrace{J_{f\circ g}(x)}_{k\times d}
+=\underbrace{J_f(g(x))}_{k\times m}\,
+\underbrace{J_g(x)}_{m\times d}.\]</span></p>
 </div>
 </div>
 <ul>
-<li><span class="math inline">\(\odot\)</span> denotes coordinatewise multiplication.</li>
-<li><span class="math inline">\(\delta_z\in\R^m\)</span> and <span class="math inline">\(\delta_zx^\top\in\R^{m\times d}\)</span>.</li>
-<li>The gradient of each parameter array has the <span class="blue">same shape</span> as that array.</li>
+<li>Each entry of the product is a <strong>sum of path contributions</strong>.</li>
+<li>The order matters: first apply <span class="math inline">\(J_g(x)\)</span> to an input change, then <span class="math inline">\(J_f(g(x))\)</span>.</li>
 </ul>
 <aside class="notes">
-<p>Derive the (j,k) entry: d ell/d W_jk = delta_z,j x_k. This is an outer product, not an inner product. Use the numerical example as a consistency check for the derived rule, rather than an arithmetic exercise.</p>
+<p>The approximation has remainder o(norm(Delta x)). Composing the two linear approximations gives the matrix product. Check dimensions before computing.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -1438,25 +1412,418 @@ One observation
           display:block!important;
       }</style></aside>
 </section>
-<section id="the-forward-pass-example-continued" class="slide level2">
-<h2>The forward-pass example, continued</h2>
-<p>For the earlier input <span class="math inline">\(x=(1,2)^\top\)</span>,</p>
-<p><span class="math display">\[z=(-1,2,1)^\top,\quad h=(0,2,1)^\top,\quad
-v=(2,-1,1)^\top,\quad s=-\tfrac12.\]</span></p>
-<p>Take <span class="math inline">\(y=1\)</span> and squared loss. Then <span class="math inline">\(\delta_s=s-y=-\tfrac32\)</span>.</p>
+<section id="recall-a-scalar-loss-gives-a-backward-gradient" class="slide level2">
+<h2>Recall: a scalar loss gives a backward gradient</h2>
+<p>For <span class="math inline">\(F(x)=f(g(x))\in\R\)</span>, use <strong>column vectors</strong> for gradients: <span class="math inline">\(\nabla f(u)\in\R^m\)</span> and <span class="math inline">\(\nabla F(x)\in\R^d\)</span>. Then <span class="math inline">\(J_f(u)=\nabla f(u)^\top\)</span>.</p>
+<div class="eqbox">
+<div class="eqbox-title">
+Propagate a gradient backwards
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\underbrace{\nabla F(x)}_{d\times1}
+=\underbrace{J_g(x)^\top}_{d\times m}\,
+\underbrace{\nabla f(g(x))}_{m\times1}.\]</span></p>
+</div>
+</div>
+<ul>
+<li><strong>Forward:</strong> <span class="math inline">\(J_g(x)\)</span> maps input changes to intermediate changes.</li>
+<li><strong>Backward:</strong> <span class="math inline">\(J_g(x)^\top\)</span> maps an intermediate loss gradient to an input gradient.</li>
+</ul>
+<p>For an affine layer <span class="math inline">\(u=Wx+b\)</span> and a differentiable loss <span class="math inline">\(\ell=f(u)\)</span>:</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-body">
+<p><span class="math display">\[J_g(x)=W,\qquad \nabla_x\ell=W^\top\nabla_u\ell.\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Retain the differentiability assumptions from the preceding slides. The transpose follows by transposing J_F = J_f J_g. It is not an inverse. Alternatively, write d ell = (nabla_u ell)^T du and du = W dx. Backpropagation repeatedly applies this rule, using stored forward values. Implementations can compute the product without constructing a full Jacobian.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="several-branches-add-their-contributions" class="slide level2">
+<h2>Several branches: add their contributions</h2>
+<p>Let <span class="math inline">\(u=x_1x_2\)</span>, <span class="math inline">\(v=x_1+x_2\)</span> and <span class="math inline">\(F(x)=f(u,v)=u^2+v\)</span>. Both intermediate quantities depend on <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>.</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+Two paths from each input to the output
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\begin{aligned}
+\frac{\partial F}{\partial x_1}
+&amp;=\frac{\partial f}{\partial u}\frac{\partial u}{\partial x_1}
++\frac{\partial f}{\partial v}\frac{\partial v}{\partial x_1}
+=2u\,x_2+1,\\
+\frac{\partial F}{\partial x_2}
+&amp;=2u\,x_1+1.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<div id="exr-nn-chain-rule" class="block-styled block-style-6 theorem exercise">
+<p><span class="theorem-title"><strong>Exercise 6 (A parameter used twice)</strong></span> Suppose the same scalar parameter <span class="math inline">\(t\)</span> supplies both inputs: <span class="math inline">\(H(t)=F(t,t)\)</span>.</p>
+<ol type="1">
+<li>Derive <span class="math inline">\(H'(t)\)</span> using the multivariate chain rule, and verify it by differentiating <span class="math inline">\(H\)</span> directly.</li>
+<li>Explain why keeping only one input contribution gives an incorrect derivative in general.</li>
+</ol>
+</div>
+<aside class="notes">
+<p>For <a href="#/exr-nn-chain-rule" class="quarto-xref">Exercise&nbsp;6</a>, the map t -&gt; (t,t) has Jacobian (1,1)^T. Thus H’(t) = partial_1 F(t,t) + partial_2 F(t,t) = (2t<sup>3+1)+(2t</sup>3+1) = 4t^3+2. Directly, H(t)=t^4+2t. A shared parameter affects the loss through every use; its derivative is the sum of those contributions. Allow 3 minutes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="fitting-one-hidden-layer-write-the-loss-explicitly" class="slide level2">
+<h2>Fitting one hidden layer: write the loss explicitly</h2>
+<p>For data <span class="math inline">\((x_i,y_i)_{i=1}^n\)</span> with <span class="math inline">\(x_i\in\R^d\)</span> and <span class="math inline">\(y_i\in\R\)</span>, use <span class="math inline">\(m\)</span> hidden units:</p>
+<p><span class="math display">\[z_{ij}=b_j+\sum_{r=1}^d W_{jr}x_{ir},\qquad
+h_{ij}=\sigma(z_{ij}),\qquad
+s_i=c+\sum_{j=1}^m v_jh_{ij}.\]</span></p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+Squared-error objective
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[L(W,b,v,c)=\frac1n\sum_{i=1}^n\ell_i,
+\qquad
+\ell_i=\frac12\left[c+\sum_{j=1}^m v_j\sigma\!\left(b_j+\sum_{r=1}^d W_{jr}x_{ir}\right)-y_i\right]^2.\]</span></p>
+</div>
+</div>
+<ul>
+<li>The parameters are <span class="math inline">\(W\in\R^{m\times d}\)</span>, <span class="math inline">\(b,v\in\R^m\)</span> and <span class="math inline">\(c\in\R\)</span>: <strong><span class="math inline">\(m(d+1)+m+1\)</span> parameters</strong>.</li>
+<li>Fix one observation <span class="math inline">\(i\)</span> and differentiate <span class="math inline">\(\ell_i\)</span> first; average the derivatives afterwards.</li>
+<li>We assume <span class="math inline">\(\sigma\)</span> is differentiable at the values <span class="math inline">\(z_{ij}\)</span> used below.</li>
+</ul>
+<aside class="notes">
+<p>This follows the coordinate-by-coordinate approach of the old lecture, using our current notation and keeping intercepts explicit. The factor 1/2 cancels the 2 from differentiating a square; 1/n averages over observations. For ReLU, work away from zero. For sigmoid, sigma’(z)=sigma(z)(1-sigma(z)).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="step-1-differentiate-the-output-weight-and-intercept" class="slide level2">
+<h2>Step 1: differentiate the output weight and intercept</h2>
+<p>Fix observation <span class="math inline">\(i\)</span>. Throughout the calculation, <strong>the data are fixed</strong>:</p>
+<p><span class="math display">\[\ell_i=\frac12(s_i-y_i)^2,\qquad
+s_i=c+\sum_{q=1}^m v_qh_{iq}.\]</span></p>
+<p>First, <span class="math inline">\(\displaystyle\frac{\partial\ell_i}{\partial s_i}
+=\frac12\,2(s_i-y_i)=s_i-y_i\)</span>. Call this residual <span class="math inline">\(e_i:=s_i-y_i\)</span>.</p>
+<ul>
+<li>The hidden values <span class="math inline">\(h_{iq}\)</span> do not depend on <span class="math inline">\(v\)</span> or <span class="math inline">\(c\)</span>.</li>
+<li>Only <span class="math inline">\(v_jh_{ij}\)</span> depends on <span class="math inline">\(v_j\)</span>, so <span class="math inline">\(\partial s_i/\partial v_j=h_{ij}\)</span>; also <span class="math inline">\(\partial s_i/\partial c=1\)</span>.</li>
+</ul>
+<div class="eqbox">
+<div class="eqbox-title">
+Multiply the outer derivative by the local derivative
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\begin{aligned}
+\frac{\partial\ell_i}{\partial v_j}
+&amp;=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial v_j}
+=e_i h_{ij},\\
+\frac{\partial\ell_i}{\partial c}
+&amp;=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial c}
+=e_i.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>The index i selects an observation; j selects a hidden unit; q is a dummy summation index. We compute derivatives of ell_i first, then average over i. The residual e_i is evaluated at the current parameters; it is not a new parameter.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="step-2-how-does-the-loss-depend-on-a-hidden-unit" class="slide level2">
+<h2>Step 2: how does the loss depend on a hidden unit?</h2>
+<p>To reach <span class="math inline">\(W\)</span> and <span class="math inline">\(b\)</span>, first differentiate with respect to the intermediate values. Recall <span class="math inline">\(s_i=c+\sum_q v_qh_{iq}\)</span> and <span class="math inline">\(h_{ij}=\sigma(z_{ij})\)</span>.</p>
+<p><strong>Through the output layer:</strong> <span class="math inline">\(\partial s_i/\partial h_{ij}=v_j\)</span>, hence</p>
 <div class="eqbox">
 <div class="eqbox-body">
-<p><span class="math display">\[\nabla_v\ell=\begin{pmatrix}0\\-3\\-3/2\end{pmatrix},\quad
-\delta_z=\begin{pmatrix}0\\3/2\\-3/2\end{pmatrix},\quad
-\nabla_W\ell=\begin{pmatrix}0&amp;0\\3/2&amp;3\\-3/2&amp;-3\end{pmatrix}.\]</span></p>
+<p><span class="math display">\[\frac{\partial\ell_i}{\partial h_{ij}}
+=\frac{\partial\ell_i}{\partial s_i}\frac{\partial s_i}{\partial h_{ij}}
+=e_i v_j.\]</span></p>
 </div>
 </div>
-<p>Also <span class="math inline">\(\nabla_b\ell=\delta_z\)</span> and <span class="math inline">\(\partial\ell/\partial c=-3/2\)</span>.</p>
-<p>The first hidden unit contributes zero parameter gradient <span class="purple">for this observation</span>.</p>
+<p><strong>Through the activation:</strong> <span class="math inline">\(\partial h_{ij}/\partial z_{ij}=\sigma'(z_{ij})\)</span>, hence</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+Name this derivative so that we can reuse it
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\delta_{ij}:=\frac{\partial\ell_i}{\partial z_{ij}}
+=\frac{\partial\ell_i}{\partial h_{ij}}\frac{\partial h_{ij}}{\partial z_{ij}}
+=e_i v_j\sigma'(z_{ij}).\]</span></p>
+</div>
+</div>
+<ul>
+<li>For <strong>sigmoid</strong>, <span class="math inline">\(\sigma'(z_{ij})=h_{ij}(1-h_{ij})\)</span>.</li>
+<li>For <strong>ReLU</strong>, <span class="math inline">\(\sigma'(z_{ij})=\mathbf1_{\{z_{ij}&gt;0\}}\)</span> when <span class="math inline">\(z_{ij}\ne0\)</span>.</li>
+</ul>
+<aside class="notes">
+<p>Derivatives with respect to intermediate values mean derivatives of the remaining, downstream loss. ReLU is not differentiable at zero; assigning its local derivative the value zero is a computational convention, not an ordinary differentiability statement. An inactive ReLU blocks this loss derivative.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="step-3-differentiate-an-input-weight-and-intercept" class="slide level2">
+<h2>Step 3: differentiate an input weight and intercept</h2>
+<p>Select <span class="math inline">\(W_{jr}\)</span>, from input coordinate <span class="math inline">\(r\)</span> to hidden unit <span class="math inline">\(j\)</span>. Recall</p>
+<p><span class="math display">\[z_{iq}=b_q+\sum_{a=1}^d W_{qa}x_{ia}.\]</span></p>
+<p><span class="blue">Only <span class="math inline">\(z_{ij}\)</span> depends on <span class="math inline">\(W_{jr}\)</span></span>: <span class="math inline">\(\partial z_{ij}/\partial W_{jr}=x_{ir}\)</span>, whereas <span class="math inline">\(\partial z_{iq}/\partial W_{jr}=0\)</span> for <span class="math inline">\(q\ne j\)</span>.</p>
+<div class="eqbox">
+<div class="eqbox-title">
+Apply the multivariate chain rule, then simplify
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\begin{aligned}
+\frac{\partial\ell_i}{\partial W_{jr}}
+&amp;=\sum_{q=1}^m\frac{\partial\ell_i}{\partial z_{iq}}
+\frac{\partial z_{iq}}{\partial W_{jr}}\\
+&amp;=\delta_{ij}x_{ir}
+=e_i v_j\sigma'(z_{ij})x_{ir}.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<p>Similarly, only <span class="math inline">\(z_{ij}\)</span> depends on <span class="math inline">\(b_j\)</span>, with <span class="math inline">\(\partial z_{ij}/\partial b_j=1\)</span>:</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-body">
+<p><span class="math display">\[\frac{\partial\ell_i}{\partial b_j}=\delta_{ij}
+=e_i v_j\sigma'(z_{ij}).\]</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>The sum is the recalled multivariate chain rule with the vector z_i as the intermediate variable. The surviving path is W_jr -&gt; z_ij -&gt; h_ij -&gt; s_i -&gt; ell_i. For the intercept the final local factor is 1 rather than x_ir. All other parameters are held fixed when computing each partial derivative.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="step-4-collect-the-derivatives-into-vectors-and-matrices" class="slide level2">
+<h2>Step 4: collect the derivatives into vectors and matrices</h2>
+<p>Keep the same observation <span class="math inline">\(i\)</span>. Write <span class="math inline">\(z_i=Wx_i+b\)</span>, <span class="math inline">\(h_i=\sigma(z_i)\)</span> and <span class="math inline">\(\delta_i=(\delta_{i1},\ldots,\delta_{im})^\top\)</span>.</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+The coordinate calculations, collected together
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\begin{aligned}
+e_i&amp;=s_i-y_i,
+&amp;\delta_i&amp;=(e_i v)\odot\sigma'(z_i),\\
+\nabla_v\ell_i&amp;=e_i h_i,
+&amp;\frac{\partial\ell_i}{\partial c}&amp;=e_i,\\
+\nabla_W\ell_i&amp;=\delta_i x_i^\top,
+&amp;\nabla_b\ell_i&amp;=\delta_i.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<ul>
+<li><span class="math inline">\(\odot\)</span> means coordinatewise multiplication; <span class="math inline">\(\delta_i\in\R^m\)</span>.</li>
+<li>The <span class="math inline">\((j,r)\)</span> entry of <span class="math inline">\(\delta_i x_i^\top\)</span> is <span class="math inline">\(\delta_{ij}x_{ir}\)</span>: <strong>exactly the derivative just computed</strong>.</li>
+<li>Thus <span class="math inline">\(\nabla_W\ell_i\in\R^{m\times d}\)</span> has the same shape as <span class="math inline">\(W\)</span>.</li>
+</ul>
+<p>This is <strong>backpropagation</strong>: compute the forward values, then reuse derivatives while moving backwards.</p>
+<aside class="notes">
+<p>No new differentiation is hidden in the matrix notation. The product delta_i x_i^T is an outer product. The two factors have sizes m by 1 and 1 by d. Keep i throughout; delta_i denotes the vector of derivatives at the hidden pre-activations for observation i, while e_i is the scalar score derivative.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="check-the-formulas-on-the-forward-pass-example" class="slide level2">
+<h2>Check the formulas on the forward-pass example</h2>
+<p>Use the earlier <strong>ReLU</strong> network for one observation <span class="math inline">\(i\)</span>:</p>
+<p><span class="math display">\[x_i=(1,2)^\top,\quad y_i=1,\quad
+z_i=(-1,2,1)^\top,\quad h_i=(0,2,1)^\top,\quad
+v=(2,-1,1)^\top,\quad s_i=-\tfrac12.\]</span></p>
+<ol type="1">
+<li>The score derivative is <span class="math inline">\(e_i=s_i-y_i=-\tfrac32\)</span>.</li>
+<li>The activation derivatives are <span class="math inline">\(\sigma'(z_i)=(0,1,1)^\top\)</span>.</li>
+<li>Therefore <span class="math inline">\(\delta_i=(e_i v)\odot\sigma'(z_i)=(0,\tfrac32,-\tfrac32)^\top\)</span>.</li>
+</ol>
+<div class="eqbox">
+<div class="eqbox-title">
+Substitute into the gradient formulas
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\nabla_v\ell_i=\begin{pmatrix}0\\-3\\-3/2\end{pmatrix},\qquad
+\nabla_W\ell_i=\begin{pmatrix}0&amp;0\\3/2&amp;3\\-3/2&amp;-3\end{pmatrix},\qquad
+\nabla_b\ell_i=\delta_i,\quad
+\frac{\partial\ell_i}{\partial c}=-\frac32.\]</span></p>
+</div>
+</div>
+<p>The inactive first hidden unit gives a <span class="purple">zero first row in <span class="math inline">\(\nabla_W\ell_i\)</span></span>.</p>
+</section>
+<section id="finish-fitting-differentiate-the-full-objective" class="slide level2">
+<h2>Finish fitting: differentiate the full objective</h2>
+<p>Return to the objective we started with: <span class="math inline">\(L(W,b,v,c)=\frac1n\sum_{i=1}^n\ell_i\)</span>. <strong>Differentiate the finite sum term by term.</strong></p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+Average the derivatives over observations
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\begin{aligned}
+\nabla_W L&amp;=\frac1n\sum_{i=1}^n\delta_i x_i^\top,
+&amp;\nabla_b L&amp;=\frac1n\sum_{i=1}^n\delta_i,\\
+\nabla_v L&amp;=\frac1n\sum_{i=1}^n e_i h_i,
+&amp;\frac{\partial L}{\partial c}&amp;=\frac1n\sum_{i=1}^n e_i.
+\end{aligned}\]</span></p>
+</div>
+</div>
+<ul>
+<li>Every observation uses the <strong>same current parameters</strong>, but has its own <span class="math inline">\(e_i,h_i,\delta_i\)</span>.</li>
+<li>Collect the parameters as <span class="math inline">\(\theta=(W,b,v,c)\)</span>. A gradient descent step is</li>
+</ul>
+<div class="eqbox">
+<div class="eqbox-body">
+<p><span class="math display">\[\theta^{\mathrm{new}}=\theta-\eta\nabla_\theta L(\theta),\qquad \eta&gt;0.\]</span></p>
+</div>
+</div>
+<p>Compute all derivatives <strong>before</strong> updating any parameter. Next, we extend the same calculation to several output scores.</p>
+<aside class="notes">
+<p>This completes the scalar regression objective before changing the model or loss. Parameter collection means concatenating the entries when a vector is required. Using a subset of observations instead of all n gives the mini-batch version later.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="several-outputs-first-differentiate-one-output-weight" class="slide level2">
+<h2>Several outputs: first differentiate one output weight</h2>
+<p>We now replace the scalar output by <strong><span class="math inline">\(K\)</span> scores</strong> and <span class="math inline">\(v\)</span> by <span class="math inline">\(V\in\R^{K\times m}\)</span>. For one observation, omit the index <span class="math inline">\(i\)</span> and write <span class="math inline">\(h=\sigma(Wx+b)\)</span>:</p>
+<p><span class="math display">\[s_k=c_k+\sum_{q=1}^m V_{kq}h_q,\qquad k=1,\ldots,K,
+\qquad \ell=\ell(y,s).\]</span></p>
+<p>Write <span class="math inline">\(\delta_k:=\partial\ell/\partial s_k\)</span>. Changing <span class="math inline">\(V_{kj}\)</span> changes <strong>only score <span class="math inline">\(s_k\)</span></strong>, so</p>
+<div class="eqbox">
+<div class="eqbox-body">
+<p><span class="math display">\[\frac{\partial\ell}{\partial V_{kj}}
+=\sum_{a=1}^K\frac{\partial\ell}{\partial s_a}
+\frac{\partial s_a}{\partial V_{kj}}
+=\delta_k h_j,
+\qquad \frac{\partial\ell}{\partial c_k}=\delta_k.\]</span></p>
+</div>
+</div>
+<ul>
+<li><strong>Squared loss</strong> <span class="math inline">\(\ell=\tfrac12\sum_a(s_a-y_a)^2\)</span>: <span class="math inline">\(\delta_k=s_k-y_k\)</span>.</li>
+<li><strong>Softmax cross-entropy</strong> <span class="math inline">\(\ell=-s_y+\log\sum_a e^{s_a}\)</span>: <span class="math inline">\(\delta_k=p_k-\mathbf1_{\{k=y\}}\)</span>.</li>
+</ul>
+<p><span class="purple">With softmax, changing one score changes every probability.</span> That dependence is already included in <span class="math inline">\(\delta_k\)</span>.</p>
+<aside class="notes">
+<p>V is K by m; it replaces the vector v used for a scalar output. Here y is a vector for squared loss and a class index for cross-entropy. For softmax, partial p_a / partial s_k = p_a(1_{a=k}-p_k): positive on the diagonal, negative off the diagonal. Hence differentiating -log p_y with respect to s_k yields p_k-1_{k=y}. The old TeX slides reverse these signs. Do not confuse the sparse dependence of scores on output weights with the coupled dependence of softmax probabilities on all scores.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="several-outputs-a-hidden-weight-affects-every-score" class="slide level2">
+<h2>Several outputs: a hidden weight affects every score</h2>
+<p>Each hidden value <span class="math inline">\(h_j\)</span> feeds all <span class="math inline">\(K\)</span> scores. Therefore,</p>
+<div class="eqbox" style=";--eqbox-rgb: 125, 60, 152;">
+<div class="eqbox-title">
+Add the contributions arriving from the outputs
+</div>
+<div class="eqbox-body">
+<p><span class="math display">\[\frac{\partial\ell}{\partial h_j}
+=\sum_{k=1}^K\frac{\partial\ell}{\partial s_k}
+\frac{\partial s_k}{\partial h_j}
+=\sum_{k=1}^K\delta_k V_{kj}.\]</span></p>
+</div>
+</div>
+<p>Now continue through <span class="math inline">\(h_j=\sigma(z_j)\)</span> and <span class="math inline">\(z_j=b_j+\sum_r W_{jr}x_r\)</span>:</p>
+<div class="eqbox">
+<div class="eqbox-body">
+<p><span class="math display">\[\frac{\partial\ell}{\partial W_{jr}}
+=\underbrace{\left(\sum_{k=1}^K\delta_k V_{kj}\right)\sigma'(z_j)}_{\displaystyle\delta_{z,j}}
+\,x_r,
+\qquad \frac{\partial\ell}{\partial b_j}=\delta_{z,j}.\]</span></p>
+</div>
+</div>
+<ul>
+<li>The sum over outputs <span class="purple">remains</span>: each score can contribute to the loss derivative.</li>
+<li>In vector form, <span class="math inline">\(\delta_z=(V^\top\delta)\odot\sigma'(z)\)</span> and <span class="math inline">\(\nabla_W\ell=\delta_zx^\top\)</span>.</li>
+<li>Applying this same calculation to each layer gives the backward recursion.</li>
+</ul>
+<aside class="notes">
+<p>Contrast the two sums: only one hidden unit depends on W_jr, but every output score depends on that hidden unit. This explains which sum collapses and which remains. For K=1, the formula reduces to the scalar-output calculation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="several-layers-the-backward-recursion" class="slide level2">
 <h2>Several layers: the backward recursion</h2>
-<p>Write <span class="math inline">\(z^{(\ell)}=W^{(\ell)}h^{(\ell-1)}+b^{(\ell)}\)</span> and <span class="math inline">\(h^{(\ell)}=\sigma_\ell(z^{(\ell)})\)</span>, for <span class="math inline">\(\ell=1,\ldots,L\)</span>. The output scores are <span class="math inline">\(s=W^{(L+1)}h^{(L)}+b^{(L+1)}\)</span>.</p>
+<p>Finally, replace the single hidden layer by <span class="math inline">\(L\)</span> hidden layers; set <span class="math inline">\(h^{(0)}=x\)</span>. Here <span class="math inline">\(L\)</span> denotes the <strong>number of hidden layers</strong>; superscripts index the layers. Write <span class="math inline">\(z^{(\ell)}=W^{(\ell)}h^{(\ell-1)}+b^{(\ell)}\)</span> and <span class="math inline">\(h^{(\ell)}=\sigma_\ell(z^{(\ell)})\)</span>, for <span class="math inline">\(\ell=1,\ldots,L\)</span>. The output scores are <span class="math inline">\(s=W^{(L+1)}h^{(L)}+b^{(L+1)}\)</span>.</p>
 <div class="eqbox">
 <div class="eqbox-title">
 Start at the output, then move backwards
@@ -1512,7 +1879,7 @@ A useful independent check
 <section id="exercise-when-gradient-checks-disagree" class="slide level2">
 <h2>Exercise: when gradient checks disagree</h2>
 <div id="exr-nn-backprop" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 6 (A differentiable function built from ReLU kinks)</strong></span> Define <span class="math inline">\(r(\theta)=\operatorname{ReLU}(\theta)-\operatorname{ReLU}(-\theta)\)</span> and <span class="math inline">\(J(\theta)=\tfrac12(r(\theta)-1)^2\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 7 (A differentiable function built from ReLU kinks)</strong></span> Define <span class="math inline">\(r(\theta)=\operatorname{ReLU}(\theta)-\operatorname{ReLU}(-\theta)\)</span> and <span class="math inline">\(J(\theta)=\tfrac12(r(\theta)-1)^2\)</span>.</p>
 <ol type="1">
 <li>Simplify <span class="math inline">\(r\)</span> and obtain the mathematical derivative <span class="math inline">\(J'(0)\)</span>.</li>
 <li>Apply the local backpropagation rules to the <strong>unsimplified graph</strong>, using derivative <span class="math inline">\(0\)</span> for each ReLU at zero. Explain the discrepancy.</li>
@@ -1550,7 +1917,7 @@ A useful independent check
 <section id="exercise-a-redundant-parametrisation" class="slide level2">
 <h2>Exercise: a redundant parametrisation</h2>
 <div id="exr-nn-nonconvex" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 7 (Parametrisation changes optimisation geometry)</strong></span> Consider <span class="math inline">\(J(v,w)=\tfrac12(vw-1)^2\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 8 (Parametrisation changes optimisation geometry)</strong></span> Consider <span class="math inline">\(J(v,w)=\tfrac12(vw-1)^2\)</span>.</p>
 <ol type="1">
 <li>Characterise all stationary points and classify them. Explain why exact gradient descent initialised at <span class="math inline">\((0,0)\)</span> cannot move.</li>
 <li>At a minimiser with <span class="math inline">\(vw=1\)</span>, show that the Hessian has eigenvalues <span class="math inline">\(0\)</span> and <span class="math inline">\(v^2+w^2\)</span>. Relate the zero eigenvalue to the set of equivalent parameters.</li>
@@ -1618,7 +1985,7 @@ A useful independent check
 </section>
 <section id="a-training-loop" class="slide level2">
 <h2>A training loop</h2>
-<div class="pseudocode-container quarto-float" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-indent-size="1.2em" data-indent-lines="true" data-no-end="false" data-pseudocode-number="1" data-comment-delimiter="//">
+<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-no-end="false" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number-punc=":" data-line-number="true" data-indent-lines="true">
 <div class="pseudocode">
 \begin{algorithm} \caption{Mini-batch SGD} \begin{algorithmic} \State Initialise weights randomly and choose biases. \For{each epoch} \State Shuffle the training indices and partition them into batches. \For{each batch} \State Compute predictions and the average loss on the batch. \State Backpropagate to obtain the batch gradient. \State Subtract the learning rate times the gradient from the parameters. \EndFor \State Record training and validation errors without parameter updates. \EndFor \Return The fitted parameters \end{algorithmic} \end{algorithm}
 </div>
@@ -1843,7 +2210,7 @@ Variance scaling for ReLU
 <section id="exercise-batch-size-stability-and-noise" class="slide level2">
 <h2>Exercise: batch size, stability and noise</h2>
 <div id="exr-nn-training" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 8 (Batch size cannot fix an unstable step)</strong></span> For <span class="math inline">\(J(\theta)=\tfrac\kappa2\theta^2\)</span>, <span class="math inline">\(\kappa&gt;0\)</span>, model a batch gradient by <span class="math inline">\(g_t=\kappa\theta_t+\xi_t\)</span>, where the <span class="math inline">\(\xi_t\)</span> are independent, centred, independent of <span class="math inline">\(\theta_0\)</span>, and have variance <span class="math inline">\(\sigma^2/b&gt;0\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 9 (Batch size cannot fix an unstable step)</strong></span> For <span class="math inline">\(J(\theta)=\tfrac\kappa2\theta^2\)</span>, <span class="math inline">\(\kappa&gt;0\)</span>, model a batch gradient by <span class="math inline">\(g_t=\kappa\theta_t+\xi_t\)</span>, where the <span class="math inline">\(\xi_t\)</span> are independent, centred, independent of <span class="math inline">\(\theta_0\)</span>, and have variance <span class="math inline">\(\sigma^2/b&gt;0\)</span>.</p>
 <ol type="1">
 <li>Under <span class="math inline">\(\theta_{t+1}=\theta_t-\eta g_t\)</span>, derive recursions for the mean and variance. Which step sizes make the mean tend to zero and the variance stay bounded for every deterministic initial value?</li>
 <li>Derive the limiting variance and interpret its dependence on <span class="math inline">\(b\)</span> and <span class="math inline">\(\eta\)</span>.</li>
@@ -2099,7 +2466,7 @@ L2 regularisation
 <section id="exercise-what-does-dropout-penalise" class="slide level2">
 <h2>Exercise: what does dropout penalise?</h2>
 <div id="exr-nn-dropout" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 9 (Dropout as a feature-dependent penalty)</strong></span> Fix <span class="math inline">\(h\in\R^m\)</span>, <span class="math inline">\(y\in\R\)</span> and <span class="math inline">\(s=c+v^\top h\)</span>. Let <span class="math inline">\(\widetilde s=c+\sum_j v_jM_jh_j/q\)</span>, where the <span class="math inline">\(M_j\)</span> are independent <span class="math inline">\(\operatorname{Bernoulli}(q)\)</span> variables, <span class="math inline">\(0&lt;q\leq1\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 10 (Dropout as a feature-dependent penalty)</strong></span> Fix <span class="math inline">\(h\in\R^m\)</span>, <span class="math inline">\(y\in\R\)</span> and <span class="math inline">\(s=c+v^\top h\)</span>. Let <span class="math inline">\(\widetilde s=c+\sum_j v_jM_jh_j/q\)</span>, where the <span class="math inline">\(M_j\)</span> are independent <span class="math inline">\(\operatorname{Bernoulli}(q)\)</span> variables, <span class="math inline">\(0&lt;q\leq1\)</span>.</p>
 <ol type="1">
 <li><p>Prove the identity</p>
 <p><span class="math display">\[\mathbb E_M\!\left[\tfrac12(\widetilde s-y)^2\right]
@@ -2195,7 +2562,7 @@ L2 regularisation
 <section id="exercise-selection-changes-the-reported-error" class="slide level2">
 <h2>Exercise: selection changes the reported error</h2>
 <div id="exr-nn-checkpoint" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 10 (The cost of selecting a checkpoint)</strong></span> Condition on a training run producing <span class="math inline">\(T\)</span> fixed checkpoints, each with the same population risk <span class="math inline">\(r\)</span>. On an independent validation set, their errors are <span class="math inline">\(\widehat R_t=r+\varepsilon_t\)</span>, with <span class="math inline">\(\mathbb E[\varepsilon_t]=0\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 11 (The cost of selecting a checkpoint)</strong></span> Condition on a training run producing <span class="math inline">\(T\)</span> fixed checkpoints, each with the same population risk <span class="math inline">\(r\)</span>. On an independent validation set, their errors are <span class="math inline">\(\widehat R_t=r+\varepsilon_t\)</span>, with <span class="math inline">\(\mathbb E[\varepsilon_t]=0\)</span>.</p>
 <ol type="1">
 <li>Prove that <span class="math inline">\(\mathbb E[\min_t\widehat R_t]\leq r\)</span>. Give a simple example with strict inequality. Must the errors be independent?</li>
 <li>A researcher doubles the number of inspected checkpoints and obtains a smaller validation minimum. Does this establish improved prediction?</li>
@@ -2219,7 +2586,7 @@ L2 regularisation
 <section id="exercise-prediction-for-new-people" class="slide level2">
 <h2>Exercise: prediction for new people</h2>
 <div id="exr-nn-leakage" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 11 (The split defines the prediction problem)</strong></span> Suppose <span class="math inline">\(Y_{ij}=A_i+\varepsilon_{ij}\)</span> for person <span class="math inline">\(i\)</span> and measurement <span class="math inline">\(j\)</span>. All person effects and errors are independent and centred, with variances <span class="math inline">\(\sigma_A^2\)</span> and <span class="math inline">\(\tau^2\)</span>. Only person identity is available as a predictor.</p>
+<p><span class="theorem-title"><strong>Exercise 12 (The split defines the prediction problem)</strong></span> Suppose <span class="math inline">\(Y_{ij}=A_i+\varepsilon_{ij}\)</span> for person <span class="math inline">\(i\)</span> and measurement <span class="math inline">\(j\)</span>. All person effects and errors are independent and centred, with variances <span class="math inline">\(\sigma_A^2\)</span> and <span class="math inline">\(\tau^2\)</span>. Only person identity is available as a predictor.</p>
 <ol type="1">
 <li>For a person with <span class="math inline">\(m\)</span> training measurements, predict a fresh measurement by their training mean. Derive its mean squared prediction error.</li>
 <li>For a new person with no measurements, derive the minimum MSE of a constant prediction. When can a random split of rows give a misleading impression of performance on new people?</li>
@@ -2279,7 +2646,7 @@ L2 regularisation
 <section id="exercise-shape-constrained-regression" class="slide level2">
 <h2>Exercise: shape-constrained regression</h2>
 <div id="exr-nn-interpolant" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 12 (Encode shape constraints in a network)</strong></span> For distinct ordered knots <span class="math inline">\(t_1&lt;\cdots&lt;t_m\)</span>, consider</p>
+<p><span class="theorem-title"><strong>Exercise 13 (Encode shape constraints in a network)</strong></span> For distinct ordered knots <span class="math inline">\(t_1&lt;\cdots&lt;t_m\)</span>, consider</p>
 <p><span class="math display">\[g(x)=a+bx+\sum_{j=1}^m c_j\operatorname{ReLU}(x-t_j).\]</span></p>
 <p>Use this graphical criterion: a continuous piecewise-affine function is <strong>convex</strong> exactly when its slopes never decrease from left to right.</p>
 <ol type="1">
@@ -2355,7 +2722,7 @@ L2 regularisation
 <div class="columns">
 <div class="column" style="width:62%;">
 <div id="exr-nn-uat" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 13 (Approximation depends on the error metric)</strong></span> Let <span class="math inline">\(X\sim\operatorname{Unif}[-1,1]\)</span> and <span class="math inline">\(f(x)=\mathbf1_{\{x\geq0\}}\)</span>. The ramp <span class="math inline">\(g_\delta\)</span> agrees with <span class="math inline">\(f\)</span> outside <span class="math inline">\([-\delta,\delta]\)</span>, where <span class="math inline">\(0&lt;\delta&lt;1\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 14 (Approximation depends on the error metric)</strong></span> Let <span class="math inline">\(X\sim\operatorname{Unif}[-1,1]\)</span> and <span class="math inline">\(f(x)=\mathbf1_{\{x\geq0\}}\)</span>. The ramp <span class="math inline">\(g_\delta\)</span> agrees with <span class="math inline">\(f\)</span> outside <span class="math inline">\([-\delta,\delta]\)</span>, where <span class="math inline">\(0&lt;\delta&lt;1\)</span>.</p>
 <ol type="1">
 <li>Construct the pictured ramp using <strong>two ReLU units</strong>. Specify the weights and intercepts.</li>
 <li>Find <span class="math inline">\(\mathbb E|f(X)-g_\delta(X)|\)</span> using the shaded triangles. Does small average error guarantee small error at every input? Consider <span class="math inline">\(x=0\)</span>.</li>
@@ -2482,7 +2849,7 @@ R(\widetilde f)
 <section id="exercise-fitting-every-observation-is-not-enough" class="slide level2">
 <h2>Exercise: fitting every observation is not enough</h2>
 <div id="exr-nn-error-sources" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 14 (Training loss cannot resolve an unobserved input)</strong></span> Let <span class="math inline">\(Y=0\)</span> and <span class="math inline">\(X\in\{0,1,2\}\)</span>, with</p>
+<p><span class="theorem-title"><strong>Exercise 15 (Training loss cannot resolve an unobserved input)</strong></span> Let <span class="math inline">\(Y=0\)</span> and <span class="math inline">\(X\in\{0,1,2\}\)</span>, with</p>
 <p><span class="math display">\[\Pr(X=1)=p,\qquad\Pr(X=0)=\Pr(X=2)=\frac{1-p}{2},\qquad 0&lt;p&lt;1.\]</span></p>
 <p>The realised training sample contains only inputs <span class="math inline">\(0\)</span> and <span class="math inline">\(2\)</span>. Let <span class="math inline">\(T\)</span> be the triangular network from <a href="#/exr-nn-relu-tent" class="quarto-xref">Exercise&nbsp;2</a> and <span class="math inline">\(f_H=HT\)</span>, for <span class="math inline">\(H&gt;0\)</span>. Use loss <span class="math inline">\(\ell(y,s)=\tfrac12(s-y)^2\)</span>.</p>
 <ol type="1">
@@ -2855,7 +3222,7 @@ Choose structure to match the task
 <section id="exercise-symmetry-can-rule-out-the-target" class="slide level2">
 <h2>Exercise: symmetry can rule out the target</h2>
 <div id="exr-nn-convolution" class="block-styled block-style-6 theorem exercise">
-<p><span class="theorem-title"><strong>Exercise 15 (What translation invariance makes impossible)</strong></span> On a circular signal of even length <span class="math inline">\(n\)</span>, define <span class="math inline">\((Sx)_i=x_{i-1}\)</span> and <span class="math inline">\((Cx)_i=b+\sum_{u=0}^{k-1}K_u x_{i+u}\)</span>, with indices taken modulo <span class="math inline">\(n\)</span>.</p>
+<p><span class="theorem-title"><strong>Exercise 16 (What translation invariance makes impossible)</strong></span> On a circular signal of even length <span class="math inline">\(n\)</span>, define <span class="math inline">\((Sx)_i=x_{i-1}\)</span> and <span class="math inline">\((Cx)_i=b+\sum_{u=0}^{k-1}K_u x_{i+u}\)</span>, with indices taken modulo <span class="math inline">\(n\)</span>.</p>
 <ol type="1">
 <li>Prove that <span class="math inline">\(C(Sx)=S(Cx)\)</span> and that coordinatewise ReLU preserves this property.</li>
 <li>Show that globally averaging these features makes any subsequent classifier invariant to <span class="math inline">\(S\)</span>. Can it distinguish two translated copies whose labels depend on their locations?</li>
@@ -2905,16 +3272,17 @@ Choose structure to match the task
 <li><a href="#/exercise-what-does-an-affine-bottleneck-lose">Exercise 3: An affine bottleneck restricts rank</a></li>
 <li><a href="#/exercise-weighting-a-loss-changes-its-target">Exercise 4: Weighted binary cross-entropy</a></li>
 <li><a href="#/exercise-the-geometry-of-softmax">Exercise 5: Convexity without a finite optimum</a></li>
-<li><a href="#/exercise-when-gradient-checks-disagree">Exercise 6: A differentiable function built from ReLU kinks</a></li>
-<li><a href="#/exercise-a-redundant-parametrisation">Exercise 7: Parametrisation changes optimisation geometry</a></li>
-<li><a href="#/exercise-batch-size-stability-and-noise">Exercise 8: Batch size cannot fix an unstable step</a></li>
-<li><a href="#/exercise-what-does-dropout-penalise">Exercise 9: Dropout as a feature-dependent penalty</a></li>
-<li><a href="#/exercise-selection-changes-the-reported-error">Exercise 10: The cost of selecting a checkpoint</a></li>
-<li><a href="#/exercise-prediction-for-new-people">Exercise 11: The split defines the prediction problem</a></li>
-<li><a href="#/exercise-shape-constrained-regression">Exercise 12: Encode shape constraints in a network</a></li>
-<li><a href="#/exercise-average-error-and-a-sharp-threshold">Exercise 13: Approximation depends on the error metric</a></li>
-<li><a href="#/exercise-fitting-every-observation-is-not-enough">Exercise 14: Training loss cannot resolve an unobserved input</a></li>
-<li><a href="#/exercise-symmetry-can-rule-out-the-target">Exercise 15: What translation invariance makes impossible</a></li>
+<li><a href="#/several-branches-add-their-contributions">Exercise 6: A parameter used twice</a></li>
+<li><a href="#/exercise-when-gradient-checks-disagree">Exercise 7: A differentiable function built from ReLU kinks</a></li>
+<li><a href="#/exercise-a-redundant-parametrisation">Exercise 8: Parametrisation changes optimisation geometry</a></li>
+<li><a href="#/exercise-batch-size-stability-and-noise">Exercise 9: Batch size cannot fix an unstable step</a></li>
+<li><a href="#/exercise-what-does-dropout-penalise">Exercise 10: Dropout as a feature-dependent penalty</a></li>
+<li><a href="#/exercise-selection-changes-the-reported-error">Exercise 11: The cost of selecting a checkpoint</a></li>
+<li><a href="#/exercise-prediction-for-new-people">Exercise 12: The split defines the prediction problem</a></li>
+<li><a href="#/exercise-shape-constrained-regression">Exercise 13: Encode shape constraints in a network</a></li>
+<li><a href="#/exercise-average-error-and-a-sharp-threshold">Exercise 14: Approximation depends on the error metric</a></li>
+<li><a href="#/exercise-fitting-every-observation-is-not-enough">Exercise 15: Training loss cannot resolve an unobserved input</a></li>
+<li><a href="#/exercise-symmetry-can-rule-out-the-target">Exercise 16: What translation invariance makes impossible</a></li>
 </ul>
 </div>
 </section></section>
