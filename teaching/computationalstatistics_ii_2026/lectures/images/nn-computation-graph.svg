@@ -248,10 +248,10 @@ L 399.985093 113.646819
 " clip-path="url(#p127ee5bce8)" style="fill: none; stroke: #cbd5e1; stroke-width: 0.8; stroke-linecap: square"/>
    </g>
    <g id="text_3">
-    <!-- $\Sigma$ -->
-    <g style="fill: #0f4494" transform="translate(567.745593 138.013509)">
+    <!-- $I$ -->
+    <g style="fill: #0f4494" transform="translate(570.465593 138.013509)">
      <text>
-      <tspan style="font: 16px 'DejaVu Sans'" x="0" y="-0.328125">Σ</tspan>
+      <tspan style="font: oblique 16px 'DejaVu Sans'" x="0" y="-0.328125">I</tspan>
      </text>
     </g>
    </g>

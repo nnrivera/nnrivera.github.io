@@ -228,7 +228,7 @@ z
 " clip-path="url(#p23e455887b)" style="fill: #ffffff; stroke: #0f4494; stroke-width: 2; stroke-linejoin: miter"/>
    </g>
    <g id="text_8">
-    <text style="fill: #0f4494; font: 13px 'DejaVu Sans'; text-anchor: middle" x="294.187593" y="223.818208" transform="rotate(-0 294.187593 223.818208)">Affine sum</text>
+    <text style="fill: #0f4494; font: 13px 'DejaVu Sans'; text-anchor: middle" x="294.187593" y="223.818208" transform="rotate(-0 294.187593 223.818208)">Identity output</text>
    </g>
    <g id="text_9">
     <!-- $\widetilde s$ -->
@@ -275,10 +275,10 @@ z
     <text style="fill: #be2832; font: 18px 'DejaVu Sans'; text-anchor: middle" x="266.346703" y="101.002536" transform="rotate(-0 266.346703 101.002536)">1</text>
    </g>
    <g id="text_15">
-    <!-- $\Sigma$ -->
-    <g style="fill: #0f4494" transform="translate(286.187593 193.595459)">
+    <!-- $I$ -->
+    <g style="fill: #0f4494" transform="translate(290.437593 193.595459)">
      <text>
-      <tspan style="font: 25px 'DejaVu Sans'" x="0" y="-0.78125">Σ</tspan>
+      <tspan style="font: oblique 25px 'DejaVu Sans'" x="0" y="-0.78125">I</tspan>
      </text>
     </g>
    </g>
@@ -475,7 +475,7 @@ z
 " clip-path="url(#p1f2bd7d36c)" style="fill: #ffffff; stroke: #0f4494; stroke-width: 2; stroke-linejoin: miter"/>
    </g>
    <g id="text_22">
-    <text style="fill: #0f4494; font: 13px 'DejaVu Sans'; text-anchor: middle" x="726.863583" y="223.818208" transform="rotate(-0 726.863583 223.818208)">Affine sum</text>
+    <text style="fill: #0f4494; font: 13px 'DejaVu Sans'; text-anchor: middle" x="726.863583" y="223.818208" transform="rotate(-0 726.863583 223.818208)">Identity output</text>
    </g>
    <g id="text_23">
     <!-- $s$ -->
@@ -519,10 +519,10 @@ z
     <text style="fill: #be2832; font: 18px 'DejaVu Sans'; text-anchor: middle" x="699.022693" y="101.002536" transform="rotate(-0 699.022693 101.002536)">1</text>
    </g>
    <g id="text_29">
-    <!-- $\Sigma$ -->
-    <g style="fill: #0f4494" transform="translate(718.863583 193.595459)">
+    <!-- $I$ -->
+    <g style="fill: #0f4494" transform="translate(723.113583 193.595459)">
      <text>
-      <tspan style="font: 25px 'DejaVu Sans'" x="0" y="-0.78125">Σ</tspan>
+      <tspan style="font: oblique 25px 'DejaVu Sans'" x="0" y="-0.78125">I</tspan>
      </text>
     </g>
    </g>

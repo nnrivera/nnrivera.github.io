@@ -396,7 +396,7 @@ The next step
 </tr>
 </tbody>
 </table>
-<p>These shapes are the <span class="purple">diagram convention used here</span>; the small curve identifies the activation. <a href="#/nn-activation-formulae" class="explanation-link">Formulae</a></p>
+<p>These shapes are the <span class="purple">diagram convention used here</span>; the small curve identifies the activation. A circle labelled <span class="math inline">\(I\)</span> denotes the <span class="blue">identity activation</span>, <span class="math inline">\(I(z)=z\)</span>. <a href="#/nn-activation-formulae" class="explanation-link">Formulae</a></p>
 <details class="explanation" id="nn-activation-formulae"><summary>Activation formulae</summary><div class="explanation-content">
 <p><span class="math display">\[\begin{aligned}
 \operatorname{ReLU}(z)&amp;=\max\{0,z\},\\
@@ -405,7 +405,7 @@ The next step
 \end{aligned}\]</span> ReLU is not differentiable at zero. Sigmoid and tanh flatten in both tails.</p>
 </div></details>
 <aside class="notes">
-<p>Use the shape together with its internal curve, not colour alone, to identify the activation. The axes inside sigmoid put zero at the lower level; tanh’s horizontal axis passes through its centre. These are lecture-specific visual symbols rather than a universal notation. A circle with Sigma is an affine sum.</p>
+<p>Use the shape together with its internal curve, not colour alone, to identify the activation. The axes inside sigmoid put zero at the lower level; tanh’s horizontal axis passes through its centre. These are lecture-specific visual symbols rather than a universal notation. A circle with Sigma is an affine sum; a neuron labelled I combines its incoming affine sum with the identity activation.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -587,13 +587,13 @@ The next step
 </div><div class="column" style="width:62%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="images/nn-one-hidden-layer.svg" style="width:100.0%" alt="Two inputs feed three square ReLU units. Their outputs feed an affine summation. Red diamond nodes fixed at one supply hidden and output intercepts. Blue input edges carry w_jk and purple output edges carry v_j."></p>
-<figcaption>ReLU hidden units, an affine output, and explicit constant inputs.</figcaption>
+<p><img data-src="images/nn-one-hidden-layer.svg" style="width:100.0%" alt="Two inputs feed three square ReLU units. Their outputs feed a neuron labelled I for the identity activation. Red diamond nodes fixed at one supply hidden and output intercepts. Blue input edges carry w_jk and purple output edges carry v_j."></p>
+<figcaption>ReLU hidden units, an identity output, and explicit constant inputs.</figcaption>
 </figure>
 </div>
 </div></div>
 <aside class="notes">
-<p>The picture shows d=2, m=3 and ReLU; the definition permits other activations. A shaped hidden node includes its incoming affine sum followed by the indicated activation. Only the output is drawn as a separate Sigma because it has no nonlinear activation. The constant nodes are not hidden neurons or parameters. Hidden values are computed, rather than observed in the dataset; fully connected means every input connects to every hidden unit.</p>
+<p>The picture shows d=2, m=3 and ReLU; the definition permits other activations. A shaped hidden node includes its incoming affine sum followed by the indicated activation. The output neuron is labelled I for the identity activation: it returns its affine score unchanged. The constant nodes are not hidden neurons or parameters. Hidden values are computed, rather than observed in the dataset; fully connected means every input connects to every hidden unit.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -621,8 +621,8 @@ The next step
 </div><div class="column" style="width:62%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="images/nn-one-hidden-layer-multivariate.svg" style="width:100.0%" alt="Two inputs feed three square ReLU hidden units through blue input weights. Purple output weights connect every hidden unit to affine outputs s_1, s_2, through s_k. Red diamond nodes fixed at one supply the hidden intercepts b_j and a separate intercept c_r for each output."></p>
-<figcaption>Shared hidden features feed several affine outputs.</figcaption>
+<p><img data-src="images/nn-one-hidden-layer-multivariate.svg" style="width:100.0%" alt="Two inputs feed three square ReLU hidden units through blue input weights. Purple output weights connect every hidden unit to output neurons labelled I for identity, producing s_1, s_2, through s_k. Red diamond nodes fixed at one supply the hidden intercepts b_j and a separate intercept c_r for each output."></p>
+<figcaption>Shared hidden features feed several identity outputs.</figcaption>
 </figure>
 </div>
 </div></div>
@@ -1985,7 +1985,7 @@ A useful independent check
 </section>
 <section id="a-training-loop" class="slide level2">
 <h2>A training loop</h2>
-<div class="pseudocode-container quarto-float" data-comment-delimiter="//" data-caption-prefix="Algorithm" data-no-end="false" data-pseudocode-number="1" data-indent-size="1.2em" data-line-number-punc=":" data-line-number="true" data-indent-lines="true">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="1" data-indent-lines="true" data-comment-delimiter="//" data-no-end="false" data-indent-size="1.2em">
 <div class="pseudocode">
 \begin{algorithm} \caption{Mini-batch SGD} \begin{algorithmic} \State Initialise weights randomly and choose biases. \For{each epoch} \State Shuffle the training indices and partition them into batches. \For{each batch} \State Compute predictions and the average loss on the batch. \State Backpropagate to obtain the batch gradient. \State Subtract the learning rate times the gradient from the parameters. \EndFor \State Record training and validation errors without parameter updates. \EndFor \Return The fitted parameters \end{algorithmic} \end{algorithm}
 </div>

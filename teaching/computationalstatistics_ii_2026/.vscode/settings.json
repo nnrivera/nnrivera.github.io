@@ -8,5 +8,6 @@
       "filename": "**/lectures/**/*.{qmd,py}",
       "language": "en-GB"
     }
-  ]
+  ],
+  "chat-tag": "DOCE-202"
 }

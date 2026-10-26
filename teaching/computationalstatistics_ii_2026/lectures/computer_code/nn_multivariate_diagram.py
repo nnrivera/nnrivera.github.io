@@ -50,7 +50,7 @@ def generate():
         activation(ax, point, "relu", size=0.66)
         text(ax, point[0], point[1] - 0.5, rf"$h_{j}$", 14)
     for r, point in zip(indices, outputs):
-        value_node(ax, point, r"$\Sigma$")
+        value_node(ax, point, "$I$")
         edge(ax, point, (7.3, point[1]), colour=PURPLE, shrink=15)
         text(ax, 7.65, point[1], rf"$s_{r}$", 20, PURPLE)
     text(ax, 6.5, -1.05, r"$\vdots$", 21)

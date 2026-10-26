@@ -126,7 +126,7 @@ def network(filename='nn-one-hidden-layer.svg',forward=False,backward=False):
         elif backward:
             text(ax,pt[0],pt[1]-.48,[r'$\delta_{z,1}=0$',r'$\delta_{z,2}=3/2$',r'$\delta_{z,3}=-3/2$'][j],11,GREY if j==0 else INK)
         else:text(ax,pt[0],pt[1]-.5,rf'$h_{j+1}$',14)
-    value_node(ax,out,r'$\Sigma$')
+    value_node(ax,out,'$I$')
     if forward:text(ax,6.5,-.9,r'$s=-1/2$',15)
     elif backward:text(ax,6.5,-.85,r'$\delta_s=-3/2$',14)
     else:text(ax,6.5,-.8,'$s$',16)
@@ -162,7 +162,7 @@ def deep():
     for j,pt in enumerate(layers[0],1):value_node(ax,pt,rf'$x_{j}$',r=.24)
     for pt in layers[1]:activation(ax,pt,'relu',size=.61)
     for pt in layers[2]:activation(ax,pt,'tanh',size=.61)
-    value_node(ax,layers[3][0],r'$\Sigma$',r=.28)
+    value_node(ax,layers[3][0],'$I$',r=.28)
     for x,title,subtitle in [(0,'Input','2 coordinates'),(3,'ReLU layer','width 3'),(6.4,'tanh layer','width 2'),(10,'Affine score','$s$')]:
         text(ax,x,-1.5,title,14);text(ax,x,-1.85,subtitle,12)
     for x,title in [(1.5,r'$W^{(1)},b^{(1)}$'),(4.7,r'$W^{(2)},b^{(2)}$'),(8.2,r'$W^{(3)},b^{(3)}$')]:
@@ -183,7 +183,8 @@ def output_heads():
             activation(ax,(6.9,y),'sigmoid',size=.62)
             text(ax,9.5,y,r'$p\in(0,1)$',17)
         elif kind=='identity':
-            text(ax,6.9,y,'No activation',12)
+            value_node(ax,(6.9,y),'$I$')
+            text(ax,6.9,y-.48,'Identity',10)
             text(ax,9.5,y,r'$s\in\mathbb{R}$',17)
         else:
             ax.add_patch(FancyBboxPatch((6.25,y-.31),1.3,.62,boxstyle='round,pad=.02',facecolor='#f5eff8',edgecolor=PURPLE,lw=2))
@@ -200,7 +201,7 @@ def learning_graph():
     for a,b in [((0,0),(2.7,0)),((2.7,0),(5.5,0)),((5.5,0),(8.2,0)),((8.2,0),(11.6,0))]:edge(ax,a,b)
     value_node(ax,(0,0),'$x$');value_node(ax,(2.7,0),r'$\Sigma$')
     activation(ax,(5.5,0),'relu',size=.82)
-    value_node(ax,(8.2,0),r'$\Sigma$')
+    value_node(ax,(8.2,0),'$I$')
     ax.add_patch(FancyBboxPatch((10.8,-.4),1.6,.8,boxstyle='round,pad=0.03',facecolor='#eef4fb',edgecolor=BLUE,lw=2))
     text(ax,11.6,0,'Loss',16)
     for x,label in [(2.7,'$z$'),(5.5,'$h$'),(8.2,'$s$')]:text(ax,x,-.68,label,16)

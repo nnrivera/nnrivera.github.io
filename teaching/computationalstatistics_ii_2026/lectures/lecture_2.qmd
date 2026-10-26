@@ -120,6 +120,7 @@ are mathematical components, not detailed biological models.
 | **tanh** | $(-1,1)$ | Smooth transition centred at $0$ |
 
 These shapes are the [diagram convention used here]{.purple}; the small curve identifies the activation.
+A circle labelled $I$ denotes the [identity activation]{.blue}, $I(z)=z$.
 [Formulae](#nn-activation-formulae){.explanation-link}
 
 ::: {#nn-activation-formulae .explanation title="Activation formulae"}
@@ -135,7 +136,8 @@ ReLU is not differentiable at zero. Sigmoid and tanh flatten in both tails.
 Use the shape together with its internal curve, not colour alone, to identify
 the activation. The axes inside sigmoid put zero at the lower level; tanh's
 horizontal axis passes through its centre. These are lecture-specific visual
-symbols rather than a universal notation. A circle with Sigma is an affine sum.
+symbols rather than a universal notation. A circle with Sigma is an affine sum;
+a neuron labelled I combines its incoming affine sum with the identity activation.
 :::
 
 ## Weights and intercepts reshape an activation
@@ -170,7 +172,7 @@ $$s_\theta(x)=c+\sum_{j=1}^m v_jh_j(x).$$
 :::
 ::: {.column width="62%"}
 
-![ReLU hidden units, an affine output, and explicit constant inputs.](images/nn-one-hidden-layer.svg){width=100% fig-alt="Two inputs feed three square ReLU units. Their outputs feed an affine summation. Red diamond nodes fixed at one supply hidden and output intercepts. Blue input edges carry w_jk and purple output edges carry v_j."}
+![ReLU hidden units, an identity output, and explicit constant inputs.](images/nn-one-hidden-layer.svg){width=100% fig-alt="Two inputs feed three square ReLU units. Their outputs feed a neuron labelled I for the identity activation. Red diamond nodes fixed at one supply hidden and output intercepts. Blue input edges carry w_jk and purple output edges carry v_j."}
 
 :::
 ::::
@@ -178,8 +180,8 @@ $$s_\theta(x)=c+\sum_{j=1}^m v_jh_j(x).$$
 ::: {.notes}
 The picture shows d=2, m=3 and ReLU; the definition permits other activations.
 A shaped hidden node includes its incoming affine sum followed by the indicated
-activation. Only the output is drawn as a separate Sigma because it has no
-nonlinear activation. The constant nodes are not hidden neurons or parameters.
+activation. The output neuron is labelled I for the identity activation: it
+returns its affine score unchanged. The constant nodes are not hidden neurons or parameters.
 Hidden values are computed, rather than observed in the dataset; fully connected
 means every input connects to every hidden unit.
 :::
@@ -203,7 +205,7 @@ $Y=(Y_1,\ldots,Y_k)^\top$.
 ::::
 :::: {.column width="62%"}
 
-![Shared hidden features feed several affine outputs.](images/nn-one-hidden-layer-multivariate.svg){width=100% fig-alt="Two inputs feed three square ReLU hidden units through blue input weights. Purple output weights connect every hidden unit to affine outputs s_1, s_2, through s_k. Red diamond nodes fixed at one supply the hidden intercepts b_j and a separate intercept c_r for each output."}
+![Shared hidden features feed several identity outputs.](images/nn-one-hidden-layer-multivariate.svg){width=100% fig-alt="Two inputs feed three square ReLU hidden units through blue input weights. Purple output weights connect every hidden unit to output neurons labelled I for identity, producing s_1, s_2, through s_k. Red diamond nodes fixed at one supply the hidden intercepts b_j and a separate intercept c_r for each output."}
 
 ::::
 :::::

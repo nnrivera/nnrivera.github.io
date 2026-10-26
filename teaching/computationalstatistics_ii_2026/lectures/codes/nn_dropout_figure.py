@@ -88,8 +88,8 @@ def panel(ax, training):
                          zorder=3))
     ax.text(*constant_xy, "1", fontsize=18, color=RED, ha="center", va="center", zorder=4)
     ax.text(4.12, 2.45, "$c$", color=RED, fontsize=19, ha="center", va="center")
-    node(ax, sum_xy, r"$\Sigma$", BLUE, size=25, radius=0.32)
-    ax.text(sum_x, 1.20, "Affine sum", color=BLUE, fontsize=13, ha="center")
+    node(ax, sum_xy, "$I$", BLUE, size=25, radius=0.32)
+    ax.text(sum_x, 1.20, "Identity output", color=BLUE, fontsize=13, ha="center")
     ax.add_patch(FancyArrowPatch((4.35, 1.72), (5.1, 1.72), arrowstyle="-|>",
                                 mutation_scale=14, linewidth=2, color=BLUE))
     ax.text(5.32, 1.72, r"$\widetilde s$" if training else "$s$",
