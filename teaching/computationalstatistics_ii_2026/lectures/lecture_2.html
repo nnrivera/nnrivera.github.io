@@ -1985,7 +1985,7 @@ A useful independent check
 </section>
 <section id="a-training-loop" class="slide level2">
 <h2>A training loop</h2>
-<div class="pseudocode-container quarto-float" data-line-number="true" data-caption-prefix="Algorithm" data-line-number-punc=":" data-pseudocode-number="1" data-indent-lines="true" data-comment-delimiter="//" data-no-end="false" data-indent-size="1.2em">
+<div class="pseudocode-container quarto-float" data-line-number="true" data-pseudocode-number="1" data-caption-prefix="Algorithm" data-indent-size="1.2em" data-line-number-punc=":" data-indent-lines="true" data-no-end="false" data-comment-delimiter="//">
 <div class="pseudocode">
 \begin{algorithm} \caption{Mini-batch SGD} \begin{algorithmic} \State Initialise weights randomly and choose biases. \For{each epoch} \State Shuffle the training indices and partition them into batches. \For{each batch} \State Compute predictions and the average loss on the batch. \State Backpropagate to obtain the batch gradient. \State Subtract the learning rate times the gradient from the parameters. \EndFor \State Record training and validation errors without parameter updates. \EndFor \Return The fitted parameters \end{algorithmic} \end{algorithm}
 </div>

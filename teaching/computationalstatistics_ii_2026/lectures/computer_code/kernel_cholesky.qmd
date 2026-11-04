@@ -1,0 +1,16 @@
+```pseudocode
+#| html-line-number: true
+#| html-indent-lines: true
+\begin{algorithm}
+\caption{Kernel ridge regression (average squared loss)}
+\begin{algorithmic}
+\Require n training pairs, kernel K, penalty λ > 0
+\State Construct the Gram matrix G and add nλ to its diagonal to obtain A.
+\State Compute the Cholesky factorisation A = LLᵀ.
+\State Solve Lu = y by forward substitution.
+\State Solve Lᵀα = u by backward substitution.
+\State At a new input x, compute the vector of kernels against the training inputs.
+\Return Its dot product with α
+\end{algorithmic}
+\end{algorithm}
+```

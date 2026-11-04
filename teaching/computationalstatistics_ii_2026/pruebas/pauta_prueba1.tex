@@ -1,0 +1,272 @@
+\documentclass[a4paper,12 pt]{article}
+\usepackage[english]{babel}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsthm,amsmath,amssymb,dsfont}
+\usepackage{multicol}
+\usepackage{euscript}
+\usepackage{graphicx}
+\usepackage{algorithm,algorithmic}
+\usepackage{enumitem}
+\newcommand{\transpose}{\intercal}
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={170mm,265mm},
+	left=15mm,
+	top=15mm,
+	right = 15mm
+}
+
+
+\theoremstyle{definition}
+\newtheorem{problema}{Problema}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\begin{document}
+	
+	\begin{flushleft}
+		\Large{ Universidad de Valpara\'iso \\
+			DOCE-202 Computación Estadística II \\
+			Semestre II 2026.\\
+			Profesor: Nicolás Rivera
+		}
+	\end{flushleft}
+	
+	\begin{center}
+		{\Large \bf Pauta de la Prueba 1}
+	\end{center}
+	
+	
+	
+	\section*{Soluciones breves}
+
+	
+		\begin{problema}
+		
+		Sea \(X_1,\ldots,X_n\) una muestra aleatoria independiente proveniente de una distribución
+		\[
+		X_i \sim N(\mu,\sigma^2),
+		\]
+		donde tanto \(\mu\) como \(\sigma^2\) son desconocidos.
+		
+		\begin{enumerate}
+						
+			\item Calcule el gradiente de la log-verosimilitud con respecto a los parámetros \((\mu,\sigma^2)\).
+			
+			\item Calcule la matriz Hessiana de la log-verosimilitud.
+			
+			\item Encuentre los estimadores de máxima verosimilitud de \(\mu\) y \(\sigma^2\).
+			
+			\item Utilice la matriz Hessiana para verificar que el punto obtenido corresponde a un máximo.
+		\end{enumerate}
+		
+	\end{problema}
+
+\paragraph{Pauta.}
+Escriba $s=\sigma^2>0$ y $S(\mu)=\sum_{i=1}^n(X_i-\mu)^2$. Entonces
+\[
+\ell(\mu,s)=-\frac n2\log(2\pi)-\frac n2\log s-\frac{S(\mu)}{2s}.
+\]
+\begin{enumerate}
+    \item El gradiente, respecto de $(\mu,s)$, es
+    \[
+    \boxed{\nabla\ell(\mu,s)=
+    \begin{pmatrix}
+    s^{-1}\sum_i(X_i-\mu)\\[2pt]
+    -\dfrac{n}{2s}+\dfrac{S(\mu)}{2s^2}
+    \end{pmatrix}.}
+    \]
+    \item La matriz Hessiana es
+    \[
+    \boxed{\nabla^2\ell(\mu,s)=
+    \begin{pmatrix}
+    -\dfrac ns & -\dfrac{\sum_i(X_i-\mu)}{s^2}\\[5pt]
+    -\dfrac{\sum_i(X_i-\mu)}{s^2} &
+    \dfrac{n}{2s^2}-\dfrac{S(\mu)}{s^3}
+    \end{pmatrix}.}
+    \]
+    \item Al igualar el gradiente a cero se obtiene, si $S(\bar X)>0$,
+    \[
+    \boxed{\widehat\mu=\bar X,\qquad
+    \widehat s=\widehat{\sigma^2}=\frac1n\sum_{i=1}^n(X_i-\bar X)^2.}
+    \]
+    El denominador es $n$, pues se trata del estimador de máxima verosimilitud.
+    \item En este punto,
+    \[
+    \nabla^2\ell(\widehat\mu,\widehat s)=
+    \begin{pmatrix}-n/\widehat s&0\\0&-n/(2\widehat s^2)\end{pmatrix}
+    \]
+    es definida negativa, por lo que el punto es un máximo local estricto.
+    Es también el único máximo global: la identidad
+    $S(\mu)=S(\bar X)+n(\mu-\bar X)^2$ muestra que, para cada $s$,
+    el máximo en $\mu$ está en $\bar X$; además,
+    \[
+    \frac{d}{ds}\ell(\bar X,s)=\frac{S(\bar X)-ns}{2s^2}
+    \]
+    es positiva para $s<\widehat s$ y negativa para $s>\widehat s$.
+\end{enumerate}
+\noindent\textbf{Caso degenerado.} Si $S(\bar X)=0$ (en particular, si $n=1$),
+$\ell(\bar X,s)\to+\infty$ cuando $s\downarrow0$ y no existe un máximo
+con $s>0$. Para $n\geq2$, este caso tiene probabilidad cero bajo el modelo.
+
+
+
+\begin{problema}
+Sea $f(t)=at^2/2$, con $a>0$. Considere el método de descenso de gradiente con paso constante $\gamma>0$, iniciado en $t_0\neq0$:
+\[
+t_{k+1}=t_k-\gamma f'(t_k),\qquad k=0,1,\ldots.
+\]
+
+\begin{enumerate}
+	\item Encuentre el único minimizador global de $f$ y obtenga una expresión explícita para $t_k$ en términos de $t_0$, $a$ y $\gamma$.
+	\item Determine todos los valores de $\gamma>0$ para los cuales $t_k$ converge al minimizador. Describa qué ocurre cuando $\gamma=1/a$ y cuando $\gamma=2/a$.
+	\item Aplique el lema de descenso del anexo con $L=a$ para demostrar que
+	\[
+	f(t_{k+1})\leq f(t_k)-\gamma\left(1-\frac{a\gamma}{2}\right)|f'(t_k)|^2.
+	\]
+	¿Para qué valores de $\gamma$ garantiza esta desigualdad un descenso estricto cuando $t_k\neq0$? Compare con el intervalo de convergencia obtenido anteriormente.
+	\item Escriba la actualización del método de Newton con paso completo y demuestre que alcanza el minimizador en una iteración desde cualquier punto inicial. ¿A qué elección de $\gamma$ corresponde en este ejemplo?
+\end{enumerate}
+\end{problema}
+
+\paragraph{Pauta.}
+\begin{enumerate}
+    \item Como $f(t)\geq0$, con igualdad únicamente en $t=0$, el único
+    minimizador global es $t^*=0$. Además, $f'(t)=at$, de modo que
+    \[
+    t_{k+1}=(1-a\gamma)t_k,
+    \qquad \boxed{t_k=(1-a\gamma)^k t_0.}
+    \]
+    \item Puesto que $t_0\neq0$, la convergencia a cero equivale a
+    $|1-a\gamma|<1$. Por tanto,
+    \[
+    \boxed{t_k\longrightarrow0\quad\Longleftrightarrow\quad 0<\gamma<2/a.}
+    \]
+    Si $\gamma=1/a$, se tiene $t_1=0$ y los iterados siguientes son cero.
+    Si $\gamma=2/a$, entonces $t_k=(-1)^k t_0$, sin convergencia.
+    Para $\gamma>2/a$, $|t_k|\to\infty$.
+    \item El gradiente es Lipschitz con constante $a$, pues
+    $|f'(x)-f'(y)|=a|x-y|$. Aplique el lema con $y=t_k$ y
+    $x=t_{k+1}=t_k-\gamma f'(t_k)$:
+    \begin{align*}
+    f(t_{k+1})
+    &\leq f(t_k)+f'(t_k)(-\gamma f'(t_k))
+    +\frac a2\gamma^2|f'(t_k)|^2\\
+    &=f(t_k)-\gamma\left(1-\frac{a\gamma}{2}\right)|f'(t_k)|^2.
+    \end{align*}
+    Si $t_k\neq0$, entonces $|f'(t_k)|^2>0$; la cota garantiza
+    descenso estricto exactamente cuando $0<\gamma<2/a$.
+    Este es también el intervalo de convergencia. En este ejemplo,
+    la desigualdad es una igualdad, por ser $f$ cuadrática.
+    \item Como $f''(t)=a>0$, Newton está bien definido y
+    \[
+    \boxed{t_{k+1}=t_k-\frac{f'(t_k)}{f''(t_k)}
+    =t_k-\frac{at_k}{a}=0.}
+    \]
+    Alcanza el minimizador en una iteración y coincide con descenso
+    de gradiente con $\gamma=1/a$.
+\end{enumerate}
+
+
+\begin{problema}
+Sea $X\in\R^{n\times(p+1)}$, con $n\geq1$, una matriz cuya primera columna está formada por unos. Las demás columnas pueden ser linealmente dependientes. Para $y\in\R^n$, $\lambda>0$ y $P=\operatorname{diag}(0,1,\ldots,1)$, considere el objetivo de regresión Ridge
+\[
+F(\beta)=\frac{1}{2n}\|y-X\beta\|_2^2+\frac{\lambda}{2}\beta^\top P\beta,
+\qquad \beta=(\beta_0,\beta_1,\ldots,\beta_p)^\top.
+\]
+El intercepto $\beta_0$ no se penaliza.
+
+\begin{enumerate}
+	\item Calcule el gradiente y la matriz Hessiana de $F$. Deduzca las ecuaciones que debe satisfacer un minimizador.
+	\item Demuestre que
+	\[
+	v^\top(X^\top X+n\lambda P)v>0\qquad\text{para todo }v\in\R^{p+1}\setminus\{0\}.
+	\]
+	Concluya que existe un único minimizador global, incluso si las columnas de $X$ son linealmente dependientes, y encuentre una expresión para él.
+	\item Suponga que cada columna de predictores está centrada, es decir, $\sum_{i=1}^n X_{ij}=0$ para $j=1,\ldots,p$. Demuestre que el intercepto estimado es $\widehat\beta_0=\bar y$, donde $\bar y=n^{-1}\sum_{i=1}^n y_i$. ¿Cuál sería el intercepto estimado si también se penalizara $\beta_0$, reemplazando $P$ por la matriz identidad?
+\end{enumerate}
+\end{problema}
+
+\paragraph{Pauta.}
+\begin{enumerate}
+    \item Por diferenciación,
+    \[
+    \boxed{\nabla F(\beta)=\frac1nX^\top(X\beta-y)+\lambda P\beta,
+    \qquad \nabla^2 F(\beta)=\frac1nX^\top X+\lambda P.}
+    \]
+    Todo minimizador satisface las ecuaciones normales
+    \[
+    (X^\top X+n\lambda P)\widehat\beta=X^\top y.
+    \]
+    \item Para $v=(v_0,\ldots,v_p)^\top\neq0$,
+    \[
+    v^\top(X^\top X+n\lambda P)v
+    =\|Xv\|_2^2+n\lambda\sum_{j=1}^p v_j^2.
+    \]
+    Si algún $v_j\neq0$ con $j\geq1$, el segundo término es positivo.
+    En caso contrario, $v_0\neq0$ y $Xv=v_0\mathbf{1}_n$, por lo que
+    el primer término es $nv_0^2>0$. Así, la matriz es definida positiva
+    e invertible, y
+    \[
+    \boxed{\widehat\beta=(X^\top X+n\lambda P)^{-1}X^\top y.}
+    \]
+    Este punto existe y es estacionario. Como $F$ es dos veces
+    continuamente diferenciable en el conjunto abierto y convexo
+    $\R^{p+1}$ y su Hessiana es definida positiva, $F$ es estrictamente
+    convexa y $\widehat\beta$ es su único minimizador global.
+    \item La ecuación correspondiente al intercepto es
+    \[
+    n\widehat\beta_0+
+    \sum_{j=1}^p\widehat\beta_j\sum_{i=1}^n X_{ij}
+    =\sum_{i=1}^n y_i.
+    \]
+    Al estar centrados los predictores, las sumas interiores son cero y
+    \[
+    \boxed{\widehat\beta_0=\bar y.}
+    \]
+    Si también se penaliza el intercepto, su ecuación pasa a ser
+    $n(1+\lambda)\widehat\beta_0=n\bar y$, de modo que
+    \[
+    \boxed{\widehat\beta_0=\frac{\bar y}{1+\lambda}.}
+    \]
+\end{enumerate}
+
+
+	
+\section*{Anexo: resultados útiles}
+Puede utilizar los siguientes resultados sin demostrarlos. En cada aplicación, verifique las hipótesis correspondientes.
+
+\subsection*{1. Matrices definidas positivas y negativas}
+Una matriz simétrica $A\in\R^{d\times d}$ es:
+\begin{itemize}
+    \item \textbf{Semidefinida positiva} si $v^\top Av\geq0$ para todo $v\in\R^d$.
+    \item \textbf{Definida positiva} si $v^\top Av>0$ para todo $v\neq0$.
+    \item \textbf{Definida negativa} si $v^\top Av<0$ para todo $v\neq0$.
+\end{itemize}
+Toda matriz definida positiva o definida negativa es invertible.
+
+\subsection*{2. Condiciones de optimalidad y convexidad}
+Sea $f:U\to\R$ dos veces continuamente diferenciable, donde $U\subseteq\R^d$ es abierto.
+\begin{itemize}
+    \item Si $x^*\in U$ es un mínimo o máximo local, entonces $\nabla f(x^*)=0$.
+    \item Si $\nabla f(x^*)=0$ y $\nabla^2f(x^*)$ es definida positiva, entonces $x^*$ es un mínimo local estricto. Si es definida negativa, es un máximo local estricto.
+    \item Si, además, $U$ es convexo y $\nabla^2f(x)$ es semidefinida positiva para todo $x\in U$, entonces $f$ es convexa. Si la Hessiana es definida positiva en todo $U$, entonces $f$ es estrictamente convexa.
+    \item Para una función convexa diferenciable, todo punto estacionario es un minimizador global. La convexidad estricta garantiza que hay a lo más un minimizador, pero por sí sola no garantiza su existencia.
+\end{itemize}
+
+\subsection*{3. Lema de descenso}
+Sea $f:\R^d\to\R$ una función diferenciable cuyo gradiente es Lipschitz con constante $L>0$, es decir,
+\[
+\|\nabla f(x)-\nabla f(y)\|_2\leq L\|x-y\|_2
+\qquad\text{para todo }x,y\in\R^d.
+\]
+Entonces, para todo $x,y\in\R^d$,
+\[
+\boxed{f(x)\leq f(y)+\langle\nabla f(y),x-y\rangle
++\frac{L}{2}\|x-y\|_2^2.}
+\]
+En dimensión uno, el gradiente es la derivada, el producto interno es el producto usual y la norma es el valor absoluto.
+
+\end{document}
